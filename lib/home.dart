@@ -3,18 +3,19 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:lost_flutter/create_post.dart';
 import 'package:lost_flutter/user_bloc.dart';
 
 import 'globals.dart';
 
-class home extends StatefulWidget {
-  const home({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<home> createState() => _homeState();
+  State<Home> createState() => _HomeState();
 }
 
-class _homeState extends State<home> {
+class _HomeState extends State<Home> {
   Future<bool> _onWillPop() async {
     return false; //<-- SEE HERE
   }
@@ -60,7 +61,7 @@ class _homeState extends State<home> {
           ),
           elevation: 1,
           backgroundColor: Color.fromRGBO(255, 255, 255, 0.6784313725490196),
-          title: !_searchBoolean ? TitleText() : SearchBar(),
+          title: !_searchBoolean ? TitleText(pageTitle: 'Losties',) : SearchBar(),
           actions: <Widget>[
             !_searchBoolean?
             IconButton(
@@ -93,7 +94,33 @@ class _homeState extends State<home> {
                 color: Color.fromRGBO(0, 0, 0, 1.0),
               ),
               tooltip: 'Create Post',
-              onPressed: () {},
+              onPressed: () {
+
+                // showGeneralDialog(
+                //     barrierDismissible: true,
+                //     barrierLabel: "SignIn",
+                //     context: context,
+                //     pageBuilder: (context, _, __) => Center(
+                //       child: Container(
+                //         height: 500,
+                //         decoration: BoxDecoration(
+                //             color: Colors.white.withOpacity(0.94),
+                //             borderRadius:
+                //             BorderRadius.all(Radius.circular(40))),
+                //         margin: EdgeInsets.symmetric(horizontal: 16),
+                //         padding: EdgeInsets.symmetric(
+                //             horizontal: 24, vertical: 32),
+                //         child: Scaffold(
+                //           resizeToAvoidBottomInset : false,
+                //           backgroundColor: Colors.transparent,
+                //           body: CreatePost(),
+                //         ),
+                //       ),
+                //     ));
+                
+                Navigator.pushNamed(context, '/create_post');
+
+              },
             ) : SizedBox(width: 0,)
           ],
         ),
@@ -104,25 +131,23 @@ class _homeState extends State<home> {
 }
 
 class TitleText extends StatelessWidget {
+  final String pageTitle;
+
   TitleText({
-    super.key,
+    super.key, required this.pageTitle
   });
+
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: userBloc.userStream,
-      builder: (context, snapshot) {
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: Text('${snapshot.data}',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color.fromRGBO(0, 0, 0, 1.0)),
-          ),
-        );
-      }
-    );
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Text('$pageTitle',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(0, 0, 0, 1.0)),
+            ),
+          );
   }
 }
 

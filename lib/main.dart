@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lost_flutter/create_post.dart';
 import 'package:lost_flutter/home.dart';
 import 'package:rive/rive.dart';
 import 'get_started.dart';
@@ -25,7 +26,13 @@ class MyApp extends StatelessWidget {
             0, 0, 0, 1.0)),
         useMaterial3: true,
       ),
-      home: MyRiveAnimation(),
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        // '/': (context) => const Home(),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/create_post': (context) => const CreatePost(),
+      },
+      home: Home(),
     );
   }
 }

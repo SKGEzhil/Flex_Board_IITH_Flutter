@@ -259,7 +259,7 @@ class SignInForm extends StatelessWidget {
                 serverUtils.login(user_text.text, password_text.text, context);
 
                 username = user_text.text;
-                userBloc.eventSink.add(userAction.getName);
+                // userBloc.eventSink.add(userAction.getName);
 
                   // Navigator.pushReplacement(context, MaterialPageRoute(
                   //   builder: (context) => const home(),

@@ -36,7 +36,7 @@ class ServerUtils {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const home(),
+                builder: (context) => const Home(),
               ));
         }
       } else {
