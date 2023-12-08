@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lost_flutter/create_post.dart';
 import 'package:lost_flutter/home.dart';
+import 'package:lost_flutter/post_viewer.dart';
 import 'package:rive/rive.dart';
 import 'get_started.dart';
 
@@ -31,8 +32,9 @@ class MyApp extends StatelessWidget {
         // '/': (context) => const Home(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/create_post': (context) => const CreatePost(),
+        '/view_post': (context) => const PostViewer(),
       },
-      home: Home(),
+      home: MyRiveAnimation(),
     );
   }
 }

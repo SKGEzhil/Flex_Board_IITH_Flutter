@@ -40,6 +40,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_nav_bar:
   http: ^1.1.0
+  path_provider:
+  image_picker:
 
 dev_dependencies:
   flutter_test:

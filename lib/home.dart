@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:lost_flutter/create_post.dart';
+import 'package:lost_flutter/server_utils.dart';
 import 'package:lost_flutter/user_bloc.dart';
 
 import 'globals.dart';
+import 'models.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,6 +22,7 @@ class _HomeState extends State<Home> {
     return false; //<-- SEE HERE
   }
 
+  final serverUtils = ServerUtils();
   bool _searchBoolean = false;
 
   @override
@@ -29,7 +32,7 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         bottomNavigationBar: Container(
           color: Color.fromRGBO(0, 0, 0, 1),
-          child: const Padding(
+          child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child: GNav(
               backgroundColor: Color.fromRGBO(0, 0, 0, 0),
@@ -41,7 +44,9 @@ class _HomeState extends State<Home> {
               gap: 8,
                 tabs: [
                   GButton(icon: Icons.home, text: "Home",),
-                  GButton(icon: Icons.search, text: "Search",),
+                  GButton(icon: Icons.search, text: "Search",onPressed: (){
+                    serverUtils.getPosts();
+                  }),
                   GButton(icon: Icons.comment, text: "Replies",),
                   GButton(icon: CupertinoIcons.profile_circled, text: "Profile",)
                 ]
@@ -151,65 +156,107 @@ class TitleText extends StatelessWidget {
   }
 }
 
-class MyList extends StatelessWidget {
-  final List<String> items = List.generate(30, (index) => 'Item ${index + 1}');
+class MyList extends StatefulWidget {
+  @override
+  State<MyList> createState() => _MyListState();
+}
+
+class _MyListState extends State<MyList> {
+  // final List<String> items = List.generate(30, (index) => 'Item ${index + 1}');
+  List<Post> items = []; // Initialize the list
+  final serverUtils = ServerUtils();
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    List<Post> posts = await serverUtils.getPosts(); // Wait for the future to complete
+
+    setState(() {
+      items = posts; // Update the state with the fetched data
+    });
+
+    items.forEach((element) {
+      print(element.name);
+    });
+  }
+
+
+  // final List<Post> items = ServerUtils().getPosts() as List<Post>;
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
       itemCount: items.length,
       itemBuilder: (context, index) {
-        return Container(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Hello World",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+        Post post = items[index];
+        return InkWell(
+          onTap: (){
+            Navigator.pushNamed(context, '/view_post');
+          },
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "${post.subject}",
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                        child: Text('01/01/2024',
+                                        style: TextStyle(
+                                          color: Color.fromRGBO(0, 0, 0, 0.5),
+                                          fontSize: 12
+                                        ),)),
+                                  )
+                                ],
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                            child: Text(
-                                "Lorem Ipsum is simply dummy text of the printing and"
-                                    " typesetting industry. Lorem Ipsum has been the "
-                                    "industry's standard dummy text ever since the 1500s, "
-                                    "when an unknown printer took a galley of type and scrambled "
-                                    "it to make a type specimen book. It has survived not "
-                                    "only five centuries, but also the leap into electronic",
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,),
-                          )
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Text("${post.content}",
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 8, 0),
-                        child: Image.network(
-                        'https://via.placeholder.com/500', // Placeholder image URL
-                        fit: BoxFit.contain, // Ensure the image fits within the space
-                    ),
-                      ),)
-                  ],
-                ),
-              ],
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 8, 0),
+                          child: Image.network(
+                          '${post.image}', // Placeholder image URL
+                          fit: BoxFit.contain, // Ensure the image fits within the space
+                      ),
+                        ),)
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
