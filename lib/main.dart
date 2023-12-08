@@ -23,8 +23,7 @@ class MyApp extends StatelessWidget {
         DefaultCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromRGBO(
-            0, 0, 0, 1.0)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
       routes: {

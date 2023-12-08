@@ -22,7 +22,7 @@ class UserBloc{
     var user = "";
     eventStream.listen((event) {
       if(event == userAction.getName){
-        user = username;
+        user = roll_no;
       }
       userSink.add(user);
     });

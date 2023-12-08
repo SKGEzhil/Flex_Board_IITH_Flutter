@@ -1,9 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/home.dart';
+import 'package:lost_flutter/models.dart';
+import 'package:lost_flutter/server_utils.dart';
 
 class PostViewer extends StatefulWidget {
-  const PostViewer({super.key});
+  const PostViewer(
+      {super.key,
+      this.subject,
+      this.name,
+      this.content,
+      this.image,
+      this.id,
+      this.date});
+
+  final subject;
+  final name;
+  final content;
+  final image;
+  final id;
+  final date;
 
   @override
   State<PostViewer> createState() => _PostViewerState();
@@ -13,9 +30,9 @@ class _PostViewerState extends State<PostViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: TitleText(pageTitle: 'Post Name'),
+          title: TitleText(pageTitle: '${widget.subject}'),
         ),
         body: Column(children: [
           Padding(
@@ -30,28 +47,34 @@ class _PostViewerState extends State<PostViewer> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    'Username',
+                    '${widget.name}',
                     style: TextStyle(
                         color: Color.fromRGBO(0, 0, 0, 1),
                         fontWeight: FontWeight.bold),
                   ),
                 ),
+                Expanded(
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text('${widget.date}')))
               ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl ultricies nunc, eget aliquam nisl nisl eget nisl. Donec euismod, nisl eget aliquam ultricies, nunc nisl ultricies nunc, eget aliquam nisl nisl eget nisl.',
-              style: TextStyle(
-                  color: Color.fromRGBO(0, 0, 0, 1),
-                  fontWeight: FontWeight.bold),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '${widget.content}',
+                style: TextStyle(
+                    color: Color.fromRGBO(0, 0, 0, 1),
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Image.network('https://via.placeholder.com/500',
-                width: 400, height: 200),
+            child: Image.network('${widget.image}', width: 400, height: 200),
           ),
           Padding(
               padding: const EdgeInsets.all(16.0),
@@ -78,11 +101,11 @@ class _PostViewerState extends State<PostViewer> {
                                 ),
                               ),
                               height: MediaQuery.of(context).size.height * 0.75,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(8, 30, 8, 25),
-                              child: CommentList(),
-                            )
-                          );
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(8, 30, 8, 25),
+                                child: CommentList(postId: widget.id,),
+                              ));
                         },
                       );
                     },
@@ -98,13 +121,44 @@ class _PostViewerState extends State<PostViewer> {
                   ),
                 )
               ])),
-
         ]));
   }
 }
 
-class CommentList extends StatelessWidget {
-  final List<String> items = List.generate(30, (index) => 'Item ${index + 1}');
+class CommentList extends StatefulWidget {
+  final postId;
+
+  CommentList({super.key, required this.postId});
+
+  @override
+  State<CommentList> createState() => _CommentListState();
+}
+
+class _CommentListState extends State<CommentList> {
+  // final List<String> items = List.generate(30, (index) => 'Item ${index + 1}');
+  List<Reply> items = []; // Initialize the list
+
+  final serverUtils = ServerUtils();
+  bool refresh_var = false;
+  final reply = TextEditingController();
+
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    List<Reply> replies =
+    await serverUtils.getReplies(widget.postId); // Wait for the future to complete
+
+    setState(() {
+      items = replies; // Update the state with the fetched data
+    });
+
+    items.forEach((element) {
+      print(element.name);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +171,8 @@ class CommentList extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Comments',
+              child: Text(
+                'Comments',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -125,51 +180,56 @@ class CommentList extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Expanded(
             child: ListView.separated(
               itemCount: items.length,
               itemBuilder: (context, index) {
+                Reply reply = items[index];
                 return InkWell(
-                  onTap: (){
-                  },
+                  onTap: () {},
                   child: Container(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 20,
-                              backgroundImage:
-                              NetworkImage('https://via.placeholder.com/500'),
+                      child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage:
+                                NetworkImage('https://via.placeholder.com/500'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              '${reply.name}',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(0, 0, 0, 1),
+                                  fontWeight: FontWeight.bold),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                'Username',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(0, 0, 0, 1),
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
                           child: Text(
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl ultricies nunc, eget aliquam nisl nisl eget nisl. Donec euismod, nisl eget aliquam ultricies, nunc nisl ultricies nunc, eget aliquam nisl nisl eget nisl.',
+                            '${reply.reply}',
                             style: TextStyle(
                                 color: Color.fromRGBO(0, 0, 0, 1),
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                      ],
-                    )
-                    ),
-                  );
-              }, separatorBuilder: (BuildContext context, int index) {
-              return Divider();
-            },
+                      ),
+                    ],
+                  )),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return Divider();
+              },
             ),
           ),
           // Add Comment
@@ -190,6 +250,7 @@ class CommentList extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                         child: TextFormField(
+                          controller: reply,
                           maxLines: 1,
                           decoration: InputDecoration(
                             hintText: 'Add a comment',
@@ -199,7 +260,13 @@ class CommentList extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                       await serverUtils.addReply(roll_no, reply.text, widget.postId, context);
+                        setState(() {
+                          reply.text = "";
+                          fetchData();
+                        });
+                      },
                       icon: Icon(
                         Icons.send,
                         color: Color.fromRGBO(0, 0, 0, 1),

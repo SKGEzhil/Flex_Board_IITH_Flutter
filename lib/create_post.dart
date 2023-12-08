@@ -158,7 +158,7 @@ class _CreatePostState extends State<CreatePost> {
                       child: Text('Submit'),
                       onPressed: () async {
                         await serverUtils.uploadImage(image);
-                        serverUtils.createPost(username, subject.text, content.text, post_image_link, context);
+                        serverUtils.createPost(roll_no, subject.text, content.text, post_image_link, context);
                       },
                     ),
                   ),

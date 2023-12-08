@@ -251,14 +251,14 @@ class SignInForm extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 color: Colors.black,
-                onPressed: () {
+                onPressed: () async {
 
                 print(user_text.text);
                 print(password_text.text);
 
-                serverUtils.login(user_text.text, password_text.text, context);
-
-                username = user_text.text;
+                await serverUtils.login(user_text.text, password_text.text, context);
+                username = await serverUtils.getUsername(user_text.text);
+                roll_no = user_text.text;
                 // userBloc.eventSink.add(userAction.getName);
 
                   // Navigator.pushReplacement(context, MaterialPageRoute(
