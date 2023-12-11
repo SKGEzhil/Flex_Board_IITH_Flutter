@@ -32,7 +32,9 @@ class _ProfileState extends State<Profile> {
                         backgroundImage:
                             NetworkImage('https://via.placeholder.com/500'),
                       ),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +45,7 @@ class _ProfileState extends State<Profile> {
                               '${username}',
                               maxLines: 1,
                               style: TextStyle(
-                                overflow: TextOverflow.fade,
+                                  overflow: TextOverflow.fade,
                                   color: Color.fromRGBO(0, 0, 0, 1),
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
@@ -54,7 +56,7 @@ class _ProfileState extends State<Profile> {
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                '${roll_no}',
+                                '${roll_no_}',
                                 style: TextStyle(
                                     color: Color.fromRGBO(0, 0, 0, 1),
                                     fontSize: 16,
@@ -64,49 +66,42 @@ class _ProfileState extends State<Profile> {
                           ),
                         ],
                       ),
-
                     ],
                   ),
                 ),
               ),
             ),
-
             Expanded(
               child: Scaffold(
                   extendBodyBehindAppBar: true,
-                backgroundColor: Colors.transparent,
-                appBar: AppBar(
-                  automaticallyImplyLeading: false,
-                  flexibleSpace: ClipRRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                      child: Container(
-                        color: Colors.transparent,
+                  backgroundColor: Colors.transparent,
+                  appBar: AppBar(
+                      automaticallyImplyLeading: false,
+                      flexibleSpace: ClipRRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                          child: Container(
+                            color: Colors.transparent,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  elevation: 1,
-                  backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
-                  title: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'My Posts',
-                      style: TextStyle(
-                          color: Color.fromRGBO(0, 0, 0, 1),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ),
-                body: MyList(filter: roll_no,)
-
-              ),
+                      elevation: 1,
+                      backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
+                      title: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'My Posts',
+                          style: TextStyle(
+                              color: Color.fromRGBO(0, 0, 0, 1),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )),
+                  body: MyList(
+                    filter: roll_no_,
+                  )),
             )
-
-
-
           ]),
-        )
-    );
+        ));
   }
 }

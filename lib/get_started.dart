@@ -5,15 +5,40 @@ import 'package:flutter/cupertino.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/home.dart';
 import 'package:lost_flutter/server_utils.dart';
+import 'package:lost_flutter/shared_prefs.dart';
 import 'package:rive/rive.dart';
 import 'package:lost_flutter/user_bloc.dart';
 
-class MyRiveAnimation extends StatelessWidget {
+class MyRiveAnimation extends StatefulWidget {
+  @override
+  State<MyRiveAnimation> createState() => _MyRiveAnimationState();
+}
+
+class _MyRiveAnimationState extends State<MyRiveAnimation> {
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    int number = await SharedPrefs().checkFirstLaunch();
+    print(number);
+    if (number == 0) {
+      roll_no_ = await SharedPrefs().getRollNo();
+      username = await SharedPrefs().getUsername();
+      print('roll_no_ = $roll_no_');
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Home(),
+          ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset : false,
+      resizeToAvoidBottomInset: false,
       body: Center(
           child: Stack(
         children: [
@@ -34,7 +59,6 @@ class MyRiveAnimation extends StatelessWidget {
               padding: const EdgeInsets.all(50),
               child: CupertinoButton(
                   onPressed: () {
-
                     showGeneralDialog(
                         barrierDismissible: true,
                         barrierLabel: "SignIn",
@@ -50,7 +74,7 @@ class MyRiveAnimation extends StatelessWidget {
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 24, vertical: 32),
                                 child: Scaffold(
-                                  resizeToAvoidBottomInset : false,
+                                  resizeToAvoidBottomInset: false,
                                   backgroundColor: Colors.transparent,
                                   body: SignInForm(),
                                 ),
@@ -149,6 +173,7 @@ class SignInForm extends StatelessWidget {
   final password_text = TextEditingController();
   final serverUtils = ServerUtils();
 
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -245,21 +270,21 @@ class SignInForm extends StatelessWidget {
               height: 30,
             ),
             CupertinoButton(
-              borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20),
                 child: Text(
                   "Sign In",
                   style: TextStyle(color: Colors.white),
                 ),
                 color: Colors.black,
                 onPressed: () async {
+                  print(user_text.text);
+                  print(password_text.text);
 
-                print(user_text.text);
-                print(password_text.text);
+                  await serverUtils.login(
+                      user_text.text, password_text.text, context);
+                  username = await serverUtils.getUsername(user_text.text);
 
-                await serverUtils.login(user_text.text, password_text.text, context);
-                username = await serverUtils.getUsername(user_text.text);
-                roll_no = user_text.text;
-                // userBloc.eventSink.add(userAction.getName);
+                  // userBloc.eventSink.add(userAction.getName);
 
                   // Navigator.pushReplacement(context, MaterialPageRoute(
                   //   builder: (context) => const home(),

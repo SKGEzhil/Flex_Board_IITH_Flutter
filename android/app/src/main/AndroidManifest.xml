@@ -8,6 +8,20 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+<!--        &lt;!&ndash; Firebase Messaging Service &ndash;&gt;-->
+<!--        <service-->
+<!--                android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService"-->
+<!--                android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
+
+<!--        &lt;!&ndash; Default Notification Channel &ndash;&gt;-->
+<!--        <meta-data-->
+<!--                android:name="com.google.firebase.messaging.default_notification_channel_id"-->
+<!--                android:value="your_default_notification_channel_id" />-->
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

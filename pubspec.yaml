@@ -31,6 +31,10 @@ dependencies:
   rive: 0.11.11
   flutter:
     sdk: flutter
+  shared_preferences:
+  firebase_core:
+  firebase_messaging: ^14.0.4
+  flutter_local_notifications:
 
 
 
@@ -42,6 +46,10 @@ dependencies:
   http: ^1.1.0
   path_provider:
   image_picker:
+  cached_network_image: ^3.3.0
+  skeletonizer: ^0.8.0
+  hive_flutter: ^1.1.0
+  swipe_refresh: ^1.0.2
 
 dev_dependencies:
   flutter_test:

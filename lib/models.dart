@@ -58,3 +58,37 @@ class Reply {
   }
 }
 
+class PostNotification {
+  late String name;
+  late String content;
+
+  PostNotification({
+    required this.name,
+    required this.content,
+  });
+
+  factory PostNotification.fromJson(Map<String, dynamic> json) {
+    return PostNotification(
+      name: json['name'],
+      content: json['content'],
+    );
+  }
+}
+
+class ReplyNotification {
+  late String name;
+  late String reply;
+
+  ReplyNotification({
+    required this.name,
+    required this.reply,
+  });
+
+  factory ReplyNotification.fromJson(Map<String, dynamic> json) {
+    return ReplyNotification(
+      name: json['name'],
+      reply: json['reply'],
+    );
+  }
+}
+

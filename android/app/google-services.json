@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618366234858",
+    "project_id": "spam-it-93b10",
+    "storage_bucket": "spam-it-93b10.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618366234858:android:69053f41ba297356626793",
+        "android_client_info": {
+          "package_name": "com.skgezhil.spam_it"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBX5b2fowOctoGIalOArB49QciG-PnQ61g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -6,14 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/home.dart';
+import 'package:lost_flutter/shared_prefs.dart';
 
 import 'models.dart';
 
 class ServerUtils {
 
+  final endPoint = 'http://65.0.8.179';
+  // final endPoint = 'http://localhost:5000';
+  // final endPoint = 'http://10.0.2.2:5000';
+
   Future<void> login(roll_no, password, context) async {
     final String url =
-        'http://localhost:5000/login'; // replace with your API endpoint
+        '$endPoint/login'; // replace with your API endpoint
 
     Map<String, String> headers = {
       'Content-Type':
@@ -41,6 +46,11 @@ class ServerUtils {
               MaterialPageRoute(
                 builder: (context) => const Home(),
               ));
+          SharedPrefs().setRollNo(roll_no);
+          roll_no_ = roll_no;
+          username = await getUsername(roll_no);
+          SharedPrefs().setUsername(username);
+          SharedPrefs().setFirstLaunch();
         }
       } else {
         print('POST request failed with status: ${response.statusCode}');
@@ -53,7 +63,7 @@ class ServerUtils {
 
   Future<void> createPost(roll_no, subject, content, image, context) async {
     final String url =
-        'http://localhost:5000/create_post'; // replace with your API endpoint
+        '$endPoint/create_post'; // replace with your API endpoint
 
     Map<String, String> headers = {
       'Content-Type':
@@ -95,7 +105,7 @@ class ServerUtils {
 
   Future<List<Post>> getPosts() async {
     // Replace the URL with the actual API endpoint you want to call
-    var url = Uri.parse('http://localhost:5000/get_posts');
+    var url = Uri.parse('$endPoint/get_posts');
 
     // Make the GET request
     var response = await http.get(url);
@@ -141,7 +151,7 @@ class ServerUtils {
       return;
     }
 
-    final url = 'http://localhost:5000/upload'; // Replace with your Flask server endpoint
+    final url = '$endPoint/upload'; // Replace with your Flask server endpoint
 
     final request = http.MultipartRequest('POST', Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
@@ -166,7 +176,7 @@ class ServerUtils {
 
   Future<void> addReply(roll_no, reply, post_id, context) async {
     final String url =
-        'http://localhost:5000/add_reply'; // replace with your API endpoint
+        '$endPoint/add_reply'; // replace with your API endpoint
 
     Map<String, String> headers = {
       'Content-Type':
@@ -207,7 +217,7 @@ class ServerUtils {
 
   Future<List<Reply>> getReplies(post_id) async {
     final String url =
-        'http://localhost:5000/get_replies'; // replace with your API endpoint
+        '$endPoint/get_replies'; // replace with your API endpoint
 
     Map<String, String> headers = {
       'Content-Type':
@@ -257,7 +267,7 @@ class ServerUtils {
 
   Future<String> getUsername(roll_no) async {
     final String url =
-        'http://localhost:5000/get_username'; // replace with your API endpoint
+        '$endPoint/get_username'; // replace with your API endpoint
 
     Map<String, String> headers = {
       'Content-Type':
@@ -289,5 +299,24 @@ class ServerUtils {
       return "";
     }
   }
+
+  Future<void> sendNotification() async {
+    // Replace the URL with the actual API endpoint you want to call
+    var url = Uri.parse('$endPoint/send_notification');
+
+    // Make the GET request
+    var response = await http.get(url);
+
+    // Check if the request was successful (status code 200)
+    if (response.statusCode == 200) {
+      // Parse the JSON response
+      print('DONE');
+
+    } else {
+      // Handle errors
+      print('Error: ${response.statusCode}');
+    }
+  }
+
 
 }
