@@ -5,8 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/home.dart';
+import 'package:lost_flutter/image_viewer.dart';
 import 'package:lost_flutter/models.dart';
 import 'package:lost_flutter/server_utils.dart';
+
+import 'image_viewer.dart';
 
 class PostViewer extends StatefulWidget {
   const PostViewer(
@@ -134,15 +137,24 @@ class _PostViewerState extends State<PostViewer> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Card(
-                      elevation: 5,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: CachedNetworkImage(
-                            imageUrl: '${widget.image}',
-                            fit: BoxFit.cover,
-                            width: 400,
-                            height: 200),
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ImageViewer(image: widget.image,)),
+                        );
+                      },
+                      child: Card(
+                        elevation: 5,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: CachedNetworkImage(
+                              imageUrl: '${widget.image}',
+                              fit: BoxFit.cover,
+                              width: 400,
+                              height: 200),
+                        ),
                       ),
                     ),
                   ),
