@@ -33,6 +33,20 @@ class Post {
       date: json['date'],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    "_id": {
+      "\$oid": id,
+    },
+    "roll_no": rollNo,
+    "name": name,
+    "subject": subject,
+    "content": content,
+    "image": image,
+    "replies": List<dynamic>.from(replies.map((x) => x)),
+    "date": date,
+  };
+
 }
 
 class Reply {

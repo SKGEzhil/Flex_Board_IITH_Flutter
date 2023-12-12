@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lost_flutter/home.dart';
@@ -55,6 +56,9 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavigator(
+        index: 1,
+      ),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: SearchField(onTextChanged: filterSearchResults),
@@ -158,12 +162,20 @@ class _SearchListState extends State<SearchList> {
                       Expanded(
                         flex: 1,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 8, 0),
-                          child: Image.network(
-                            '${post.image}', // Placeholder image URL
-                            fit: BoxFit
-                                .contain, // Ensure the image fits within the space
-                          ),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 8, 0),
+
+                            child: Card(
+                              elevation: 5,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: CachedNetworkImage(
+                                  height: 75,
+                                  fit: BoxFit.cover,
+                                  imageUrl: '${post.image}',
+                                  errorWidget: (context, url, error) => Icon(Icons.error),
+                                ),
+                              ),
+                            )
                         ),
                       )
                     ],

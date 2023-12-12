@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
@@ -12,9 +14,9 @@ import 'models.dart';
 
 class ServerUtils {
 
-  final endPoint = 'http://65.0.8.179';
+  // final endPoint = 'http://65.0.8.179';
   // final endPoint = 'http://localhost:5000';
-  // final endPoint = 'http://10.0.2.2:5000';
+  final endPoint = 'http://10.0.2.2:5000';
 
   Future<void> login(roll_no, password, context) async {
     final String url =
@@ -49,6 +51,53 @@ class ServerUtils {
           SharedPrefs().setRollNo(roll_no);
           roll_no_ = roll_no;
           username = await getUsername(roll_no);
+          SharedPrefs().setUsername(username);
+          SharedPrefs().setFirstLaunch();
+        }
+      } else {
+        print('POST request failed with status: ${response.statusCode}');
+        print('Response: ${response.body}');
+      }
+    } catch (error) {
+      print('Error sending POST request: $error');
+    }
+  }
+
+  Future<void> register(name, roll_no, email, password, context) async {
+    final String url =
+        '$endPoint/register'; // replace with your API endpoint
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'name': name,
+      'roll_no': roll_no,
+      'email': email,
+      'password': password,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+        if (response.body == 'success') {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Home(),
+              ));
+          SharedPrefs().setRollNo(roll_no);
+          roll_no_ = roll_no;
+          username = name;
           SharedPrefs().setUsername(username);
           SharedPrefs().setFirstLaunch();
         }
@@ -315,6 +364,22 @@ class ServerUtils {
     } else {
       // Handle errors
       print('Error: ${response.statusCode}');
+    }
+  }
+
+  Future<bool> isConnected() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print("Connected");
+        return true;
+      } else {
+        print("Not connected");
+        return false;
+      }
+    } on SocketException catch (_) {
+      print("Not connected");
+      return false;
     }
   }
 

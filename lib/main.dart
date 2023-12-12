@@ -7,6 +7,7 @@ import 'package:lost_flutter/firebase_options.dart';
 import 'package:lost_flutter/firebase_utils.dart';
 import 'package:lost_flutter/home.dart';
 import 'package:lost_flutter/post_viewer.dart';
+import 'package:lost_flutter/server_utils.dart';
 import 'package:lost_flutter/shared_prefs.dart';
 import 'package:rive/rive.dart';
 import 'get_started.dart';
@@ -52,41 +53,24 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   );
 }
 
-
-void main() async {
-
-  WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+Future<void> initializations() async {
+  // Firebase initialization
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // You may set the permission requests to "provisional" which allows the user to choose what type
-// of notifications they would like to receive once the user receives a notification.
   final notificationSettings =
   await FirebaseMessaging.instance.requestPermission(provisional: true);
+
+  print("HELLO WORLD");
+
+  // Firebase message handler
   await FirebaseMessaging.instance.subscribeToTopic("topic");
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
   await FirebaseMessaging.instance
       .getInitialMessage()
       .then((message) => firebaseMessagingBackgroundHandler);
-
-  // Getting the token makes everything work as expected
   final token = await FirebaseMessaging.instance.getToken();
   print(token);
-
-  // Initialize local notifications
-  // const AndroidInitializationSettings initializationSettingsAndroid =
-  // AndroidInitializationSettings('@mipmap/ic_launcher');
-  // final InitializationSettings initializationSettings = InitializationSettings(
-  //   android: initializationSettingsAndroid,
-  // );
-  //
-  //
-  //
-  // await flutterLocalNotificationsPlugin.initialize(
-  //   initializationSettings,
-  // );
 
   // Initialize local notifications
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -101,6 +85,14 @@ void main() async {
     initializationSettings,
   );
 
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if(await ServerUtils().isConnected()) {
+    await initializations();
+  }
 
   runApp(const MyApp());
 }
@@ -130,9 +122,10 @@ class MyApp extends StatelessWidget {
         // '/': (context) => const Home(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/create_post': (context) => const CreatePost(),
+        '/get_started': (context) => GetStarted(),
         '/view_post': (context) => const PostViewer(),
       },
-      home: MyRiveAnimation(),
+      home: GetStarted(),
     );
   }
 }

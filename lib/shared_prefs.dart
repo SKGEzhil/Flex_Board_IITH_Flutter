@@ -1,6 +1,9 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'models.dart';
 
 class SharedPrefs {
    SharedPreferences? _sharedPrefs;
@@ -27,6 +30,15 @@ class SharedPrefs {
     await _sharedPrefs?.setBool('firstLaunch', false);
   }
 
+   Future<void> logout() async {
+     _sharedPrefs = await SharedPreferences.getInstance();
+     List<String> postListString = [];
+     await _sharedPrefs?.setBool('firstLaunch', true);
+     await _sharedPrefs!.setString('roll_no', '');
+     await _sharedPrefs!.setString('username', '');
+     await _sharedPrefs!.setStringList('posts', postListString);
+   }
+
   Future<void> init() async =>
       _sharedPrefs = await SharedPreferences.getInstance();
 
@@ -42,8 +54,6 @@ class SharedPrefs {
       return rollno;
    }
 
-  // String getRollNo() => _sharedPrefs!.getString('roll_no') ?? '';
-
   Future<void> setUsername(String username) async{
     _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs!.setString('username', username);
@@ -55,12 +65,21 @@ class SharedPrefs {
       return username;
    }
 
+   Future<void> storePosts(List<Post> posts) async{
+     _sharedPrefs = await SharedPreferences.getInstance();
+      List<String> postListString = posts.map((post) => json.encode(post.toJson())).toList();
+      postListString.forEach((element) async {
+        print('element: $element');
+      });
+      await _sharedPrefs!.setStringList('posts', postListString);
+   }
 
-  // String getUsername() => _sharedPrefs!.getString('username') ?? '';
+    Future<List<Post>> getPosts() async{
+      _sharedPrefs = await SharedPreferences.getInstance();
+      List<String> postListString = _sharedPrefs!.getStringList('posts') ?? [];
+      List<Post> posts = postListString.map((post) => Post.fromJson(json.decode(post))).toList();
+      return posts;
+    }
 
-  // static Future<void> setPostImageLink(String post_image_link) async =>
-  //     await _sharedPrefs!.setString('post_image_link', post_image_link);
-  //
-  // static String getPostImageLink() =>
-  //     _sharedPrefs!.getString('post_image_link') ?? '';
+
 }

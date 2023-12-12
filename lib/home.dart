@@ -13,6 +13,7 @@ import 'package:lost_flutter/post_viewer.dart';
 import 'package:lost_flutter/profile.dart';
 import 'package:lost_flutter/search_page.dart';
 import 'package:lost_flutter/server_utils.dart';
+import 'package:lost_flutter/shared_prefs.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:lost_flutter/user_bloc.dart';
@@ -68,62 +69,7 @@ class _HomeState extends State<Home> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        bottomNavigationBar: Container(
-          color: Color.fromRGBO(0, 0, 0, 1),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(15, 6, 15, 15),
-            child: GNav(
-                backgroundColor: Color.fromRGBO(0, 0, 0, 0),
-                color: Color.fromRGBO(255, 255, 255, 1),
-                activeColor: Color.fromRGBO(255, 255, 255, 1),
-                tabBackgroundColor:
-                    Color.fromRGBO(100, 100, 100, 0.39215686274509803),
-                padding: EdgeInsets.all(16),
-                gap: 8,
-                tabs: [
-                  GButton(
-                    icon: Icons.home,
-                    text: "Home",
-                    onPressed: () {
-                      setState(() {
-                        _searchBoolean = false;
-                        currentWidgetIndex = 0;
-                      });
-                    },
-                  ),
-                  GButton(
-                      icon: Icons.search,
-                      text: "Search",
-                      onPressed: () {
-                        // serverUtils.sendNotification();
-                        setState(() {
-                          _searchBoolean = true;
-                          currentWidgetIndex = 1;
-                        });
-                      }),
-                  GButton(
-                    icon: Icons.comment,
-                    text: "Replies",
-                    onPressed: () {
-                      setState(() {
-                        _searchBoolean = false;
-                        currentWidgetIndex = 2;
-                      });
-                    },
-                  ),
-                  GButton(
-                    icon: CupertinoIcons.profile_circled,
-                    text: "Profile",
-                    onPressed: () {
-                      setState(() {
-                        _searchBoolean = false;
-                        currentWidgetIndex = 3;
-                      });
-                    },
-                  )
-                ]),
-          ),
-        ),
+        bottomNavigationBar: const BottomNavigator(index: 0,),
         extendBodyBehindAppBar: true,
         appBar: buildAppBar(context),
         body: currentWidget,
@@ -162,6 +108,105 @@ class _HomeState extends State<Home> {
           )
         ],
       );
+  }
+}
+
+class BottomNavigator extends StatelessWidget {
+  const BottomNavigator({
+    super.key, required this.index,
+  });
+
+  final index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color.fromRGBO(0, 0, 0, 1),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(15, 6, 15, 15),
+        child: GNav(
+            backgroundColor: Color.fromRGBO(0, 0, 0, 0),
+            color: Color.fromRGBO(255, 255, 255, 1),
+            activeColor: Color.fromRGBO(255, 255, 255, 1),
+            tabBackgroundColor:
+                Color.fromRGBO(100, 100, 100, 0.39215686274509803),
+            padding: EdgeInsets.all(16),
+            selectedIndex: index,
+            gap: 8,
+            tabs: [
+              GButton(
+                icon: Icons.home,
+                text: "Home",
+                onPressed: () {
+                  // setState(() {
+                  //   _searchBoolean = false;
+                  //   currentWidgetIndex = 0;
+                  // });
+
+                  Navigator.push(context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => Home(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+
+                },
+              ),
+              GButton(
+                  icon: Icons.search,
+                  text: "Search",
+                  onPressed: () {
+                    Navigator.push(context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) => SearchPage(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+
+                  }),
+              GButton(
+                icon: Icons.comment,
+                text: "Replies",
+                onPressed: () {
+                  // setState(() {
+                  //   _searchBoolean = false;
+                  //   currentWidgetIndex = 2;
+                  // });
+
+                  Navigator.push(context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => Home(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+
+                },
+              ),
+              GButton(
+                icon: CupertinoIcons.profile_circled,
+                text: "Profile",
+                onPressed: () {
+                  // setState(() {
+                  //   _searchBoolean = false;
+                  //   currentWidgetIndex = 3;
+                  // });
+
+                  Navigator.push(context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation1, animation2) => Profile(),
+                      transitionDuration: Duration.zero,
+                      reverseTransitionDuration: Duration.zero,
+                    ),
+                  );
+
+                },
+              )
+            ]),
+      ),
+    );
   }
 }
 
@@ -207,26 +252,40 @@ class _MyListState extends State<MyList> {
 
   // methods
   Future<void> fetchData() async {
-    List<XFile> images = [];
-    List<Post> posts =
-        await serverUtils.getPosts(); // Wait for the future to complete
 
-    setState(() {
-      items = posts;
-      if (widget.filter == null) {
-        filteredItems = items;
-      } else {
-        filteredItems =
-            items.where((post) => post.rollNo == '${widget.filter}').toList();
-      } // Update the state with the fetched data
-    });
+    if(await ServerUtils().isConnected()) {
+      List<Post> posts =
+      await serverUtils.getPosts(); // Wait for the future to complete
+      setState(() {
+        items = posts;
+        if (widget.filter == null) {
+          filteredItems = items;
+        } else {
+          filteredItems =
+              items.where((post) => post.rollNo == '${widget.filter}').toList();
+        } // Update the state with the fetched data
+      });
+      items.forEach((element) async {
+        print(element.name);
+      });
+      // Store list in shared preferences
+      await SharedPrefs().storePosts(items);
+    } else {
+      items = await SharedPrefs().getPosts();
+      print('NO INTERNET');
+      items.forEach((element) async {
+        print(element.name);
+      });
+      setState(() {
+        if (widget.filter == null) {
+          filteredItems = items;
+        } else {
+          filteredItems =
+              items.where((post) => post.rollNo == '${widget.filter}').toList();
+        }
+      });
+    }
 
-    items.forEach((element) async {
-      print(element.name);
-      // XFile image = await getImageXFileByUrl(element.image);
-      // images.add(image);
-      // _storeImage(image);
-    });
   }
 
   Future<XFile> getImageXFileByUrl(String url) async {
