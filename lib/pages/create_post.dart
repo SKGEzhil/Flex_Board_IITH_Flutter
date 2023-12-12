@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/home.dart';
-import 'package:lost_flutter/server_utils.dart';
+import 'package:lost_flutter/pages/home.dart';
+import 'package:lost_flutter/utils/server_utils.dart';
 
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
@@ -16,9 +16,6 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
-  void _onWillPop() {
-    Navigator.of(context).pop(true);
-  }
 
   XFile? image;
 

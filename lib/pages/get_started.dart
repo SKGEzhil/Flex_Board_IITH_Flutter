@@ -4,11 +4,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/home.dart';
-import 'package:lost_flutter/server_utils.dart';
-import 'package:lost_flutter/shared_prefs.dart';
+import 'package:lost_flutter/pages/home.dart';
+import 'package:lost_flutter/utils/server_utils.dart';
+import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'package:rive/rive.dart';
-import 'package:lost_flutter/user_bloc.dart';
 
 class GetStarted extends StatefulWidget {
   @override

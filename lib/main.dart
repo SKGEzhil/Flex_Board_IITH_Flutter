@@ -1,16 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:lost_flutter/create_post.dart';
-import 'package:lost_flutter/firebase_options.dart';
-import 'package:lost_flutter/firebase_utils.dart';
-import 'package:lost_flutter/home.dart';
-import 'package:lost_flutter/post_viewer.dart';
-import 'package:lost_flutter/server_utils.dart';
-import 'package:lost_flutter/shared_prefs.dart';
-import 'package:rive/rive.dart';
-import 'get_started.dart';
+import 'package:lost_flutter/pages/create_post.dart';
+import 'package:lost_flutter/utils/firebase_options.dart';
+import 'package:lost_flutter/pages/post_viewer.dart';
+import 'package:lost_flutter/utils/server_utils.dart';
+import 'pages/get_started.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 

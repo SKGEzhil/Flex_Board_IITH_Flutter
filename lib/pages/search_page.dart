@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:lost_flutter/home.dart';
-import 'package:lost_flutter/post_viewer.dart';
-import 'package:lost_flutter/server_utils.dart';
+import 'package:lost_flutter/pages/home.dart';
+import 'package:lost_flutter/pages/post_viewer.dart';
+import 'package:lost_flutter/utils/server_utils.dart';
 
-import 'models.dart';
+import '../models.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});

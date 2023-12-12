@@ -1,22 +1,19 @@
-import 'dart:ffi';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/home.dart';
-import 'package:lost_flutter/shared_prefs.dart';
+import 'package:lost_flutter/pages/home.dart';
+import 'package:lost_flutter/utils/shared_prefs.dart';
 
-import 'models.dart';
+import '../models.dart';
 
 class ServerUtils {
 
   // final endPoint = 'http://65.0.8.179';
-  // final endPoint = 'http://localhost:5000';
-  final endPoint = 'http://10.0.2.2:5000';
+  final endPoint = 'http://localhost:5000';
+  // final endPoint = 'http://10.0.2.2:5000';
 
   Future<void> login(roll_no, password, context) async {
     final String url =

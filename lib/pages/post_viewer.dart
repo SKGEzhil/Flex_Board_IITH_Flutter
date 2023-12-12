@@ -1,16 +1,13 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/home.dart';
-import 'package:lost_flutter/image_viewer.dart';
+import 'package:lost_flutter/pages/home.dart';
+import 'package:lost_flutter/pages/image_viewer.dart';
 import 'package:lost_flutter/models.dart';
-import 'package:lost_flutter/server_utils.dart';
+import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
-
-import 'image_viewer.dart';
 
 class PostViewer extends StatefulWidget {
   const PostViewer(

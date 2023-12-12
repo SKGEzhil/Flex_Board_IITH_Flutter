@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -7,20 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lost_flutter/create_post.dart';
-import 'package:lost_flutter/database_adapter.dart';
-import 'package:lost_flutter/post_viewer.dart';
-import 'package:lost_flutter/profile.dart';
-import 'package:lost_flutter/search_page.dart';
-import 'package:lost_flutter/server_utils.dart';
-import 'package:lost_flutter/shared_prefs.dart';
+import 'package:lost_flutter/pages/post_viewer.dart';
+import 'package:lost_flutter/pages/profile.dart';
+import 'package:lost_flutter/pages/search_page.dart';
+import 'package:lost_flutter/utils/server_utils.dart';
+import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'package:lost_flutter/user_bloc.dart';
-
-import 'globals.dart';
-import 'hive_service.dart';
-import 'models.dart';
+import '../models.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -30,9 +22,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Future<bool> _onWillPop() async {
-    return false; //<-- SEE HERE
-  }
 
   final serverUtils = ServerUtils();
   bool _searchBoolean = false;
@@ -66,8 +55,8 @@ class _HomeState extends State<Home> {
         break;
     }
 
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         bottomNavigationBar: const BottomNavigator(index: 0,),
         extendBodyBehindAppBar: true,
@@ -242,7 +231,6 @@ class _MyListState extends State<MyList> {
   List<Post> items = []; // Initialize the list
   final serverUtils = ServerUtils();
   List<Post> filteredItems = [];
-  final DatabaseAdapter adapter = HiveService();
 
 
   void initState() {
@@ -298,15 +286,6 @@ class _MyListState extends State<MyList> {
     fileWrite.writeAsBytesSync(response.bodyBytes);
     final file = XFile("$tempPath/$fileName");
     return file;
-  }
-
-  Future<void> _storeImage(XFile image) async {
-    Uint8List imageBytes = await image.readAsBytes();
-    adapter.storeImage(imageBytes);
-  }
-
-  Future<List<Uint8List>?> _readImagesFromDatabase() async {
-    return adapter.getImages();
   }
 
   @override
