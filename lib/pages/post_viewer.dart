@@ -53,7 +53,9 @@ class _PostViewerState extends State<PostViewer> {
         body: Stack(
           children: [
             Center(
-              child: Container(
+              child: widget.image == '' ? SizedBox(height: 0,)
+                  :
+              Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: CachedNetworkImageProvider('${widget.image}'),
@@ -131,6 +133,8 @@ class _PostViewerState extends State<PostViewer> {
                       ),
                     ),
                   ),
+                  widget.image == '' ? SizedBox(height: 0,)
+                      :
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: GestureDetector(

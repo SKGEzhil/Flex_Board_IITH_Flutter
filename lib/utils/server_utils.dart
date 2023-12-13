@@ -11,8 +11,8 @@ import '../models.dart';
 
 class ServerUtils {
 
-  // final endPoint = 'http://65.0.8.179';
-  final endPoint = 'http://localhost:5000';
+  final endPoint = 'http://65.0.8.179';
+  // final endPoint = 'http://localhost:5000';
   // final endPoint = 'http://10.0.2.2:5000';
 
   Future<void> login(roll_no, password, context) async {
@@ -134,6 +134,7 @@ class ServerUtils {
         print('POST request successful');
         print('Response: ${response.body}');
         if (response.body == 'success') {
+          post_image_link = "";
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(

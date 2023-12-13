@@ -127,10 +127,6 @@ class BottomNavigator extends StatelessWidget {
                 icon: Icons.home,
                 text: "Home",
                 onPressed: () {
-                  // setState(() {
-                  //   _searchBoolean = false;
-                  //   currentWidgetIndex = 0;
-                  // });
 
                   Navigator.push(context,
                     PageRouteBuilder(
@@ -382,6 +378,9 @@ class _MyListState extends State<MyList> {
                         SizedBox(
                           width: 20,
                         ),
+                        post.image == '' ? SizedBox(
+                          width: 0,
+                        ) :
                         Expanded(
                           flex: 1,
                           child: Padding(

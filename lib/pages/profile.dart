@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 
@@ -53,11 +54,15 @@ class _ProfileState extends State<Profile> {
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundImage:
-                            NetworkImage('https://via.placeholder.com/500'),
-                      ),
+                      ProfilePicture(
+                          name: username,
+                          radius: 50,
+                          fontsize: 40),
+                      // CircleAvatar(
+                      //   radius: 50,
+                      //   backgroundImage:
+                      //       NetworkImage('https://via.placeholder.com/500'),
+                      // ),
                       SizedBox(
                         width: 10,
                       ),
