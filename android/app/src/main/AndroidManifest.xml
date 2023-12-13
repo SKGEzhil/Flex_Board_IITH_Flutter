@@ -4,7 +4,7 @@
 
 
     <application
-        android:label="lost_flutter"
+        android:label="Spam Box IITH"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
