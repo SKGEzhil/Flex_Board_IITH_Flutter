@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lost_flutter/pages/create_post.dart';
 import 'package:lost_flutter/utils/firebase_options.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
@@ -83,11 +84,14 @@ Future<void> initializations() async {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
+  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   if(await ServerUtils().isConnected()) {
     await initializations();
+    FlutterNativeSplash.remove();
   }
+  FlutterNativeSplash.remove();
 
   runApp(const MyApp());
 }
