@@ -272,6 +272,11 @@ class _MyListState extends State<MyList> {
 
   }
 
+  Future<List<Post>> fetchFromSharedPrefs() async {
+    List<Post> posts = await SharedPrefs().getPosts();
+    return posts;
+  }
+
   Future<XFile> getImageXFileByUrl(String url) async {
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;

@@ -8,6 +8,7 @@ import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 
 import '../models.dart';
+import '../pages/get_started.dart';
 
 class ServerUtils {
 
@@ -16,6 +17,10 @@ class ServerUtils {
   // final endPoint = 'http://10.0.2.2:5000';
 
   Future<void> login(roll_no, password, fcm_token, context) async {
+
+    final network_error_snackBar = ErrorSnackBar('Network error',);
+    final wrong_credentials_snackBar = ErrorSnackBar('Please check your credentials',);
+
     final String url =
         '$endPoint/login'; // replace with your API endpoint
 
@@ -40,7 +45,7 @@ class ServerUtils {
       if (response.statusCode == 200) {
         print('POST request successful');
         print('Response: ${response.body}');
-        if (response.body == 'success') {
+        if (response.body != 'failed') {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -51,12 +56,17 @@ class ServerUtils {
           username = await getUsername(roll_no);
           SharedPrefs().setUsername(username);
           SharedPrefs().setFirstLaunch();
+          SharedPrefs().setAuthToken(response.body);
+          print("Login successful, TOKEN: ${await SharedPrefs().getAuthToken()}");
         }
       } else {
+        ScaffoldMessenger.of(context).showSnackBar(wrong_credentials_snackBar as SnackBar);
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
       }
     } catch (error) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(network_error_snackBar as SnackBar);
       print('Error sending POST request: $error');
     }
   }
@@ -101,7 +111,15 @@ class ServerUtils {
           // SharedPrefs().setFirstLaunch();
           // SharedPrefs().setAuthToken(response.body);
 
-          loginWithToken(response.body, roll_no, name, context);
+          await SharedPrefs().setAuthToken(response.body);
+          int isRegisterationSuccessful = await loginWithToken(response.body, roll_no, name);
+          if (isRegisterationSuccessful == 1) {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Home(),
+                ));
+          }
 
         }
       } else {
@@ -113,8 +131,7 @@ class ServerUtils {
     }
   }
 
-  // login with token
-  Future<void> loginWithToken(token, roll_no, name, context) async {
+  Future<int> loginWithToken(token, roll_no, name) async {
     final String url =
         '$endPoint/token_auth'; // replace with your API endpoint
 
@@ -138,23 +155,27 @@ class ServerUtils {
         print('POST request successful');
         print('Response: ${response.body}');
         if (response.body == 'success') {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Home(),
-              ));
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const Home(),
+          //     ));
           roll_no_ = roll_no;
           SharedPrefs().setRollNo(roll_no_);
           username = name;
           SharedPrefs().setUsername(username);
           SharedPrefs().setFirstLaunch();
+          return 1;
         }
+        return 0;
       } else {
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
+        return 0;
       }
     } catch (error) {
       print('Error sending POST request: $error');
+      return 2;
     }
   }
 
@@ -432,5 +453,24 @@ class ServerUtils {
     }
   }
 
+
+
+  SnackBar ErrorSnackBar(error_message) {
+    return SnackBar(
+      content: Text('$error_message'),
+      elevation: 0,
+      dismissDirection: DismissDirection.down,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0),
+      ),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {
+          // Some code to undo the change.
+        },
+      ),
+      backgroundColor: Colors.red.shade300,
+    );
+  }
 
 }

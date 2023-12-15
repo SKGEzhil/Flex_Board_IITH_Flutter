@@ -52,6 +52,7 @@ dependencies:
   swipe_refresh: ^1.0.2
   flutter_profile_picture: ^2.0.0
   flutter_launcher_icons: ^0.13.1
+  share_plus: ^7.2.1
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,8 @@ flutter:
     - assets/shapes.riv
     - assets/profile.png
     - assets/password.png
+    - assets/email.png
+    - assets/roll_no.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

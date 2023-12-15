@@ -17,7 +17,7 @@ class GetStarted extends StatefulWidget {
 class _GetStartedState extends State<GetStarted> {
   void initState() {
     super.initState();
-    fetchData();
+    // fetchData();
   }
 
   Future<void> fetchData() async {
@@ -153,14 +153,23 @@ class _GetStartedState extends State<GetStarted> {
   }
 }
 
-class SignInForm extends StatelessWidget {
+class SignInForm extends StatefulWidget {
   SignInForm({
     super.key,
   });
 
+  @override
+  State<SignInForm> createState() => _SignInFormState();
+}
+
+class _SignInFormState extends State<SignInForm> {
   final user_text = TextEditingController();
+
   final password_text = TextEditingController();
+
   final serverUtils = ServerUtils();
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -190,56 +199,91 @@ class SignInForm extends StatelessWidget {
                   name_text: user_text,
                   hintText: "Enter your Roll No",
                   subText: "Roll No",
+                  field: "roll_no",
                 ),
                 RegisterTextField(
                   name_text: password_text,
                   hintText: "Enter your Password",
                   subText: "Password",
+                  field: "password",
                 ),
                 SizedBox(
                   height: 30,
                 ),
                 CupertinoButton(
                     borderRadius: BorderRadius.circular(20),
-                    child: Text(
-                      "Sign In",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    color: Colors.black,
+                    color: isLoading ? Colors.black : Colors.black,
                     onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+
                       print(user_text.text);
                       print(password_text.text);
 
-                      await serverUtils.login(
-                          user_text.text, password_text.text, fcmToken, context);
+                      await serverUtils.login(user_text.text,
+                          password_text.text, fcmToken, context);
                       username = await serverUtils.getUsername(user_text.text);
-                    }),
+                    },
+                    child: isLoading
+                        ? CircularProgressIndicator(
+                            semanticsLabel: "Loading",
+                            color: Colors.white,
+                          )
+                        : Text(
+                            "Sign In",
+                            style: TextStyle(color: Colors.white),
+                          )),
                 const SizedBox(
                   height: 30,
                 ),
-                RichText(
-                    text: TextSpan(
-                        text: "Don't have an account? ",
-                        style: TextStyle(color: Colors.black),
-                        children: [
-                      TextSpan(
-                          text: "Register",
-                          style:
-                              TextStyle(color: Color.fromRGBO(0, 89, 255, 1.0)),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              showGeneralDialog(
-                                  barrierDismissible: true,
-                                  barrierLabel: "SignIn",
-                                  context: context,
-                                  pageBuilder: (context, _, __) => Center(
-                                        child: BackdropFilter(
-                                            filter: ImageFilter.blur(
-                                                sigmaX: 20, sigmaY: 20),
-                                            child: RegisterForm()),
-                                      ));
-                            })
-                    ]))
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    showGeneralDialog(
+                        barrierDismissible: true,
+                        barrierLabel: "SignIn",
+                        context: context,
+                        pageBuilder: (context, _, __) => Center(
+                              child: BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                  child: RegisterForm()),
+                            ));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white.withOpacity(0.2)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: RichText(
+                          text: TextSpan(
+                              text: "Don't have an account? ",
+                              style: TextStyle(color: Colors.black),
+                              children: [
+                            TextSpan(
+                                text: "Register",
+                                style: TextStyle(
+                                    color: Color.fromRGBO(0, 89, 255, 1.0)),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pop(context);
+                                    showGeneralDialog(
+                                        barrierDismissible: true,
+                                        barrierLabel: "SignIn",
+                                        context: context,
+                                        pageBuilder: (context, _, __) => Center(
+                                              child: BackdropFilter(
+                                                  filter: ImageFilter.blur(
+                                                      sigmaX: 20, sigmaY: 20),
+                                                  child: RegisterForm()),
+                                            ));
+                                  })
+                          ])),
+                    ),
+                  ),
+                )
               ],
             ))
           ],
@@ -287,21 +331,25 @@ class RegisterForm extends StatelessWidget {
                   name_text: name_text,
                   hintText: "Enter your name",
                   subText: "Name",
+                  field: "name",
                 ),
                 RegisterTextField(
                   name_text: user_text,
                   hintText: "Enter your Roll No",
                   subText: "Roll No",
+                  field: "roll_no",
                 ),
                 RegisterTextField(
                   name_text: email_text,
                   hintText: "Enter your email id",
                   subText: "Email",
+                  field: "email",
                 ),
                 RegisterTextField(
                   name_text: password_text,
                   hintText: "Enter your Password",
                   subText: "Password",
+                  field: "password",
                 ),
                 SizedBox(
                   height: 30,
@@ -317,36 +365,65 @@ class RegisterForm extends StatelessWidget {
                       print(user_text.text);
                       print(password_text.text);
 
-                      await serverUtils.register(name_text.text, user_text.text,
-                          email_text.text, password_text.text, fcmToken, context);
+                      await serverUtils.register(
+                          name_text.text,
+                          user_text.text,
+                          email_text.text,
+                          password_text.text,
+                          fcmToken,
+                          context);
                     }),
                 const SizedBox(
                   height: 30,
                 ),
-                RichText(
-                    text: TextSpan(
-                  text: "Already have an account? ",
-                  style: TextStyle(color: Colors.black),
-                  children: [
-                    TextSpan(
-                        text: "Sign In",
-                        style:
-                            TextStyle(color: Color.fromRGBO(0, 89, 255, 1.0)),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            showGeneralDialog(
-                                barrierDismissible: true,
-                                barrierLabel: "SignIn",
-                                context: context,
-                                pageBuilder: (context, _, __) => Center(
-                                      child: BackdropFilter(
-                                          filter: ImageFilter.blur(
-                                              sigmaX: 20, sigmaY: 20),
-                                          child: SignInForm()),
-                                    ));
-                          })
-                  ],
-                ))
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    showGeneralDialog(
+                        barrierDismissible: true,
+                        barrierLabel: "SignIn",
+                        context: context,
+                        pageBuilder: (context, _, __) => Center(
+                              child: BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                  child: SignInForm()),
+                            ));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white.withOpacity(0.2)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: RichText(
+                          text: TextSpan(
+                        text: "Already have an account? ",
+                        style: TextStyle(color: Colors.black),
+                        children: [
+                          TextSpan(
+                              text: "Sign In",
+                              style: TextStyle(
+                                  color: Color.fromRGBO(0, 89, 255, 1.0)),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pop(context);
+                                  showGeneralDialog(
+                                      barrierDismissible: true,
+                                      barrierLabel: "SignIn",
+                                      context: context,
+                                      pageBuilder: (context, _, __) => Center(
+                                            child: BackdropFilter(
+                                                filter: ImageFilter.blur(
+                                                    sigmaX: 20, sigmaY: 20),
+                                                child: SignInForm()),
+                                          ));
+                                })
+                        ],
+                      )),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
@@ -362,11 +439,53 @@ class RegisterTextField extends StatelessWidget {
     required this.name_text,
     this.hintText,
     this.subText,
+    required this.field,
   });
 
   final TextEditingController name_text;
   final hintText;
   final subText;
+  final field;
+
+  Widget TextFieldIcon() {
+    switch (field) {
+      case "name":
+        return Image.asset(
+          'assets/profile.png',
+          width: 30,
+          height: 30,
+        );
+        break;
+      case "roll_no":
+        return Image.asset(
+          'assets/roll_no.png',
+          width: 30,
+          height: 30,
+        );
+        break;
+      case "email":
+        return Image.asset(
+          'assets/email.png',
+          width: 30,
+          height: 30,
+        );
+        break;
+      case "password":
+        return Image.asset(
+          'assets/password.png',
+          width: 30,
+          height: 30,
+        );
+        break;
+      default:
+        return Image.asset(
+          'assets/profile.png',
+          width: 30,
+          height: 30,
+        );
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -390,24 +509,21 @@ class RegisterTextField extends StatelessWidget {
               fillColor: Colors.white.withOpacity(0.3),
               filled: true,
               hintText: "$hintText",
-              border: OutlineInputBorder(
+              border: InputBorder.none,
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(
-                    width: 1, color: Color.fromRGBO(0, 0, 0, 1)), //<-- SEE HERE
+                borderSide: BorderSide(
+                    width: 0,
+                    color: Colors.white.withOpacity(0)), //<-- SEE HERE
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: const BorderSide(
-                    width: 1, color: Color.fromRGBO(0, 0, 0, 1)), //<-- SEE HERE
+                borderSide: BorderSide(
+                    width: 0,
+                    color: Colors.white.withOpacity(0)), //<-- SEE HERE
               ),
-              prefixIcon: Padding(
-                padding: EdgeInsets.all(15),
-                child: Image.asset(
-                  'assets/profile.png',
-                  width: 30,
-                  height: 30,
-                ),
-              )),
+              prefixIcon:
+                  Padding(padding: EdgeInsets.all(15), child: TextFieldIcon())),
         ),
       ],
     );

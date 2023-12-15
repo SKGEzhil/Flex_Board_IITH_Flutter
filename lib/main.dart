@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/create_post.dart';
+import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/utils/firebase_options.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
@@ -87,36 +88,63 @@ Future<void> initializations() async {
 
 }
 
-Future<void> userInit() async {
+Future<int> userInit() async {
   int number = await SharedPrefs().checkFirstLaunch();
   print(number);
   if (number == 0) {
     final roll_no = await SharedPrefs().getRollNo();
     final username = await SharedPrefs().getUsername();
     final token = await SharedPrefs().getAuthToken();
-    // await ServerUtils().loginWithToken(token, roll_no, username);
-    print('roll_no_ = $roll_no_');
+    print('token = $token');
+    int isAuthSuccess = await ServerUtils().loginWithToken(token, roll_no, username);
+    if (isAuthSuccess == 1) {
+      print('roll_no_ = $roll_no_');
+      return 1;
+    } else {
+      return 0;
+    }
+  } else {
+    return 0;
   }
 }
 
+var isUserLoggedIn = 0;
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   if(await ServerUtils().isConnected()) {
     await initializations();
-    // await ServerUtils().loginWithToken(token, roll_no, name, context)
+    isUserLoggedIn = await userInit();
+    FlutterNativeSplash.remove();
+  } else {
+    if(await SharedPrefs().checkFirstLaunch() == 0) {
+      isUserLoggedIn = 1;
+      roll_no_ = await SharedPrefs().getRollNo();
+      username = await SharedPrefs().getUsername();
+    } else {
+      isUserLoggedIn = 0;
+    }
     FlutterNativeSplash.remove();
   }
-  FlutterNativeSplash.remove();
 
-  runApp(const MyApp());
+
+  runApp(MyApp(isUserLoggedIn: isUserLoggedIn));
 }
 
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.isUserLoggedIn});
+
+  final int isUserLoggedIn;
+
+  Widget _getScreenId() {
+    if (isUserLoggedIn == 1) {
+      return const Home();
+    } else {
+      return GetStarted();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +170,7 @@ class MyApp extends StatelessWidget {
         '/get_started': (context) => GetStarted(),
         '/view_post': (context) => const PostViewer(),
       },
-      home: GetStarted(),
+      home: _getScreenId(),
     );
   }
 }
