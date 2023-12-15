@@ -15,7 +15,7 @@ class ServerUtils {
   // final endPoint = 'http://localhost:5000';
   // final endPoint = 'http://10.0.2.2:5000';
 
-  Future<void> login(roll_no, password, context) async {
+  Future<void> login(roll_no, password, fcm_token, context) async {
     final String url =
         '$endPoint/login'; // replace with your API endpoint
 
@@ -26,6 +26,7 @@ class ServerUtils {
 
     Map<String, dynamic> body = {
       'roll_no': roll_no,
+      'fcm_token': fcm_token,
       'password': password,
     };
 
@@ -60,7 +61,7 @@ class ServerUtils {
     }
   }
 
-  Future<void> register(name, roll_no, email, password, context) async {
+  Future<void> register(name, roll_no, email, password, fcmToken, context) async {
     final String url =
         '$endPoint/register'; // replace with your API endpoint
 
@@ -74,6 +75,56 @@ class ServerUtils {
       'roll_no': roll_no,
       'email': email,
       'password': password,
+      'fcm_token': fcmToken,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+        if (response.body != 'failed') {
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const Home(),
+          //     ));
+          // SharedPrefs().setRollNo(roll_no);
+          // roll_no_ = roll_no;
+          // username = name;
+          // SharedPrefs().setUsername(username);
+          // SharedPrefs().setFirstLaunch();
+          // SharedPrefs().setAuthToken(response.body);
+
+          loginWithToken(response.body, roll_no, name, context);
+
+        }
+      } else {
+        print('POST request failed with status: ${response.statusCode}');
+        print('Response: ${response.body}');
+      }
+    } catch (error) {
+      print('Error sending POST request: $error');
+    }
+  }
+
+  // login with token
+  Future<void> loginWithToken(token, roll_no, name, context) async {
+    final String url =
+        '$endPoint/token_auth'; // replace with your API endpoint
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'token': token,
     };
 
     try {
@@ -92,8 +143,8 @@ class ServerUtils {
               MaterialPageRoute(
                 builder: (context) => const Home(),
               ));
-          SharedPrefs().setRollNo(roll_no);
           roll_no_ = roll_no;
+          SharedPrefs().setRollNo(roll_no_);
           username = name;
           SharedPrefs().setUsername(username);
           SharedPrefs().setFirstLaunch();

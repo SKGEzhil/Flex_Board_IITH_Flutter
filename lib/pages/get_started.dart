@@ -211,7 +211,7 @@ class SignInForm extends StatelessWidget {
                       print(password_text.text);
 
                       await serverUtils.login(
-                          user_text.text, password_text.text, context);
+                          user_text.text, password_text.text, fcmToken, context);
                       username = await serverUtils.getUsername(user_text.text);
                     }),
                 const SizedBox(
@@ -317,13 +317,8 @@ class RegisterForm extends StatelessWidget {
                       print(user_text.text);
                       print(password_text.text);
 
-                      // await serverUtils.login(
-                      //     user_text.text, password_text.text, context);
-
                       await serverUtils.register(name_text.text, user_text.text,
-                          email_text.text, password_text.text, context);
-
-                      username = await serverUtils.getUsername(user_text.text);
+                          email_text.text, password_text.text, fcmToken, context);
                     }),
                 const SizedBox(
                   height: 30,

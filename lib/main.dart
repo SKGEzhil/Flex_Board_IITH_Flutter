@@ -1,11 +1,14 @@
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/create_post.dart';
 import 'package:lost_flutter/utils/firebase_options.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
+import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'pages/get_started.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -66,6 +69,7 @@ Future<void> initializations() async {
       .getInitialMessage()
       .then((message) => firebaseMessagingBackgroundHandler);
   final token = await FirebaseMessaging.instance.getToken();
+  fcmToken = token!;
   print(token);
 
   // Initialize local notifications
@@ -83,12 +87,26 @@ Future<void> initializations() async {
 
 }
 
+Future<void> userInit() async {
+  int number = await SharedPrefs().checkFirstLaunch();
+  print(number);
+  if (number == 0) {
+    final roll_no = await SharedPrefs().getRollNo();
+    final username = await SharedPrefs().getUsername();
+    final token = await SharedPrefs().getAuthToken();
+    // await ServerUtils().loginWithToken(token, roll_no, username);
+    print('roll_no_ = $roll_no_');
+  }
+}
+
+
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   if(await ServerUtils().isConnected()) {
     await initializations();
+    // await ServerUtils().loginWithToken(token, roll_no, name, context)
     FlutterNativeSplash.remove();
   }
   FlutterNativeSplash.remove();
