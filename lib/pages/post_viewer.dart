@@ -214,7 +214,8 @@ class _PostViewerState extends State<PostViewer> {
                               color: Color.fromRGBO(0, 0, 0, 1),
                             )),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                          },
                           icon: Icon(
                             Icons.share,
                             color: Color.fromRGBO(0, 0, 0, 1),

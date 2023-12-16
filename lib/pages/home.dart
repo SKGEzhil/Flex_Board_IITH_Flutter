@@ -249,9 +249,9 @@ class _MyListState extends State<MyList> {
               items.where((post) => post.rollNo == '${widget.filter}').toList();
         } // Update the state with the fetched data
       });
-      items.forEach((element) async {
-        print(element.name);
-      });
+      // items.forEach((element) async {
+      //   print(element.name);
+      // });
       // Store list in shared preferences
       await SharedPrefs().storePosts(items);
     } else {
@@ -270,11 +270,6 @@ class _MyListState extends State<MyList> {
       });
     }
 
-  }
-
-  Future<List<Post>> fetchFromSharedPrefs() async {
-    List<Post> posts = await SharedPrefs().getPosts();
-    return posts;
   }
 
   Future<XFile> getImageXFileByUrl(String url) async {

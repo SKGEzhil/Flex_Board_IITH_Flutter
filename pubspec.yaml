@@ -52,7 +52,6 @@ dependencies:
   swipe_refresh: ^1.0.2
   flutter_profile_picture: ^2.0.0
   flutter_launcher_icons: ^0.13.1
-  share_plus: ^7.2.1
 
 dev_dependencies:
   flutter_test:

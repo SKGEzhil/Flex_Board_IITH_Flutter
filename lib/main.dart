@@ -2,6 +2,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/create_post.dart';
@@ -58,20 +59,21 @@ Future<void> initializations() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final notificationSettings =
-  await FirebaseMessaging.instance.requestPermission(provisional: true);
 
-  print("HELLO WORLD");
+    final notificationSettings =
+    await FirebaseMessaging.instance.requestPermission(provisional: true);
 
-  // Firebase message handler
-  await FirebaseMessaging.instance.subscribeToTopic("topic");
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  await FirebaseMessaging.instance
-      .getInitialMessage()
-      .then((message) => firebaseMessagingBackgroundHandler);
-  final token = await FirebaseMessaging.instance.getToken();
-  fcmToken = token!;
-  print(token);
+    print("HELLO WORLD");
+
+    // Firebase message handler
+    await FirebaseMessaging.instance.subscribeToTopic("topic");
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    await FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((message) => firebaseMessagingBackgroundHandler);
+    final token = await FirebaseMessaging.instance.getToken();
+    fcmToken = token!;
+    print(token);
 
   // Initialize local notifications
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -112,22 +114,25 @@ var isUserLoggedIn = 0;
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  if(await ServerUtils().isConnected()) {
-    await initializations();
-    isUserLoggedIn = await userInit();
-    FlutterNativeSplash.remove();
-  } else {
-    if(await SharedPrefs().checkFirstLaunch() == 0) {
-      isUserLoggedIn = 1;
-      roll_no_ = await SharedPrefs().getRollNo();
-      username = await SharedPrefs().getUsername();
+  if (Platform.isAndroid) {
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    if (await ServerUtils().isConnected()) {
+      if (Platform.isAndroid) {
+        await initializations();
+      }
+      isUserLoggedIn = await userInit();
+      FlutterNativeSplash.remove();
     } else {
-      isUserLoggedIn = 0;
+      if (await SharedPrefs().checkFirstLaunch() == 0) {
+        isUserLoggedIn = 1;
+        roll_no_ = await SharedPrefs().getRollNo();
+        username = await SharedPrefs().getUsername();
+      } else {
+        isUserLoggedIn = 0;
+      }
+      FlutterNativeSplash.remove();
     }
-    FlutterNativeSplash.remove();
   }
-
 
   runApp(MyApp(isUserLoggedIn: isUserLoggedIn));
 }
