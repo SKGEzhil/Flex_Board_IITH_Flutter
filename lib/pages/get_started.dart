@@ -15,6 +15,8 @@ class GetStarted extends StatefulWidget {
 }
 
 class _GetStartedState extends State<GetStarted> {
+
+
   void initState() {
     super.initState();
     // fetchData();
@@ -42,38 +44,47 @@ class _GetStartedState extends State<GetStarted> {
       body: Center(
           child: Stack(
         children: [
-          const RiveAnimation.asset(
-            'assets/shapes.riv',
+          // const RiveAnimation.asset(
+          //   'assets/bg_rive.riv',
+          //   alignment: Alignment.center,
+          //   fit: BoxFit.fitWidth,
+          // ),
+          Positioned(
+            bottom: 0,
+            child: Image.asset(
+                'assets/bgr.gif',
+                width: 600,
+                height: 600,
+                fit: BoxFit.cover,
+            ),
           ),
           Positioned.fill(
               child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
             child: const SizedBox(
               width: 10,
               height: 10,
             ),
           )),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(50),
-              child: CupertinoButton(
-                  onPressed: () {
-                    showGeneralDialog(
-                        barrierDismissible: true,
-                        barrierLabel: "SignIn",
-                        context: context,
-                        pageBuilder: (context, _, __) => Center(
-                              child: BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                                  child: RegisterForm()),
-                            ));
-                  },
-                  color: Color.fromRGBO(0, 0, 0, 1),
-                  borderRadius: BorderRadius.circular(20),
-                  child: Text("Get Started")),
-            ),
+          Positioned(
+            top: 300,
+            left: 60,
+            child: CupertinoButton(
+                onPressed: () {
+                  showGeneralDialog(
+                      barrierDismissible: true,
+                      barrierLabel: "SignIn",
+                      context: context,
+                      pageBuilder: (context, _, __) => Center(
+                            child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                child: RegisterForm()),
+                          ));
+                },
+                color: Color.fromRGBO(0, 0, 0, 1),
+                borderRadius: BorderRadius.circular(20),
+                child: Text("Get Started")),
           ),
           const SafeArea(
             child: Padding(
@@ -85,7 +96,7 @@ class _GetStartedState extends State<GetStarted> {
                       Column(
                         children: [
                           Text(
-                            "Find",
+                            "Text",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 70,
@@ -102,7 +113,7 @@ class _GetStartedState extends State<GetStarted> {
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text(
-                                "Yours",
+                                "Text",
                                 style: TextStyle(fontSize: 60),
                               ),
                             ),
@@ -116,7 +127,7 @@ class _GetStartedState extends State<GetStarted> {
                       Column(
                         children: [
                           Text(
-                            "With",
+                            "Text",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 43,
@@ -133,7 +144,7 @@ class _GetStartedState extends State<GetStarted> {
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text(
-                                "Ease",
+                                "Text",
                                 style: TextStyle(
                                     fontSize: 43, fontWeight: FontWeight.bold),
                               ),
@@ -374,7 +385,7 @@ class RegisterForm extends StatelessWidget {
                           context);
                     }),
                 const SizedBox(
-                  height: 30,
+                  height: 19,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -455,28 +466,24 @@ class RegisterTextField extends StatelessWidget {
           width: 30,
           height: 30,
         );
-        break;
       case "roll_no":
         return Image.asset(
           'assets/roll_no.png',
           width: 30,
           height: 30,
         );
-        break;
       case "email":
         return Image.asset(
           'assets/email.png',
           width: 30,
           height: 30,
         );
-        break;
       case "password":
         return Image.asset(
           'assets/password.png',
           width: 30,
           height: 30,
         );
-        break;
       default:
         return Image.asset(
           'assets/profile.png',
@@ -492,16 +499,16 @@ class RegisterTextField extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(
-          height: 20,
+          height: 15,
         ),
         Align(
             alignment: Alignment.centerLeft,
             child: Text(
               "$subText",
               style: TextStyle(
-                  fontWeight: FontWeight.normal,
+                  fontWeight: FontWeight.w500,
                   fontFamily: "Poppins",
-                  fontSize: 20),
+                  fontSize: 16),
             )),
         TextFormField(
           controller: name_text,

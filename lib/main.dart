@@ -2,11 +2,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:io' show Platform;
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/create_post.dart';
 import 'package:lost_flutter/pages/home.dart';
+import 'package:lost_flutter/pages/profile.dart';
+import 'package:lost_flutter/pages/search_page.dart';
+import 'package:lost_flutter/themes.dart';
 import 'package:lost_flutter/utils/firebase_options.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
@@ -114,12 +116,9 @@ var isUserLoggedIn = 0;
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid) {
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
     if (await ServerUtils().isConnected()) {
-      if (Platform.isAndroid) {
         await initializations();
-      }
       isUserLoggedIn = await userInit();
       FlutterNativeSplash.remove();
     } else {
@@ -132,7 +131,7 @@ void main() async {
       }
       FlutterNativeSplash.remove();
     }
-  }
+
 
   runApp(MyApp(isUserLoggedIn: isUserLoggedIn));
 }
@@ -161,12 +160,17 @@ class MyApp extends StatelessWidget {
         DefaultCupertinoLocalizations.delegate,
       ],
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         //   canvasColor: Colors.transparent,
         // bottomSheetTheme: BottomSheetThemeData(
         //     backgroundColor: Colors.black.withOpacity(0)),
         useMaterial3: true,
       ),
+
+      // theme: ThemeClass.lightTheme,
+      // darkTheme: ThemeClass.darkTheme,
+      // themeMode: ThemeMode.system,
+
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         // '/': (context) => const Home(),
