@@ -4,8 +4,12 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
+import 'package:lost_flutter/controllers/post_seen_controller.dart';
+import 'package:lost_flutter/globals.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../models.dart';
@@ -23,9 +27,12 @@ class PostList extends StatefulWidget {
 
 class _PostListState extends State<PostList> {
   // inits
-  List<Post> items = []; // Initialize the list
+  List<Post> items = [];
+  List<String> seenPosts = [];
   final serverUtils = ServerUtils();
   List<Post> filteredItems = [];
+  final PostSeenController postSeenController = Get.put(PostSeenController());
+  final NetworkController networkController = Get.find<NetworkController>();
 
   void initState() {
     super.initState();
@@ -34,10 +41,16 @@ class _PostListState extends State<PostList> {
 
   // methods
   Future<void> fetchData() async {
-    if (await ServerUtils().isConnected()) {
+    if (networkController.connectionType != 0) {
       List<Post> posts =
-          await serverUtils.getPosts(); // Wait for the future to complete
+          await serverUtils.getPosts();
+
+      await postSeenController.getSeenPosts();
+
+      // List<String> seen_posts = await serverUtils.getSeenPosts(roll_no_);
+
       setState(() {
+        // seenPosts = seen_posts;
         items = posts;
         if (widget.filter == null) {
           filteredItems = items;
@@ -46,13 +59,14 @@ class _PostListState extends State<PostList> {
               items.where((post) => post.rollNo == '${widget.filter}').toList();
         } // Update the state with the fetched data
       });
-      // items.forEach((element) async {
-      //   print(element.name);
-      // });
+
+
       // Store list in shared preferences
       await SharedPrefs().storePosts(items);
     } else {
       items = await SharedPrefs().getPosts();
+      await postSeenController.getSeenPosts();
+
       print('NO INTERNET');
       items.forEach((element) async {
         print(element.name);
@@ -68,20 +82,22 @@ class _PostListState extends State<PostList> {
     }
   }
 
-  Future<XFile> getImageXFileByUrl(String url) async {
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
-    String fileName = "image${DateTime.now().millisecondsSinceEpoch}";
-    File fileWrite = new File("$tempPath/$fileName");
-    Uri uri = Uri.parse(url);
-    final response = await get(uri);
-    fileWrite.writeAsBytesSync(response.bodyBytes);
-    final file = XFile("$tempPath/$fileName");
-    return file;
+
+  void seenCheck(post) async {
+    if(networkController.connectionType != 0){
+      await ServerUtils().setSeenPosts(roll_no_, post);
+      postSeenController.getSeenPosts();
+    } else {
+      postSeenController.getSeenPosts();
+    }
+
   }
 
   @override
   Widget build(BuildContext context) {
+
+    debugInvertOversizedImages = true;
+
     return RefreshIndicator(
       onRefresh: () {
         return Future.delayed(
@@ -99,6 +115,7 @@ class _PostListState extends State<PostList> {
           Post post = filteredItems[index];
           return InkWell(
             onTap: () {
+              seenCheck(post.id);
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -125,16 +142,23 @@ class _PostListState extends State<PostList> {
                           flex: 4,
                           child: Align(
                             alignment: Alignment.topLeft,
-                            child: Text(
-                              "${post.subject}",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  // color: Color.fromRGBO(0, 0, 0, 0.5),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                  // fontWeight: FontWeight.bold
-                              ),
+                            child: Obx((){
+                              return Text(
+                                "${post.subject}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+
+                                    color: postSeenController.seenPosts.value.contains(post.id)
+                                        ? Color.fromRGBO(0, 0, 0, 0.6)
+                                        : Color.fromRGBO(0, 0, 0, 1),
+
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15,
+                                    // fontWeight: FontWeight.bold
+                                ),
+                              );
+                            }
                             ),
                           ),
                         ),
@@ -191,8 +215,8 @@ class _PostListState extends State<PostList> {
                                             height: 75,
                                             fit: BoxFit.cover,
                                             imageUrl: '${post.image}',
-                                            // memCacheHeight: 200,
-                                            // memCacheWidth: 200,
+                                            memCacheHeight: 200,
+                                            memCacheWidth: 200,
                                             errorWidget:
                                                 (context, url, error) =>
                                                     Icon(Icons.error),

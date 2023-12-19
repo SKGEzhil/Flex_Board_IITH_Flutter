@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
+import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/search_page.dart';
+import 'package:lost_flutter/utils/server_utils.dart';
 
 import '../pages/home.dart';
 import '../pages/profile.dart';
@@ -101,6 +103,7 @@ class _BottomNavState extends State<BottomNav> {
                       backgroundColor: Colors.deepOrangeAccent,
                       child: Icon(Icons.add), elevation: 0.1,
                       onPressed: () {
+                      ServerUtils().getSeenPosts(roll_no_);
                         Navigator.pushNamed(context, '/create_post');
                       }
                   ),

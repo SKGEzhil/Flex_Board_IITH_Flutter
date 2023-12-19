@@ -82,6 +82,19 @@ class SharedPrefs {
     return posts;
   }
 
+  Future<void> storeSeenPosts(List<String> seen_posts) async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    final seenPostsJsonString = seenPosts().seenPostsToJson(seen_posts);
+    await _sharedPrefs!.setString('seen_posts', seenPostsJsonString);
+  }
+
+  Future<List<String>> getSeenPosts() async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    final seenPostsList = seenPosts().seenPostsFromJson(_sharedPrefs!.getString('seen_posts') ?? '').toList();
+    return seenPostsList;
+  }
+
+
   // set auth token
   Future<void> setAuthToken(String token) async {
     _sharedPrefs = await SharedPreferences.getInstance();

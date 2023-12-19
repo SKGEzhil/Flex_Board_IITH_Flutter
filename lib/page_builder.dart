@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/pages/profile.dart';
+import 'package:lost_flutter/pages/samle_list.dart';
 import 'package:lost_flutter/pages/search_page.dart';
 import 'package:lost_flutter/widgets/bottom_nav.dart';
 

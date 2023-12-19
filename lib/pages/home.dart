@@ -1,11 +1,14 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
 import 'package:lost_flutter/pages/profile.dart';
 import 'package:lost_flutter/pages/search_page.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
+import '../globals.dart';
 import '../widgets/bottom_nav.dart';
 import '../widgets/post_list.dart';
+import 'package:get/get.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -15,20 +18,19 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   final serverUtils = ServerUtils();
   bool _searchBoolean = false;
   int viewer = 0;
   late Widget currentWidget;
   late Widget appbarWidget;
   int currentWidgetIndex = 0;
-
-
+  final NetworkController networkController = Get.find<NetworkController>();
 
   void initState() {
     super.initState();
     currentWidget = PostList();
   }
+
   int currentIndex = 0;
 
   setBottomBarIndex(index) {
@@ -40,9 +42,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
     final Size size = MediaQuery.of(context).size;
-
 
     switch (currentWidgetIndex) {
       case 0:
@@ -59,7 +59,6 @@ class _HomeState extends State<Home> {
         break;
     }
 
-
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -69,6 +68,28 @@ class _HomeState extends State<Home> {
         body: Stack(
           children: [
             PostList(),
+            GetBuilder<NetworkController>(builder: (builder) {
+              return networkController.connectionType != 0
+                  ? SizedBox()
+                  : SafeArea(
+                      child: Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade400.withOpacity(0.7),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'No internet connection',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          )));
+            })
             // BottomNav()
           ],
         ),
@@ -78,36 +99,36 @@ class _HomeState extends State<Home> {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-        automaticallyImplyLeading: false,
-        flexibleSpace: ClipRRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(
-              // color: Colors.deepOrange.shade500.withOpacity(0.5),
-              color: Colors.transparent,
-            ),
+      automaticallyImplyLeading: false,
+      flexibleSpace: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            // color: Colors.deepOrange.shade500.withOpacity(0.5),
+            color: Colors.transparent,
           ),
         ),
-        elevation: 1,
-        backgroundColor: Color.fromRGBO(255, 255, 255, 0.6784313725490196),
-        title: _searchBoolean ?
-            SearchBar() :
-        TitleText(
-          pageTitle: 'Home',
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(
-              CupertinoIcons.add,
-              color: Color.fromRGBO(0, 0, 0, 1.0),
+      ),
+      elevation: 1,
+      backgroundColor: Color.fromRGBO(255, 255, 255, 0.6784313725490196),
+      title: _searchBoolean
+          ? SearchBar()
+          : TitleText(
+              pageTitle: 'Home',
             ),
-            tooltip: 'Create Post',
-            onPressed: () {
-              Navigator.pushNamed(context, '/create_post');
-            },
-          )
-        ],
-      );
+      actions: <Widget>[
+        IconButton(
+          icon: const Icon(
+            CupertinoIcons.add,
+            color: Color.fromRGBO(0, 0, 0, 1.0),
+          ),
+          tooltip: 'Create Post',
+          onPressed: () {
+            Navigator.pushNamed(context, '/create_post');
+          },
+        )
+      ],
+    );
   }
 }
 
@@ -142,4 +163,3 @@ class SearchBar extends StatelessWidget {
     );
   }
 }
-

@@ -1,8 +1,10 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:lost_flutter/controllers/network_binding.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/pages/create_post.dart';
@@ -17,6 +19,7 @@ import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'pages/get_started.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 
 
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -28,15 +31,6 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   // Extract data from the message
   final Map<String, dynamic> data = message.data;
-
-  // // Your JSON data as a string
-  // String jsonString = data as String;
-  //
-  // // Decode the JSON string into a List of maps
-  // List<dynamic> jsonList = jsonDecode(jsonString);
-  //
-  // // Convert each map to a Post object
-  // List<Post> posts = jsonList.map((json) => Post.fromJson(json)).toList();
 
   // Display a notification
   final AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -67,11 +61,12 @@ Future<void> initializations() async {
     await FirebaseMessaging.instance.requestPermission(provisional: true);
 
     print("HELLO WORLD");
+    isConnected = true;
 
     // Firebase message handler
-    await FirebaseMessaging.instance.subscribeToTopic("topic");
+    FirebaseMessaging.instance.subscribeToTopic("topic");
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    await FirebaseMessaging.instance
+    FirebaseMessaging.instance
         .getInitialMessage()
         .then((message) => firebaseMessagingBackgroundHandler);
     final token = await FirebaseMessaging.instance.getToken();
@@ -133,7 +128,7 @@ void main() async {
       FlutterNativeSplash.remove();
     }
 
-
+  GestureBinding.instance.resamplingEnabled = true;
   runApp(MyApp(isUserLoggedIn: isUserLoggedIn));
 }
 
@@ -153,15 +148,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       localizationsDelegates: <LocalizationsDelegate<dynamic>>[
         DefaultMaterialLocalizations.delegate,
         DefaultWidgetsLocalizations.delegate,
         DefaultCupertinoLocalizations.delegate,
       ],
+
+      initialBinding: NetworkBinding(),
+
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         //   canvasColor: Colors.transparent,
         // bottomSheetTheme: BottomSheetThemeData(
         //     backgroundColor: Colors.black.withOpacity(0)),

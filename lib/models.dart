@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 class Post {
   late String id;
   late String rollNo;
@@ -71,37 +73,7 @@ class Reply {
   }
 }
 
-class PostNotification {
-  late String name;
-  late String content;
-
-  PostNotification({
-    required this.name,
-    required this.content,
-  });
-
-  factory PostNotification.fromJson(Map<String, dynamic> json) {
-    return PostNotification(
-      name: json['name'],
-      content: json['content'],
-    );
-  }
+class seenPosts {
+  List<String> seenPostsFromJson(String str) => List<String>.from(json.decode(str).map((x) => x));
+  String seenPostsToJson(List<String> data) => json.encode(List<dynamic>.from(data.map((x) => x)));
 }
-
-class ReplyNotification {
-  late String name;
-  late String reply;
-
-  ReplyNotification({
-    required this.name,
-    required this.reply,
-  });
-
-  factory ReplyNotification.fromJson(Map<String, dynamic> json) {
-    return ReplyNotification(
-      name: json['name'],
-      reply: json['reply'],
-    );
-  }
-}
-

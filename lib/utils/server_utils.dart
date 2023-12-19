@@ -211,7 +211,7 @@ class ServerUtils {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const Home(),
+                builder: (context) => const PageBuilder(),
               ));
         }
       } else {
@@ -417,6 +417,83 @@ class ServerUtils {
     } catch (error) {
       print('Error sending POST request: $error');
       return "";
+    }
+  }
+
+  Future<List<String>> getSeenPosts(roll_no) async {
+    final String url =
+        '$endPoint/get_opened'; // replace with your API endpoint
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'roll_no': roll_no,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+
+
+        List<String> posts = seenPosts().seenPostsFromJson(response.body);
+
+        posts.forEach((element) {
+          print(element);
+        });
+
+        return posts;
+
+      } else {
+        print('POST request failed with status: ${response.statusCode}');
+        print('Response: ${response.body}');
+        return [];
+      }
+    } catch (error) {
+      print('Error sending POST request: $error');
+      return [];
+    }
+  }
+
+  Future<void> setSeenPosts(roll_no, post_id) async {
+    final String url =
+        '$endPoint/set_opened'; // replace with your API endpoint
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'roll_no': roll_no,
+      'post_id': post_id,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+      } else {
+        print('POST request failed with status: ${response.statusCode}');
+        print('Response: ${response.body}');
+      }
+    } catch (error) {
+      print('Error sending POST request: $error');
     }
   }
 
