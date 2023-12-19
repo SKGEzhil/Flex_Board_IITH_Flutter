@@ -69,7 +69,7 @@ class _HomeState extends State<Home> {
         body: Stack(
           children: [
             PostList(),
-            BottomNav()
+            // BottomNav()
           ],
         ),
       ),

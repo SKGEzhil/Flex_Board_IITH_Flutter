@@ -1,9 +1,12 @@
+import 'package:get/get.dart';
+import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models.dart';
 
 class SharedPrefs {
   SharedPreferences? _sharedPrefs;
+  final BottomNavController bottomNavController = Get.put(BottomNavController());
 
   Future<int> checkFirstLaunch() async {
     _sharedPrefs = await SharedPreferences.getInstance();
@@ -33,6 +36,7 @@ class SharedPrefs {
     await _sharedPrefs!.setString('roll_no', '');
     await _sharedPrefs!.setString('username', '');
     await _sharedPrefs!.setStringList('posts', postListString);
+    bottomNavController.changeIndex(0);
   }
 
   Future<void> init() async =>

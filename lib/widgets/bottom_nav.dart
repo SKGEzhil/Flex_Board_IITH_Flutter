@@ -40,13 +40,31 @@ class _BottomNavState extends State<BottomNav> {
         currentWidget = Profile();
         break;
     }
-    Navigator.push(context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => currentWidget,
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero,
-      ),
-    );  }
+    // Navigator.push(context,
+    //   PageRouteBuilder(
+    //     pageBuilder: (context, animation1, animation2) => currentWidget,
+    //     // transitionDuration: Duration(seconds: 1),
+    //     // reverseTransitionDuration: Duration.zero,
+    //
+    //     transitionsBuilder: (context, animation1, animation2, child) {
+    //       const begin = Offset(1.0, 0.0);
+    //       const end = Offset.zero;
+    //       const curve = Curves.easeInOutCubic;
+    //
+    //       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+    //
+    //       var offsetAnimation = animation1.drive(tween);
+    //
+    //       return SlideTransition(
+    //         position: offsetAnimation,
+    //         child: child,
+    //       );
+    //     },
+    //     transitionDuration: Duration(milliseconds: 500),
+    //
+    //   ),
+    // );
+  }
 
   @override
   Widget build(BuildContext context) {

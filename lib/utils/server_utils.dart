@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lost_flutter/globals.dart';
+import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 
@@ -49,7 +50,7 @@ class ServerUtils {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const Home(),
+                builder: (context) => const PageBuilder(),
               ));
           SharedPrefs().setRollNo(roll_no);
           roll_no_ = roll_no;
@@ -117,7 +118,7 @@ class ServerUtils {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Home(),
+                  builder: (context) => const PageBuilder(),
                 ));
           }
 

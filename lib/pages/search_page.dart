@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:lost_flutter/widgets/bottom_nav.dart';
+import 'package:get/get.dart';
 import 'package:lost_flutter/widgets/post_list.dart';
 
 import '../models.dart';
@@ -21,6 +23,8 @@ class _SearchPageState extends State<SearchPage> {
   List<Post> initialItems = [];
   List<Post> result = [];
   final serverUtils = ServerUtils();
+  final BottomNavController bottom_nav_controller =
+      Get.put(BottomNavController());
 
   void initState() {
     super.initState();
@@ -57,22 +61,28 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // bottomNavigationBar: BottomNavigator(
-      //   index: 1,
-      // ),
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: SearchField(onTextChanged: filterSearchResults),
-      ),
-      body: Stack(
-        children: [
-          SearchList(
-            items: result,
-          ),
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (bool didPop) {
 
-          BottomNav()
-        ],
+      },
+      child: Scaffold(
+        // bottomNavigationBar: BottomNavigator(
+        //   index: 1,
+        // ),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: SearchField(onTextChanged: filterSearchResults),
+        ),
+        body: Stack(
+          children: [
+            SearchList(
+              items: result,
+            ),
+
+            // BottomNav()
+          ],
+        ),
       ),
     );
   }

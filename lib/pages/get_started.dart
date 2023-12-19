@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
@@ -16,9 +17,23 @@ class GetStarted extends StatefulWidget {
 
 class _GetStartedState extends State<GetStarted> {
 
+  Artboard? _riveArtboard;
 
   void initState() {
     super.initState();
+    rootBundle.load('assets/intro.riv').then(
+          (data) async {
+        final file = RiveFile.import(data);
+
+        final artboard = file.mainArtboard;
+        var controller =
+        StateMachineController.fromArtboard(artboard, 'Button');
+        if (controller != null) {
+          artboard.addController(controller);
+        }
+        setState(() => _riveArtboard = artboard);
+      },
+    );
     // fetchData();
   }
 
@@ -44,20 +59,23 @@ class _GetStartedState extends State<GetStarted> {
       body: Center(
           child: Stack(
         children: [
-          // const RiveAnimation.asset(
-          //   'assets/bg_rive.riv',
-          //   alignment: Alignment.center,
-          //   fit: BoxFit.fitWidth,
-          // ),
-          Positioned(
-            bottom: 0,
-            child: Image.asset(
-                'assets/bgr.gif',
-                width: 600,
-                height: 600,
-                fit: BoxFit.cover,
-            ),
+          const RiveAnimation.asset(
+            'assets/intro.riv',
+            alignment: Alignment.bottomCenter,
+            fit: BoxFit.cover,
           ),
+          // Rive(
+          //   artboard: _riveArtboard!.instance(),
+          // ),
+          // Positioned(
+          //   bottom: 0,
+          //   child: Image.asset(
+          //       'assets/bgr.gif',
+          //       width: 600,
+          //       height: 600,
+          //       fit: BoxFit.cover,
+          //   ),
+          // ),
           Positioned.fill(
               child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lost_flutter/globals.dart';
+import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/pages/create_post.dart';
 import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/pages/profile.dart';
@@ -144,7 +145,7 @@ class MyApp extends StatelessWidget {
 
   Widget _getScreenId() {
     if (isUserLoggedIn == 1) {
-      return const Home();
+      return const PageBuilder();
     } else {
       return GetStarted();
     }

@@ -54,6 +54,8 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   hexcolor: ^3.0.1
   get: ^4.6.6
+  animated_switcher:
+  page_transition:
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +81,7 @@ flutter:
     - assets/roll_no.png
     - assets/bg_rive.riv
     - assets/bgr.gif
+    - assets/intro.riv
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
