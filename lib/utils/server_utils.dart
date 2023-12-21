@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/pages/home.dart';
@@ -10,6 +11,7 @@ import 'package:lost_flutter/utils/shared_prefs.dart';
 
 import '../models.dart';
 import '../pages/get_started.dart';
+import 'package:get/get.dart';
 
 class ServerUtils {
 
@@ -180,9 +182,10 @@ class ServerUtils {
     }
   }
 
-  Future<void> createPost(roll_no, subject, content, image, List<String> tags, context) async {
+  Future<void> createPost(roll_no, subject, content, image, List<String> tags, cab, context) async {
     final String url =
         '$endPoint/create_post'; // replace with your API endpoint
+    final CabSharingController cabSharingController = Get.put(CabSharingController());
 
     Map<String, String> headers = {
       'Content-Type':
@@ -195,6 +198,7 @@ class ServerUtils {
       'content': content,
       'image': image,
       'tags': tags,
+      'cab': cab,
     };
 
     try {
@@ -209,6 +213,8 @@ class ServerUtils {
         print('Response: ${response.body}');
         if (response.body == 'success') {
           post_image_link = "";
+          cabSharingController.fromLocation.value = "From";
+          cabSharingController.toLocation.value = "To";
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -254,6 +260,10 @@ class ServerUtils {
         print('Content: ${post.content}');
         print('Image: ${post.image}');
         print('tags: ${post.tags}');
+        print('Date: ${post.date}');
+        print('Cab From: ${post.cabFrom}');
+        print('Cab To: ${post.cabTo}');
+        print('Cab Date: ${post.cabDate}');
         print('\n');
       });
 

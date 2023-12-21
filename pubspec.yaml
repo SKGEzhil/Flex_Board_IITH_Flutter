@@ -57,6 +57,7 @@ dependencies:
   animated_switcher:
   page_transition:
   connectivity_plus: ^5.0.2
+  intl:
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,7 @@ flutter:
     - assets/bg_rive.riv
     - assets/bgr.gif
     - assets/intro.riv
+    - assets/cab2.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

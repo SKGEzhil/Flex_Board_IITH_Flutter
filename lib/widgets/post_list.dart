@@ -201,6 +201,144 @@ class _PostListState extends State<PostList> {
                               ),
                               Wrap(
                                 children: [
+                                  if(post.tags.contains('Cab Sharing'))
+                                       Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 8, 8, 0),
+                                          child: Container(
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.black.withOpacity(0.1)
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      8, 4, 8, 4),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Cab Sharing',
+                                                        style: TextStyle(
+                                                            color: Colors.black.withOpacity(0.7),
+                                                            fontWeight: FontWeight.w500,
+                                                            fontSize: 14),
+                                                      ),
+                                                    Expanded(
+                                                      child: Align(
+                                                        alignment: Alignment.topRight,
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(50),
+                                                            color: Colors.deepOrange.withOpacity(0.1)
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(3.0),
+                                                            child: Row(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                SizedBox(width: 5,),
+                                                                Icon(Icons.time_to_leave,),
+                                                                Text(
+                                                                  '${post.cabDate}',
+                                                                  style: TextStyle(
+                                                                      color: Colors.black.withOpacity(0.5),
+                                                                      fontSize: 14),
+                                                                ),
+                                                                SizedBox(width: 5,),
+
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                              ],
+                                                  ),
+                                                  Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(50),
+                                                          color: Colors.green.withOpacity(0.1)
+                                                        ),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(3.0),
+                                                          child: Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              SizedBox(width: 5,),
+                                                              Text(
+                                                                'From : ',
+                                                                style: TextStyle(
+                                                                    color: Colors.black,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    fontSize: 14),
+                                                              ),
+
+                                                              Text(
+                                                                '${post.cabFrom}',
+                                                                style: TextStyle(
+                                                                    color: Colors.green,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    fontSize: 14),
+                                                              ),
+                                                              SizedBox(width: 5,),
+
+
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 5,),
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(50),
+                                                            color: Colors.red.withOpacity(0.1)
+                                                        ),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(3.0),
+                                                          child: Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              SizedBox(width: 5,),
+                                                              Text(
+                                                                'To : ',
+                                                                style: TextStyle(
+                                                                    color: Colors.black,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    fontSize: 14),
+                                                              ),
+
+                                                              Text(
+                                                                '${post.cabTo}',
+                                                                style: TextStyle(
+                                                                    color: Colors.redAccent,
+                                                                    fontSize: 14),
+                                                              ),
+                                                              SizedBox(width: 5,),
+
+
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      else
                                   for (var tag in post.tags)
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(

@@ -10,6 +10,9 @@ class Post {
   late String image;
   late List<String> tags;
   late String date;
+  late String cabFrom;
+  late String cabTo;
+  late String cabDate;
 
   Post({
     required this.id,
@@ -20,6 +23,9 @@ class Post {
     required this.image,
     required this.tags,
     required this.date,
+    required this.cabFrom,
+    required this.cabTo,
+    required this.cabDate,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -31,6 +37,9 @@ class Post {
       content: json['content'],
       image: json['image'],
       tags: List<String>.from(json['tags']),
+      cabFrom: json['cab']['from'],
+      cabTo: json['cab']['to'],
+      cabDate: json['cab']['time'],
       date: json['date'],
     );
   }
@@ -46,6 +55,11 @@ class Post {
     "image": image,
     "tags": List<dynamic>.from(tags.map((x) => x)),
     "date": date,
+    "cab": {
+      "from": cabFrom,
+      "to": cabTo,
+      "time": cabDate,
+    },
   };
 
 }
