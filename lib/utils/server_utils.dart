@@ -180,7 +180,7 @@ class ServerUtils {
     }
   }
 
-  Future<void> createPost(roll_no, subject, content, image, context) async {
+  Future<void> createPost(roll_no, subject, content, image, List<String> tags, context) async {
     final String url =
         '$endPoint/create_post'; // replace with your API endpoint
 
@@ -194,6 +194,7 @@ class ServerUtils {
       'subject': subject,
       'content': content,
       'image': image,
+      'tags': tags,
     };
 
     try {
@@ -252,7 +253,7 @@ class ServerUtils {
         print('Subject: ${post.subject}');
         print('Content: ${post.content}');
         print('Image: ${post.image}');
-        print('Replies: ${post.replies}');
+        print('tags: ${post.tags}');
         print('\n');
       });
 

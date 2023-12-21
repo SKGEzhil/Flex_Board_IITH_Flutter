@@ -8,7 +8,7 @@ class Post {
   late String subject;
   late String content;
   late String image;
-  late List<String> replies;
+  late List<String> tags;
   late String date;
 
   Post({
@@ -18,7 +18,7 @@ class Post {
     required this.subject,
     required this.content,
     required this.image,
-    required this.replies,
+    required this.tags,
     required this.date,
   });
 
@@ -30,7 +30,7 @@ class Post {
       subject: json['subject'],
       content: json['content'],
       image: json['image'],
-      replies: List<String>.from(json['replies']),
+      tags: List<String>.from(json['tags']),
       date: json['date'],
     );
   }
@@ -44,7 +44,7 @@ class Post {
     "subject": subject,
     "content": content,
     "image": image,
-    "replies": List<dynamic>.from(replies.map((x) => x)),
+    "tags": List<dynamic>.from(tags.map((x) => x)),
     "date": date,
   };
 

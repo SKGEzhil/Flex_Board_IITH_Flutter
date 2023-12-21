@@ -1,6 +1,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:io' show Platform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -21,10 +22,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
-
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
+
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("SKGEzhil Notification");
@@ -114,7 +115,9 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
     if (await ServerUtils().isConnected()) {
+      if(Platform.isAndroid) {
         await initializations();
+      }
       isUserLoggedIn = await userInit();
       FlutterNativeSplash.remove();
     } else {

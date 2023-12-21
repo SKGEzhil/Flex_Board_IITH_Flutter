@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
 import 'package:lost_flutter/controllers/post_seen_controller.dart';
 import 'package:lost_flutter/globals.dart';
+import 'package:lost_flutter/pages/create_post.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../models.dart';
@@ -96,7 +97,7 @@ class _PostListState extends State<PostList> {
   @override
   Widget build(BuildContext context) {
 
-    debugInvertOversizedImages = true;
+    // debugInvertOversizedImages = true;
 
     return RefreshIndicator(
       onRefresh: () {
@@ -183,16 +184,35 @@ class _PostListState extends State<PostList> {
                       children: [
                         Expanded(
                           flex: 3,
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "${post.content}",
-                              style: TextStyle(
-                                color: Color.fromRGBO(0, 0, 0, 0.7)
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "${post.content}",
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(0, 0, 0, 0.7)
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                              Wrap(
+                                children: [
+                                  for (var tag in post.tags)
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 8, 8, 0),
+                                      child: InkWell(
+                                        onTap: () {null;},
+                                          child: PostTag(tagName: tag)
+                                      ),
+                                    )
+                                ],
+                              )
+                            ],
                           ),
                         ),
                         post.image == ''
