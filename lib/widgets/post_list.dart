@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
+import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/post_seen_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/create_post.dart';
@@ -19,7 +20,7 @@ import '../utils/server_utils.dart';
 import '../utils/shared_prefs.dart';
 
 class PostList extends StatefulWidget {
-  PostList({super.key, this.filter});
+  PostList({super.key, this.filter,});
 
   @override
   State<PostList> createState() => _PostListState();
@@ -34,6 +35,7 @@ class _PostListState extends State<PostList> {
   List<Post> filteredItems = [];
   final PostSeenController postSeenController = Get.put(PostSeenController());
   final NetworkController networkController = Get.find<NetworkController>();
+  final PostListController postListController = Get.put(PostListController());
 
   void initState() {
     super.initState();
@@ -43,6 +45,7 @@ class _PostListState extends State<PostList> {
   // methods
   Future<void> fetchData() async {
     if (networkController.connectionType != 0) {
+
       List<Post> posts =
           await serverUtils.getPosts();
 
@@ -110,132 +113,166 @@ class _PostListState extends State<PostList> {
           },
         );
       },
-      child: ListView.separated(
-        itemCount: filteredItems.length,
-        itemBuilder: (context, index) {
-          Post post = filteredItems[index];
-          return InkWell(
-            onTap: () {
-              seenCheck(post.id);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PostViewer(
-                          subject: post.subject,
-                          name: post.name,
-                          content: post.content,
-                          image: post.image,
-                          date: post.date,
-                          id: post.id,
-                        )),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 4,
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Obx((){
-                              return Text(
-                                "${post.subject}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+      child: GetBuilder<PostListController>(
+        builder: (_) =>
+      ListView.separated(
+          itemCount: postListController.result.length,
+          itemBuilder: (context, index) {
+             Post post = postListController.result[index];
+            return InkWell(
+              onTap: () {
+                seenCheck(post.id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PostViewer(
+                            subject: post.subject,
+                            name: post.name,
+                            content: post.content,
+                            image: post.image,
+                            date: post.date,
+                            id: post.id,
+                          )),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Obx((){
+                                return Text(
+                                  "${post.subject}",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
 
-                                    color: postSeenController.seenPosts.value.contains(post.id)
-                                        ? Color.fromRGBO(0, 0, 0, 0.6)
-                                        : Color.fromRGBO(0, 0, 0, 1),
+                                      color: postSeenController.seenPosts.value.contains(post.id)
+                                          ? Color.fromRGBO(0, 0, 0, 0.6)
+                                          : Color.fromRGBO(0, 0, 0, 1),
 
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15,
-                                    // fontWeight: FontWeight.bold
-                                ),
-                              );
-                            }
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15,
+                                      // fontWeight: FontWeight.bold
+                                  ),
+                                );
+                              }
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Align(
-                              alignment: Alignment.topRight,
-                              child: Text(
-                                '${post.date}',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(0, 0, 0, 0.5),
-                                    fontSize: 12),
-                              )),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Align(
-                                alignment: Alignment.topLeft,
+                          Expanded(
+                            flex: 1,
+                            child: Align(
+                                alignment: Alignment.topRight,
                                 child: Text(
-                                  "${post.content}",
+                                  '${post.date}',
                                   style: TextStyle(
-                                    color: Color.fromRGBO(0, 0, 0, 0.7)
+                                      color: Color.fromRGBO(0, 0, 0, 0.5),
+                                      fontSize: 12),
+                                )),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "${post.content}",
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(0, 0, 0, 0.7)
+                                    ),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              Wrap(
-                                children: [
-                                  if(post.tags.contains('Cab Sharing'))
-                                       Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 8, 8, 0),
-                                          child: Container(
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.black.withOpacity(0.1)
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      8, 4, 8, 4),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        'Cab Sharing',
-                                                        style: TextStyle(
-                                                            color: Colors.black.withOpacity(0.7),
-                                                            fontWeight: FontWeight.w500,
-                                                            fontSize: 14),
+                                Wrap(
+                                  children: [
+                                    if(post.tags.contains('Cab Sharing'))
+                                         Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 8, 8, 0),
+                                            child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.black.withOpacity(0.1)
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        8, 4, 8, 4),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'Cab Sharing',
+                                                          style: TextStyle(
+                                                              color: Colors.black.withOpacity(0.7),
+                                                              fontWeight: FontWeight.w500,
+                                                              fontSize: 14),
+                                                        ),
+                                                      Expanded(
+                                                        child: Align(
+                                                          alignment: Alignment.topRight,
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(50),
+                                                              color: Colors.deepOrange.withOpacity(0.1)
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(3.0),
+                                                              child: Row(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  SizedBox(width: 5,),
+                                                                  Icon(Icons.time_to_leave,),
+                                                                  Text(
+                                                                    '${post.cabDate}',
+                                                                    style: TextStyle(
+                                                                        color: Colors.black.withOpacity(0.5),
+                                                                        fontSize: 14),
+                                                                  ),
+                                                                  SizedBox(width: 5,),
+
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    Expanded(
-                                                      child: Align(
-                                                        alignment: Alignment.topRight,
-                                                        child: Container(
+                                                ],
+                                                    ),
+                                                    Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Container(
                                                           decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(50),
-                                                            color: Colors.deepOrange.withOpacity(0.1)
+                                                            color: Colors.green.withOpacity(0.1)
                                                           ),
                                                           child: Padding(
                                                             padding: const EdgeInsets.all(3.0),
@@ -243,162 +280,134 @@ class _PostListState extends State<PostList> {
                                                               mainAxisSize: MainAxisSize.min,
                                                               children: [
                                                                 SizedBox(width: 5,),
-                                                                Icon(Icons.time_to_leave,),
                                                                 Text(
-                                                                  '${post.cabDate}',
+                                                                  'From : ',
                                                                   style: TextStyle(
-                                                                      color: Colors.black.withOpacity(0.5),
+                                                                      color: Colors.black,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      fontSize: 14),
+                                                                ),
+
+                                                                Text(
+                                                                  '${post.cabFrom}',
+                                                                  style: TextStyle(
+                                                                      overflow: TextOverflow.ellipsis,
+                                                                      color: Colors.green,
+                                                                      fontWeight: FontWeight.w500,
                                                                       fontSize: 14),
                                                                 ),
                                                                 SizedBox(width: 5,),
+
 
                                                               ],
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
+                                                        SizedBox(height: 5,),
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(50),
+                                                              color: Colors.red.withOpacity(0.1)
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(3.0),
+                                                            child: Row(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                SizedBox(width: 5,),
+                                                                Text(
+                                                                  'To : ',
+                                                                  style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      fontSize: 14),
+                                                                ),
+
+                                                                Text(
+                                                                  '${post.cabTo}',
+                                                                  style: TextStyle(
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                      color: Colors.redAccent,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      fontSize: 14),
+                                                                ),
+                                                                SizedBox(width: 5,),
+
+
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+
+                                                      ],
                                                     ),
-                                              ],
-                                                  ),
-                                                  Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(50),
-                                                          color: Colors.green.withOpacity(0.1)
-                                                        ),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(3.0),
-                                                          child: Row(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              SizedBox(width: 5,),
-                                                              Text(
-                                                                'From : ',
-                                                                style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    fontSize: 14),
-                                                              ),
-
-                                                              Text(
-                                                                '${post.cabFrom}',
-                                                                style: TextStyle(
-                                                                    color: Colors.green,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    fontSize: 14),
-                                                              ),
-                                                              SizedBox(width: 5,),
-
-
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 5,),
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(50),
-                                                            color: Colors.red.withOpacity(0.1)
-                                                        ),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(3.0),
-                                                          child: Row(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              SizedBox(width: 5,),
-                                                              Text(
-                                                                'To : ',
-                                                                style: TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    fontSize: 14),
-                                                              ),
-
-                                                              Text(
-                                                                '${post.cabTo}',
-                                                                style: TextStyle(
-                                                                    color: Colors.redAccent,
-                                                                    fontSize: 14),
-                                                              ),
-                                                              SizedBox(width: 5,),
-
-
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                    ],
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        )
-                                      else
-                                  for (var tag in post.tags)
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 8, 8, 0),
-                                      child: InkWell(
-                                        onTap: () {null;},
-                                          child: PostTag(tagName: tag)
-                                      ),
-                                    )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        post.image == ''
-                            ? SizedBox(
-                                width: 0,
-                              )
-                            : Expanded(
-                                flex: 1,
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Container(
-                                      height: 70,
-                                      width: 70,
-                                      child: Card(
-                                        elevation: 5,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: CachedNetworkImage(
-                                            height: 75,
-                                            fit: BoxFit.cover,
-                                            imageUrl: '${post.image}',
-                                            memCacheHeight: 200,
-                                            memCacheWidth: 200,
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Icon(Icons.error),
-                                          ),
+                                          )
+                                        else
+                                    for (var tag in post.tags)
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 8, 8, 0),
+                                        child: InkWell(
+                                          onTap: () {null;},
+                                            child: PostTag(tagName: tag, isSearch: true,)
                                         ),
-                                      )),
+                                      )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          post.image == ''
+                              ? SizedBox(
+                                  width: 0,
+                                )
+                              : Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Container(
+                                        height: 70,
+                                        width: 70,
+                                        child: Card(
+                                          elevation: 5,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: CachedNetworkImage(
+                                              height: 75,
+                                              fit: BoxFit.cover,
+                                              imageUrl: '${post.image}',
+                                              memCacheHeight: 200,
+                                              memCacheWidth: 200,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ),
+                                          ),
+                                        )),
+                                  ),
                                 ),
-                              ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return Divider(
-            height: 1,
-            thickness: 1,
-            color: Colors.black.withOpacity(0.1),
-          );
-        },
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider(
+              height: 1,
+              thickness: 1,
+              color: Colors.black.withOpacity(0.1),
+            );
+          },
       ),
+      )
     );
   }
 }

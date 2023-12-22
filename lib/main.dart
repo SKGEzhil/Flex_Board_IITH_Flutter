@@ -5,6 +5,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:lost_flutter/controllers/global_binding.dart';
 import 'package:lost_flutter/controllers/network_binding.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
@@ -159,7 +160,7 @@ class MyApp extends StatelessWidget {
         DefaultCupertinoLocalizations.delegate,
       ],
 
-      initialBinding: NetworkBinding(),
+      initialBinding: GlobalBindings(),
 
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),

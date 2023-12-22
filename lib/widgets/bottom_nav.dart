@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
+import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/search_page.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
@@ -23,11 +24,13 @@ class _BottomNavState extends State<BottomNav> {
 
   final BottomNavController bottom_nav_controller = Get.put(BottomNavController());
   final currentIndex = Get.find<BottomNavController>().currentIndex;
+  final PostListController postListController = Get.put(PostListController());
   late Widget currentWidget;
 
 
   void setBottomBarIndex(index) {
     bottom_nav_controller.changeIndex(index);
+    postListController.resetSearch();
     switch (index) {
       case 0:
         currentWidget = Home();

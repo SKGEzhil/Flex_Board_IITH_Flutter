@@ -206,6 +206,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
+import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/home.dart';
@@ -258,6 +259,7 @@ class _CreatePostState extends State<CreatePost> {
       onPopInvoked: (bool didPop) async {
         cabSharingController.fromLocation.value = 'From';
         cabSharingController.toLocation.value = 'To';
+        postTagController.resetTags();
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -941,12 +943,14 @@ class CabSharingContainer2 extends StatelessWidget {
 class PostTag extends StatelessWidget {
   PostTag({
     super.key,
-    required this.tagName,
+    required this.tagName, this.isSearch,
   });
 
   final PostTagController postTagController = Get.put(PostTagController());
+  final PostListController postListController = Get.put(PostListController());
   final createTagController = TextEditingController();
   final tagName;
+  final isSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -955,39 +959,16 @@ class PostTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(50),
       ),
       onTap: () {
-        if(tagName == 'Time') {
-          showCupertinoModalPopup(
-            context: context,
-            builder: (_) => Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white
-              ),
-              height: 300,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                    ),
-                    height: 200,
-                    child: CupertinoDatePicker(
-                      initialDateTime: DateTime.now(),
-                      onDateTimeChanged: (DateTime newDateTime) {
-                        print(newDateTime);
-                      },
-                      mode: CupertinoDatePickerMode.dateAndTime,
-                    ),
-                  ),
 
-                  // Close the modal
-                  CupertinoButton(
-                    child: Text('Done'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  )
-                ],
-              ),
-            ),
-          );        }
+        if(isSearch == true) {
+          if(postTagController.selectedTags.contains(tagName)) {
+            postListController.resetSearch();
+          } else {
+            postTagController.resetTags();
+            postListController.filterTagResults(tagName);
+          }
+        }
+
         if (tagName == 'Create new tag') {
           showCupertinoDialog(
               context: context,
