@@ -12,12 +12,14 @@ import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/post_seen_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/create_post.dart';
+import 'package:lost_flutter/widgets/post_tag.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../models.dart';
 import '../pages/post_viewer.dart';
 import '../utils/server_utils.dart';
 import '../utils/shared_prefs.dart';
+import 'cab_sharing_container.dart';
 
 class PostList extends StatefulWidget {
   PostList({super.key, this.filter,});
@@ -39,7 +41,7 @@ class _PostListState extends State<PostList> {
 
   void initState() {
     super.initState();
-    fetchData();
+    // fetchData();
   }
 
   // methods
@@ -107,9 +109,7 @@ class _PostListState extends State<PostList> {
         return Future.delayed(
           Duration(seconds: 1),
           () {
-            setState(() {
-              fetchData();
-            });
+            postListController.fetchData();
           },
         );
       },
@@ -132,6 +132,8 @@ class _PostListState extends State<PostList> {
                             image: post.image,
                             date: post.date,
                             id: post.id,
+                        cabFrom: post.cabFrom,
+                        cabTo: post.cabTo,
                           )),
                 );
               },
@@ -207,145 +209,7 @@ class _PostListState extends State<PostList> {
                                 Wrap(
                                   children: [
                                     if(post.tags.contains('Cab Sharing'))
-                                         Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 8, 8, 0),
-                                            child: Container(
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: Colors.black.withOpacity(0.1)
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        8, 4, 8, 4),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          'Cab Sharing',
-                                                          style: TextStyle(
-                                                              color: Colors.black.withOpacity(0.7),
-                                                              fontWeight: FontWeight.w500,
-                                                              fontSize: 14),
-                                                        ),
-                                                      Expanded(
-                                                        child: Align(
-                                                          alignment: Alignment.topRight,
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(50),
-                                                              color: Colors.deepOrange.withOpacity(0.1)
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(3.0),
-                                                              child: Row(
-                                                                mainAxisSize: MainAxisSize.min,
-                                                                children: [
-                                                                  SizedBox(width: 5,),
-                                                                  Icon(Icons.time_to_leave,),
-                                                                  Text(
-                                                                    '${post.cabDate}',
-                                                                    style: TextStyle(
-                                                                        color: Colors.black.withOpacity(0.5),
-                                                                        fontSize: 14),
-                                                                  ),
-                                                                  SizedBox(width: 5,),
-
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                ],
-                                                    ),
-                                                    Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(50),
-                                                            color: Colors.green.withOpacity(0.1)
-                                                          ),
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.all(3.0),
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.min,
-                                                              children: [
-                                                                SizedBox(width: 5,),
-                                                                Text(
-                                                                  'From : ',
-                                                                  style: TextStyle(
-                                                                      color: Colors.black,
-                                                                      fontWeight: FontWeight.w500,
-                                                                      fontSize: 14),
-                                                                ),
-
-                                                                Text(
-                                                                  '${post.cabFrom}',
-                                                                  style: TextStyle(
-                                                                      overflow: TextOverflow.ellipsis,
-                                                                      color: Colors.green,
-                                                                      fontWeight: FontWeight.w500,
-                                                                      fontSize: 14),
-                                                                ),
-                                                                SizedBox(width: 5,),
-
-
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 5,),
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(50),
-                                                              color: Colors.red.withOpacity(0.1)
-                                                          ),
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.all(3.0),
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.min,
-                                                              children: [
-                                                                SizedBox(width: 5,),
-                                                                Text(
-                                                                  'To : ',
-                                                                  style: TextStyle(
-                                                                      color: Colors.black,
-                                                                      fontWeight: FontWeight.w500,
-                                                                      fontSize: 14),
-                                                                ),
-
-                                                                Text(
-                                                                  '${post.cabTo}',
-                                                                  style: TextStyle(
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                      color: Colors.redAccent,
-                                                                      fontWeight: FontWeight.w500,
-                                                                      fontSize: 14),
-                                                                ),
-                                                                SizedBox(width: 5,),
-
-
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
+                                         CabSharingContainer(cabDate: post.cabDate, cabFrom: post.cabFrom, cabTo: post.cabTo, isCreatePost: false,)
                                         else
                                     for (var tag in post.tags)
                                       Padding(
@@ -411,3 +275,4 @@ class _PostListState extends State<PostList> {
     );
   }
 }
+

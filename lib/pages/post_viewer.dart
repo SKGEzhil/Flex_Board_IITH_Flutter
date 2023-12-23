@@ -2,12 +2,18 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/pages/image_viewer.dart';
 import 'package:lost_flutter/models.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:lost_flutter/widgets/post_list.dart';
+
+import '../widgets/cab_sharing_container.dart';
+import '../widgets/comment_list.dart';
+import '../widgets/title_text.dart';
 
 class PostViewer extends StatefulWidget {
   const PostViewer(
@@ -17,7 +23,10 @@ class PostViewer extends StatefulWidget {
       this.content,
       this.image,
       this.id,
-      this.date});
+      this.date,
+      this.cabFrom,
+      this.cabTo
+      });
 
   final subject;
   final name;
@@ -25,12 +34,66 @@ class PostViewer extends StatefulWidget {
   final image;
   final id;
   final date;
+  final cabFrom;
+  final cabTo;
 
   @override
   State<PostViewer> createState() => _PostViewerState();
 }
 
 class _PostViewerState extends State<PostViewer> {
+
+  final RepliesController repliesController = RepliesController();
+
+  void initState() {
+    super.initState();
+    if(repliesController.isOpened.value == true){
+      showReplies();
+    }
+  }
+
+  void showReplies(){
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await showModalBottomSheet<void>(
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(
+                sigmaX: 20, sigmaY: 20),
+            child: Container(
+                decoration: new BoxDecoration(
+                  color: Color.fromRGBO(
+                      255, 255, 255, 0.5),
+                  borderRadius: new BorderRadius.only(
+                    topLeft:
+                    const Radius.circular(25.0),
+                    topRight:
+                    const Radius.circular(25.0),
+                  ),
+                ),
+                height:
+                MediaQuery.of(context).size.height *
+                    0.75,
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding:
+                      const EdgeInsets.fromLTRB(
+                          8, 30, 8, 25),
+                      child: CommentList(
+                        postId: widget.id,
+                        username: widget.name,),
+                    ),
+                  ],
+                )),
+          );
+        },
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +116,7 @@ class _PostViewerState extends State<PostViewer> {
         body: Stack(
           children: [
             Center(
-              child: widget.image == '' ? SizedBox(height: 0,)
+              child: widget.image == '' ? const SizedBox(height: 0,)
                   :
               Container(
                 decoration: BoxDecoration(
@@ -133,6 +196,12 @@ class _PostViewerState extends State<PostViewer> {
                       ),
                     ),
                   ),
+                  widget.cabFrom == 'From' ? SizedBox(height: 0,)
+                      :
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
+                    child: CabSharingContainer(cabDate: widget.date, cabFrom: widget.cabFrom, cabTo: widget.cabTo, isCreatePost: false,),
+                  ),
                   widget.image == '' ? SizedBox(height: 0,)
                       :
                   Padding(
@@ -160,68 +229,43 @@ class _PostViewerState extends State<PostViewer> {
                       ),
                     ),
                   ),
-                  Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.favorite,
-                              color: Color.fromRGBO(0, 0, 0, 1),
-                            )),
-                        IconButton(
-                            onPressed: () {
-                              showModalBottomSheet<void>(
-                                backgroundColor: Colors.transparent,
-                                isScrollControlled: true,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                        sigmaX: 20, sigmaY: 20),
-                                    child: Container(
-                                        decoration: new BoxDecoration(
-                                          color: Color.fromRGBO(
-                                              255, 255, 255, 0.5),
-                                          borderRadius: new BorderRadius.only(
-                                            topLeft:
-                                                const Radius.circular(25.0),
-                                            topRight:
-                                                const Radius.circular(25.0),
-                                          ),
-                                        ),
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.75,
-                                        child: Stack(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      8, 30, 8, 25),
-                                              child: CommentList(
-                                                postId: widget.id,
-                                                username: widget.name,),
-                                            ),
-                                          ],
-                                        )),
-                                  );
-                                },
-                              );
-                            },
-                            icon: Icon(
-                              Icons.comment,
-                              color: Color.fromRGBO(0, 0, 0, 1),
-                            )),
-                        IconButton(
-                          onPressed: () {
-                          },
-                          icon: Icon(
-                            Icons.share,
-                            color: Color.fromRGBO(0, 0, 0, 1),
+
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        customBorder: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        onTap: () {
+                          showReplies();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(0, 0, 0, 0.1),
+                            borderRadius: BorderRadius.circular(50),
                           ),
-                        )
-                      ])),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(width: 5,),
+                                Icon(Icons.comment),
+                                SizedBox(width: 5,),
+                                Text('Add a reply'),
+                                SizedBox(width: 5,),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
                   SizedBox(
                     height: 50,
                   )
@@ -233,182 +277,4 @@ class _PostViewerState extends State<PostViewer> {
   }
 }
 
-class CommentList extends StatefulWidget {
-  final postId;
-  final username;
-  // final name;
 
-  CommentList({super.key, required this.postId, this.username, });
-
-  @override
-  State<CommentList> createState() => _CommentListState();
-}
-
-class _CommentListState extends State<CommentList> {
-  // final List<String> items = List.generate(30, (index) => 'Item ${index + 1}');
-  List<Reply> items = []; // Initialize the list
-
-  final serverUtils = ServerUtils();
-  bool refresh_var = false;
-  final reply = TextEditingController();
-
-  void initState() {
-    super.initState();
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    List<Reply> replies = await serverUtils
-        .getReplies(widget.postId); // Wait for the future to complete
-
-    setState(() {
-      items = replies; // Update the state with the fetched data
-    });
-
-    items.forEach((element) {
-      print(element.name);
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      resizeToAvoidBottomInset: true,
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Comments',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Color.fromRGBO(0, 0, 0, 1.0)),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    Reply reply = items[index];
-                    return InkWell(
-                      onTap: () {},
-                      child: Container(
-                          child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage: NetworkImage(
-                                    'https://via.placeholder.com/500'),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text(
-                                  '${reply.name}',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(0, 0, 0, 1),
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                '${reply.reply}',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(0, 0, 0, 1),
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Divider();
-                  },
-                ),
-              ),
-              // Add Comment
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: ProfilePicture(
-                            name: '${widget.username}', radius: 23, fontsize: 18, random: true,)),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      flex: 7,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(255, 255, 255, 0.4),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                  child: TextFormField(
-                                    controller: reply,
-                                    maxLines: 1,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      hintText: 'Add a comment',
-                                      focusColor: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  await serverUtils.addReply(roll_no_,
-                                      reply.text, widget.postId, context);
-                                  setState(() {
-                                    reply.text = "";
-                                    fetchData();
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.send,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}

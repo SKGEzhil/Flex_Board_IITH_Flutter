@@ -542,6 +542,56 @@ class ServerUtils {
     }
   }
 
+  Future<List<Reply>> getAllReplies(roll_no) async {
+    final String url =
+        '$endPoint/get_all_replies'; // replace with your API endpoint
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'roll_no': roll_no
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+        if (response.body == 'success') {
+          print("Got replies successfully");
+        }
+
+        // Parse the JSON response
+        // Your JSON data as a string
+        String jsonString = response.body;
+
+        // Decode the JSON string into a List of maps
+        List<dynamic> jsonList = jsonDecode(jsonString);
+
+        // Convert each map to a Post object
+        List<Reply> replies = jsonList.map((json) => Reply.fromJson(json)).toList();
+
+        return replies;
+
+      } else {
+        print('POST request failed with status: ${response.statusCode}');
+        print('Response: ${response.body}');
+        return [];
+      }
+    } catch (error) {
+      print('Error sending POST request: $error');
+      return [];
+    }
+  }
+
 
 
   SnackBar ErrorSnackBar(error_message) {

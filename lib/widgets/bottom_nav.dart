@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
+import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/search_page.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
@@ -25,6 +26,7 @@ class _BottomNavState extends State<BottomNav> {
   final BottomNavController bottom_nav_controller = Get.put(BottomNavController());
   final currentIndex = Get.find<BottomNavController>().currentIndex;
   final PostListController postListController = Get.put(PostListController());
+  final RepliesController repliesController = Get.put(RepliesController());
   late Widget currentWidget;
 
 
@@ -39,36 +41,15 @@ class _BottomNavState extends State<BottomNav> {
         currentWidget = SearchPage();
         break;
       case 2:
+        repliesController.fetchData();
         currentWidget = Home();
         break;
       case 3:
         currentWidget = Profile();
+        postListController.userPosts(roll_no_);
         break;
     }
-    // Navigator.push(context,
-    //   PageRouteBuilder(
-    //     pageBuilder: (context, animation1, animation2) => currentWidget,
-    //     // transitionDuration: Duration(seconds: 1),
-    //     // reverseTransitionDuration: Duration.zero,
-    //
-    //     transitionsBuilder: (context, animation1, animation2, child) {
-    //       const begin = Offset(1.0, 0.0);
-    //       const end = Offset.zero;
-    //       const curve = Curves.easeInOutCubic;
-    //
-    //       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-    //
-    //       var offsetAnimation = animation1.drive(tween);
-    //
-    //       return SlideTransition(
-    //         position: offsetAnimation,
-    //         child: child,
-    //       );
-    //     },
-    //     transitionDuration: Duration(milliseconds: 500),
-    //
-    //   ),
-    // );
+
   }
 
   @override

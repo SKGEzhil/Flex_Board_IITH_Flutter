@@ -12,6 +12,8 @@ import 'package:lost_flutter/widgets/post_list.dart';
 import '../controllers/post_list_controller.dart';
 import '../controllers/post_tag_controller.dart';
 import '../models.dart';
+import '../widgets/post_tag.dart';
+import '../widgets/search_field.dart';
 import 'create_post.dart';
 
 class SearchPage extends StatefulWidget {
@@ -31,6 +33,7 @@ class _SearchPageState extends State<SearchPage> {
   final PostListController postListController =
       Get.put(PostListController());
   final PostTagController postTagController = Get.put(PostTagController());
+  final BottomNavController bottomNavController = Get.put(BottomNavController());
   final tagSearch = TextEditingController();
 
   void initState() {
@@ -69,9 +72,11 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
+      canPop: false,
       onPopInvoked: (bool didPop) {
-
+        postTagController.resetTags();
+        postListController.resetSearch();
+        bottomNavController.changeIndex(0);
       },
       child: Scaffold(
         // bottomNavigationBar: BottomNavigator(
@@ -197,180 +202,3 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
-class SearchList extends StatefulWidget {
-  SearchList({super.key, required this.items});
-  @override
-  State<SearchList> createState() => _SearchListState();
-  final List<Post> items;
-}
-
-class _SearchListState extends State<SearchList> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.items.length,
-      itemBuilder: (context, index) {
-        Post post = widget.items[index];
-        return InkWell(
-          onTap: () {
-            // Navigator.pushNamed(context, '/view_post');
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PostViewer(
-                        subject: post.subject,
-                        name: post.name,
-                        content: post.content,
-                        image: post.image,
-                        date: post.date,
-                        id: post.id,
-                      )),
-            );
-          },
-          child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 4,
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "${post.subject}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Align(
-                                alignment: Alignment.topRight,
-                                child: Text(
-                                  '${post.date}',
-                                  style: TextStyle(
-                                      color:
-                                      Color.fromRGBO(0, 0, 0, 0.5),
-                                      fontSize: 12),
-                                )
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "${post.content}",
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),),
-                          ),
-                          post.image == ''
-                              ? SizedBox(
-                            width: 0,
-                          )
-                              :
-                          Expanded(
-                            flex: 1,
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: Container(
-                                  height: 70,
-                                  width: 70,
-                                  child: Card(
-                                    elevation: 5,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: CachedNetworkImage(
-                                        height: 75,
-                                        fit: BoxFit.cover,
-                                        imageUrl: '${post.image}',
-                                        // memCacheHeight: 200,
-                                        // memCacheWidth: 200,
-                                        errorWidget: (context, url, error) => Icon(Icons.error),
-                                      ),
-                                    ),
-                                  )
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-        );
-
-      },
-    );
-  }
-}
-
-class SearchField extends StatefulWidget {
-  const SearchField({super.key, required this.onTextChanged});
-
-  final Function(String) onTextChanged;
-
-  @override
-  State<SearchField> createState() => _SearchFieldState();
-}
-
-class _SearchFieldState extends State<SearchField> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(60)),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Icon(
-              Icons.search,
-              color: Colors.black.withOpacity(0.7),
-              size: 23,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: TextFormField(
-                onChanged: (value) {
-                  widget.onTextChanged(value);
-                },
-                decoration: InputDecoration.collapsed(
-                    hintText: "Search",
-                    hintStyle: TextStyle(
-                      fontWeight: FontWeight.w500,
-                        color: Colors.black.withOpacity(0.6)),
-                    border: InputBorder.none,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -13,7 +13,8 @@ class PostListController extends GetxController {
     List<Post> posts =
     await serverUtils.getPosts(); // Wait for the future to complete
     items = posts;
-    result = posts;
+    result = items;
+    update();
   }
 
   void filterSearchResults(String query) {
@@ -50,6 +51,15 @@ class PostListController extends GetxController {
 
   void resetSearch() {
     result = items;
+    update();
+  }
+
+  void userPosts(String roll_no) {
+    result = items
+        .where(
+            (post) =>
+        post.rollNo == roll_no)
+        .toList();
     update();
   }
 

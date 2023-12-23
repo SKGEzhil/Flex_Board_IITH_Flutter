@@ -69,12 +69,14 @@ class Reply {
   late String name;
   late String reply;
   late String post_id;
+  late String date;
 
   Reply({
     required this.rollNo,
     required this.name,
     required this.reply,
     required this.post_id,
+    required this.date,
   });
 
   factory Reply.fromJson(Map<String, dynamic> json) {
@@ -83,6 +85,7 @@ class Reply {
       name: json['name'],
       reply: json['reply'],
       post_id: json['post_id'],
+      date: json['date'],
     );
   }
 }
