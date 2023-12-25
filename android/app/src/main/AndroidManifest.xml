@@ -8,6 +8,13 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher_2">
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notification_icon_foreground" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+
 <!--        &lt;!&ndash; Firebase Messaging Service &ndash;&gt;-->
 <!--        <service-->
 <!--                android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService"-->

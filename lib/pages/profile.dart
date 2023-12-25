@@ -8,6 +8,7 @@ import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'package:lost_flutter/widgets/bottom_nav.dart';
+import 'package:lost_flutter/widgets/no_internet.dart';
 
 import '../controllers/post_tag_controller.dart';
 import '../widgets/post_list.dart';
@@ -149,7 +150,7 @@ class _ProfileState extends State<Profile> {
                   )
                 ]),
               ),
-              BottomNav()
+              NoInternet()
             ],
           ),
         ));

@@ -8,6 +8,7 @@ import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/create_post.dart';
 import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
+import 'package:lost_flutter/widgets/no_internet.dart';
 
 import '../models.dart';
 import '../utils/server_utils.dart';
@@ -47,82 +48,79 @@ class _RepliesPageState extends State<RepliesPage> {
           title: TitleText(pageTitle: 'Replies')
         ),
         body:
-      GetBuilder<RepliesController>(
-      builder: (_) =>
-        ListView.builder(
-          itemCount: repliesController.items.length,
-            itemBuilder: (context, index) {
+      Stack(
+        children: [
+          GetBuilder<RepliesController>(
+          builder: (_) =>
+            ListView.builder(
+              itemCount: repliesController.items.length,
+                itemBuilder: (context, index) {
 
-            Reply reply = repliesController.items[index];
+                Reply reply = repliesController.items[index];
 
-          return InkWell(
-            onTap: () {
-              repliesController.isOpened.value = true;
-              final post_items = postListController.items.where((element) => element.id == reply.post_id);
-              Post post = post_items.first;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PostViewer(
-                      subject: post.subject,
-                      name: post.name,
-                      content: post.content,
-                      image: post.image,
-                      date: post.date,
-                      id: reply.post_id,
-                      cabFrom: post.cabFrom,
-                      cabTo: post.cabTo,
-                    )),
-              );
-            },
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    ProfilePicture(name: reply.name, radius: 12, fontsize: 11),
-                    SizedBox(width: 7),
-                    Flexible( // Replaced Expanded with Flexible
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+              return InkWell(
+                onTap: () {
+                  repliesController.isOpened.value = true;
+                  final post_items = postListController.items.where((element) => element.id == reply.post_id);
+                  Post post = post_items.first;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PostViewer(post: post
+                        )),
+                  );
+                },
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        ProfilePicture(name: reply.name, radius: 12, fontsize: 11),
+                        SizedBox(width: 7),
+                        Flexible( // Replaced Expanded with Flexible
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('${reply.name} has replied to your post: ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Flexible( // Added Flexible here
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text('${reply.date}',
+                              Row(
+                                children: [
+                                  Text('${reply.name} has replied to your post: ',
                                     style: TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.black.withOpacity(0.5),
                                     ),
                                   ),
+                                  Flexible( // Added Flexible here
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text('${reply.date}',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black.withOpacity(0.5),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Text(reply.reply,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
                                 ),
                               ),
                             ],
                           ),
-                          Text(reply.reply,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          );
-        }),
+              );
+            }),
+          ),
+          NoInternet()
+        ],
       ),
       ),
     );

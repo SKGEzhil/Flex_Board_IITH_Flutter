@@ -49,6 +49,7 @@ class ServerUtils {
         print('POST request successful');
         print('Response: ${response.body}');
         if (response.body != 'failed') {
+          Navigator.of(context).pop();
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(

@@ -1,5 +1,3 @@
-
-
 import 'dart:ui';
 import 'dart:io';
 import 'dart:async';
@@ -9,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
+import 'package:lost_flutter/controllers/image_picker_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
 import 'package:lost_flutter/globals.dart';
@@ -40,26 +39,14 @@ class _CreatePostState extends State<CreatePost> {
   final PostTagController postTagController = Get.put(PostTagController());
   final cabSharingFrom = TextEditingController();
   final cabSharingTo = TextEditingController();
-  final CabSharingController cabSharingController = Get.put(CabSharingController());
+  final CabSharingController cabSharingController =
+      Get.put(CabSharingController());
+  final ImagePickerController imagePickerController =
+      Get.put(ImagePickerController());
 
   ScrollController _scrollController = ScrollController();
 
   _scrollToBottom() {}
-
-  //we can upload image from camera or from gallery based on parameter
-  Future getImage(ImageSource media) async {
-    try {
-      var img = await picker.pickImage(source: media);
-      if (img != null) {
-        setState(() {
-          image = img;
-        });
-      }
-    } catch (e) {
-      print("Error picking image: $e");
-      // Handle the error as needed
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +156,7 @@ class _CreatePostState extends State<CreatePost> {
                           ),
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 15,
                         ),
                         Container(
                           width: double.infinity,
@@ -189,8 +176,8 @@ class _CreatePostState extends State<CreatePost> {
                                     Expanded(
                                       child: Align(
                                           alignment: Alignment.centerRight,
-                                          child:
-                                          PostTag(tagName: 'Create new tag')),
+                                          child: PostTag(
+                                              tagName: 'Create new tag')),
                                     )
                                   ],
                                 ),
@@ -214,18 +201,18 @@ class _CreatePostState extends State<CreatePost> {
                           ),
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
-                        postTagController.isCabSharing.value ?
-
-                            CabSharingContainer(cabDate: '', cabFrom: '', cabTo: '', isCreatePost: true)
-
+                        postTagController.isCabSharing.value
+                            ? CabSharingContainer(
+                                cabDate: '',
+                                cabFrom: '',
+                                cabTo: '',
+                                isCreatePost: true)
                             : SizedBox(),
-
                       ],
                     );
-                  }
-                  ),
+                  }),
                 ),
               ),
               Expanded(
@@ -233,7 +220,8 @@ class _CreatePostState extends State<CreatePost> {
                   alignment: Alignment.bottomCenter,
                   child: GestureDetector(
                     onTap: () {
-                      getImage(ImageSource.gallery);
+                      imagePickerController.getImage(ImageSource.gallery);
+                      // getImage(ImageSource.gallery);
                     },
                     child: Container(
                       height: 110,
@@ -277,49 +265,66 @@ class _CreatePostState extends State<CreatePost> {
                                 alignment: Alignment.centerRight,
                                 child: Stack(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: image != null
-                                            ? Image.file(
-                                                File(image!
-                                                    .path), // Placeholder image URL
-                                                fit: BoxFit
-                                                    .contain, // Ensure the image fits within the space
-                                              )
-                                            : CachedNetworkImage(
+                                    GetBuilder<ImagePickerController>(
+                                      builder: (_) => imagePickerController
+                                                  .image ==
+                                              null
+                                          ? ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            child: CachedNetworkImage(
                                                 imageUrl:
                                                     'https://via.placeholder.com/500', // Placeholder image URL
                                                 fit: BoxFit
                                                     .contain, // Ensure the image fits within the space
                                               ),
-                                      ),
+                                          )
+                                          : Padding(
+                                              padding:
+                                                  const EdgeInsets.all(3.0),
+                                              child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Image.file(
+                                                    File(imagePickerController
+                                                        .image!
+                                                        .path), // Placeholder image URL
+                                                    fit: BoxFit
+                                                        .contain, // Ensure the image fits within the space
+                                                  )),
+                                            ),
                                     ),
-                                    image != null
-                                        ? Positioned(
-                                            right: 0.0,
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  image = null;
-                                                });
-                                              },
-                                              child: Align(
-                                                alignment: Alignment.topRight,
-                                                child: CircleAvatar(
-                                                  radius: 10.0,
-                                                  backgroundColor: Colors.black,
-                                                  child: Icon(
-                                                    Icons.close,
-                                                    color: Colors.white,
-                                                    size: 15.0,
+                                    GetBuilder<ImagePickerController>(
+                                        builder: (_) =>
+
+                                            imagePickerController.image ==
+                                                    null
+                                                ? SizedBox()
+                                                :
+                                            Positioned(
+                                              right: 0.0,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  imagePickerController
+                                                      .resetImage();
+                                                  // imagePickerController.image = null;
+                                                  // imagePickerController.image.value = XFile('');
+                                                },
+                                                child: Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: CircleAvatar(
+                                                    radius: 10.0,
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      color: Colors.white,
+                                                      size: 15.0,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          )
-                                        : SizedBox(),
+                                            ))
                                   ],
                                 ),
                               ),
@@ -345,9 +350,19 @@ class _CreatePostState extends State<CreatePost> {
                         'time': cabSharingController.dateTime.value
                       };
                       final tags = postTagController.selectedTags;
-                      await serverUtils.uploadImage(image);
-                      serverUtils.createPost(roll_no_, subject.text, content.text,
-                          post_image_link, tags, cabDetails, context);
+                      if(imagePickerController.image != null){
+                        await serverUtils
+                            .uploadImage(imagePickerController.image);
+                      }
+
+                      serverUtils.createPost(
+                          roll_no_,
+                          subject.text,
+                          content.text,
+                          post_image_link,
+                          tags,
+                          cabDetails,
+                          context);
                     },
                   ),
                 ),
@@ -359,218 +374,3 @@ class _CreatePostState extends State<CreatePost> {
     );
   }
 }
-
-// class CabSharingContainer2 extends StatelessWidget {
-//   const CabSharingContainer2({
-//     super.key,
-//     required this.cabSharingFrom,
-//     required this.cabSharingController,
-//     required this.cabSharingTo,
-//   });
-//
-//   final TextEditingController cabSharingFrom;
-//   final CabSharingController cabSharingController;
-//   final TextEditingController cabSharingTo;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       width: double.infinity,
-//       decoration: BoxDecoration(
-//         borderRadius: BorderRadius.circular(10),
-//         color: Colors.black.withOpacity(0.1),
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.start,
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Row(
-//               children: [
-//                 Text('Cab Sharing'),
-//                 Expanded(
-//                   child: Align(
-//                       alignment: Alignment.centerRight,
-//                       child:
-//                       TimeTag()
-//                   ),
-//                 )
-//               ],
-//             ),
-//             Divider(
-//               height: 10,
-//               thickness: 1,
-//             ),
-//               Center(
-//                 child: Row(
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: [
-//                     Container(
-//                       width: 110,
-//                       decoration: BoxDecoration(
-//                         borderRadius: BorderRadius.circular(10),
-//                         color: Colors.black.withOpacity(0.1),
-//                       ),
-//                       child: Padding(
-//                         padding: const EdgeInsets.all(8.0),
-//                         child: Column(
-//                           children: [
-//                             Text('From',
-//                               style: TextStyle(
-//                                 fontSize: 16,
-//                                 fontWeight: FontWeight.w500
-//                               )
-//                             ),
-//                             SizedBox(height: 5,),
-//                             InkWell(
-//                               onTap: () {
-//                                 showCupertinoDialog(context: context, barrierDismissible: true, builder: (context) {
-//                                   return CupertinoAlertDialog(
-//                                     title: Text('From Location'),
-//                                     content: CupertinoTextField(
-//                                       controller: cabSharingFrom,
-//                                       placeholder: 'Enter location',
-//                                     ),
-//                                     actions: [
-//                                       CupertinoDialogAction(
-//                                         child: Text('Cancel',
-//                                             style: TextStyle(color: Colors.deepOrangeAccent)),
-//                                         onPressed: () {
-//                                           Navigator.pop(context);
-//                                         },
-//                                       ),
-//                                       CupertinoDialogAction(
-//                                         child: Text('Select',
-//                                             style: TextStyle(color: Colors.deepOrangeAccent)),
-//                                         onPressed: () {
-//                                           cabSharingController.fromLocation.value = cabSharingFrom.text;
-//                                           Navigator.pop(context);
-//                                         },
-//                                       ),
-//                                     ],
-//                                   );
-//                                 });
-//                               },
-//                               customBorder: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(50),
-//                               ),
-//                               child: Container(
-//                                 decoration: BoxDecoration(
-//                                   borderRadius: BorderRadius.circular(50),
-//                                   color: cabSharingController.fromLocation.value == 'From' ? Colors.deepOrangeAccent.withOpacity(0.1) : Colors.green.withOpacity(0.1),
-//                                 ),
-//                                 child: Padding(
-//                                   padding: const EdgeInsets.all(5.0),
-//                                   child: Row(
-//                                     children: [
-//                                       SizedBox(width: 5,),
-//                                       Expanded(
-//                                         child: Text( cabSharingController.fromLocation.value == 'From' ? 'Select' : cabSharingController.fromLocation.value,
-//                                           maxLines: 2,
-//                                           overflow: TextOverflow.ellipsis,
-//                                           softWrap: true,
-//                                           style: TextStyle(
-//                                             color: cabSharingController.fromLocation.value == 'From' ? Colors.deepOrangeAccent : Colors.green,
-//                                           fontWeight: FontWeight.w500
-//                                         ),),
-//                                       ),
-//                                       SizedBox(width: 5,),
-//
-//                                     ],
-//                                   ),
-//                                 )
-//                               ),
-//                             )
-//                           ],
-//                         ),
-//                       ),
-//                     ),
-//                     SizedBox(width: 20,),
-//                     Image.asset('assets/cab2.png', width: 100,),
-//                     SizedBox(width: 20,),
-//                     Container(
-//                       width: 110,
-//                       decoration: BoxDecoration(
-//                         borderRadius: BorderRadius.circular(10),
-//                         color: Colors.black.withOpacity(0.1),
-//                       ),
-//                       child: Padding(
-//                         padding: const EdgeInsets.all(8.0),
-//                         child: Column(
-//                           children: [
-//                             Text('To',
-//                                 style: TextStyle(
-//                                     fontSize: 16,
-//                                     fontWeight: FontWeight.w500
-//                                 )
-//                             ),
-//                             SizedBox(height: 5,),
-//                             InkWell(
-//                               onTap: () {
-//                                 showCupertinoDialog(context: context, barrierDismissible: true, builder: (context) {
-//                                   return CupertinoAlertDialog(
-//                                     title: Text('To Location'),
-//                                     content: CupertinoTextField(
-//                                       controller: cabSharingTo,
-//                                       placeholder: 'Enter location',
-//                                     ),
-//                                     actions: [
-//                                       CupertinoDialogAction(
-//                                         child: Text('Cancel',
-//                                             style: TextStyle(color: Colors.deepOrangeAccent)),
-//                                         onPressed: () {
-//                                           Navigator.pop(context);
-//                                         },
-//                                       ),
-//                                       CupertinoDialogAction(
-//                                         child: Text('Select',
-//                                             style: TextStyle(color: Colors.deepOrangeAccent)),
-//                                         onPressed: () {
-//                                           cabSharingController.toLocation.value = cabSharingTo.text;
-//                                           Navigator.pop(context);
-//                                         },
-//                                       ),
-//                                     ],
-//                                   );
-//                                 });
-//                               },
-//                               customBorder: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(50),
-//                               ),
-//                               child: Container(
-//                                   decoration: BoxDecoration(
-//                                     borderRadius: BorderRadius.circular(50),
-//                                     color: cabSharingController.toLocation.value == 'To' ? Colors.deepOrangeAccent.withOpacity(0.1) : Colors.red.withOpacity(0.1),
-//                                   ),
-//                                   child: Padding(
-//                                     padding: const EdgeInsets.all(5.0),
-//                                     child: Row(
-//                                       children: [
-//                                         SizedBox(width: 5,),
-//                                         Text( cabSharingController.toLocation.value == 'To' ? 'Select' : cabSharingController.toLocation.value, style: TextStyle(
-//                                             color: cabSharingController.toLocation.value == 'To' ? Colors.deepOrangeAccent : Colors.redAccent,
-//                                             fontWeight: FontWeight.w500
-//                                         ),),
-//                                         SizedBox(width: 5,),
-//
-//                                       ],
-//                                     ),
-//                                   )
-//                               ),
-//                             )
-//                           ],
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lost_flutter/controllers/notification_controller.dart';
 import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/home.dart';
@@ -18,24 +20,10 @@ import '../widgets/title_text.dart';
 class PostViewer extends StatefulWidget {
   const PostViewer(
       {super.key,
-      this.subject,
-      this.name,
-      this.content,
-      this.image,
-      this.id,
-      this.date,
-      this.cabFrom,
-      this.cabTo
+        required this.post
       });
 
-  final subject;
-  final name;
-  final content;
-  final image;
-  final id;
-  final date;
-  final cabFrom;
-  final cabTo;
+  final Post post;
 
   @override
   State<PostViewer> createState() => _PostViewerState();
@@ -49,6 +37,10 @@ class _PostViewerState extends State<PostViewer> {
     super.initState();
     if(repliesController.isOpened.value == true){
       showReplies();
+    }
+    final NotificationController notificationController = Get.put(NotificationController());
+    if(notificationController.isNotification.value == true){
+      notificationController.isNotification.value = false;
     }
   }
 
@@ -83,8 +75,8 @@ class _PostViewerState extends State<PostViewer> {
                       const EdgeInsets.fromLTRB(
                           8, 30, 8, 25),
                       child: CommentList(
-                        postId: widget.id,
-                        username: widget.name,),
+                        postId: widget.post.id,
+                        username: widget.post.name,),
                     ),
                   ],
                 )),
@@ -116,12 +108,12 @@ class _PostViewerState extends State<PostViewer> {
         body: Stack(
           children: [
             Center(
-              child: widget.image == '' ? const SizedBox(height: 0,)
+              child: widget.post.image == '' ? const SizedBox(height: 0,)
                   :
               Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider('${widget.image}'),
+                    image: CachedNetworkImageProvider('${widget.post.image}'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -148,7 +140,7 @@ class _PostViewerState extends State<PostViewer> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '${widget.subject}',
+                        '${widget.post.subject}',
                         style: TextStyle(
                             color: Color.fromRGBO(0, 0, 0, 1),
                             fontSize: 30,
@@ -161,7 +153,7 @@ class _PostViewerState extends State<PostViewer> {
                     child: Row(
                       children: [
                         ProfilePicture(
-                          name: '${widget.name}',
+                          name: '${widget.post.name}',
                           radius: 20,
                           fontsize: 16,
                           random: true,
@@ -169,7 +161,7 @@ class _PostViewerState extends State<PostViewer> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
-                            '${widget.name}',
+                            '${widget.post.name}',
                             style: TextStyle(
                                 color: Color.fromRGBO(0, 0, 0, 1),
                                 fontSize: 18,
@@ -179,7 +171,7 @@ class _PostViewerState extends State<PostViewer> {
                         Expanded(
                             child: Align(
                                 alignment: Alignment.centerRight,
-                                child: Text('${widget.date}')))
+                                child: Text('${widget.post.date}')))
                       ],
                     ),
                   ),
@@ -188,7 +180,7 @@ class _PostViewerState extends State<PostViewer> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '${widget.content}',
+                        '${widget.post.content}',
                         style: TextStyle(
                             color: Color.fromRGBO(0, 0, 0, 1),
                             fontSize: 18,
@@ -196,13 +188,13 @@ class _PostViewerState extends State<PostViewer> {
                       ),
                     ),
                   ),
-                  widget.cabFrom == 'From' ? SizedBox(height: 0,)
+                  widget.post.cabFrom == 'From' ? SizedBox(height: 0,)
                       :
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
-                    child: CabSharingContainer(cabDate: widget.date, cabFrom: widget.cabFrom, cabTo: widget.cabTo, isCreatePost: false,),
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                    child: CabSharingContainer(cabDate: widget.post.cabDate, cabFrom: widget.post.cabFrom, cabTo: widget.post.cabTo, isCreatePost: false,),
                   ),
-                  widget.image == '' ? SizedBox(height: 0,)
+                  widget.post.image == '' ? SizedBox(height: 0,)
                       :
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -212,7 +204,7 @@ class _PostViewerState extends State<PostViewer> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => ImageViewer(
-                                    image: widget.image,
+                                    image: widget.post.image,
                                   )),
                         );
                       },
@@ -221,7 +213,7 @@ class _PostViewerState extends State<PostViewer> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: CachedNetworkImage(
-                              imageUrl: '${widget.image}',
+                              imageUrl: '${widget.post.image}',
                               fit: BoxFit.cover,
                               width: 400,
                               height: 200),

@@ -7,6 +7,7 @@ import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:lost_flutter/widgets/bottom_nav.dart';
 import 'package:get/get.dart';
+import 'package:lost_flutter/widgets/no_internet.dart';
 import 'package:lost_flutter/widgets/post_list.dart';
 
 import '../controllers/post_list_controller.dart';
@@ -38,36 +39,9 @@ class _SearchPageState extends State<SearchPage> {
 
   void initState() {
     super.initState();
-    fetchData();
+    // fetchData();
   }
 
-  Future<void> fetchData() async {
-    List<Post> posts =
-        await serverUtils.getPosts(); // Wait for the future to complete
-    setState(() {
-      items = posts;
-      result = posts;
-    });
-  }
-
-  void filterSearchResults(String query) {
-    print(query);
-
-    if(query.isEmpty){
-      setState(() {
-        result = items;
-      });
-      return;
-    } else {
-      setState(() {
-        result = items
-            .where(
-                (post) => post.subject.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      });
-    }
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,6 +167,7 @@ class _SearchPageState extends State<SearchPage> {
 
               ],
             ),
+            NoInternet()
 
             // BottomNav()
           ],

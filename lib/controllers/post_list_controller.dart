@@ -1,20 +1,53 @@
 import 'package:get/get.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 
+import '../globals.dart';
 import '../models.dart';
+import '../utils/shared_prefs.dart';
+import 'network_connectivity_controller.dart';
 
 class PostListController extends GetxController {
 
   List<Post> items = <Post>[].obs;
   List<Post> result = <Post>[].obs;
+  Post notificationPost = Post(
+    id: '',
+    rollNo: '',
+    name: '',
+    subject: '',
+    tags: [''],
+    date: '',
+    image: '', content: '', cabFrom: '', cabTo: '', cabDate: '',
+  );
   final serverUtils = ServerUtils();
+  final sharedPrefs = SharedPrefs();
+  final NetworkController networkController = Get.put(NetworkController());
 
   Future<void> fetchData() async {
-    List<Post> posts =
-    await serverUtils.getPosts(); // Wait for the future to complete
-    items = posts;
+    if(isConnected){
+      print('GETTING POSTS');
+      items = await serverUtils.getPosts();
+      sharedPrefs.storePosts(items);
+    } else {
+      print('GETTING POSTS FROM SHARED PREFS');
+      items = await sharedPrefs.getPosts();
+    }
     result = items;
+    result.forEach((element) {print('Element');});
     update();
+
+  }
+
+  Future<Post> notificationHandler(postId, type) async {
+    if(type == 'reply'){
+      final posts = await sharedPrefs.getPosts();
+      notificationPost = posts.where((element) => element.id == postId).first;
+      return notificationPost;
+    } else {
+      final posts = await serverUtils.getPosts();
+      notificationPost = posts.where((element) => element.id == postId).first;
+      return notificationPost;
+    }
   }
 
   void filterSearchResults(String query) {

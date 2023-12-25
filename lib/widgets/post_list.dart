@@ -126,14 +126,7 @@ class _PostListState extends State<PostList> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => PostViewer(
-                            subject: post.subject,
-                            name: post.name,
-                            content: post.content,
-                            image: post.image,
-                            date: post.date,
-                            id: post.id,
-                        cabFrom: post.cabFrom,
-                        cabTo: post.cabTo,
+                            post: post,
                           )),
                 );
               },
@@ -205,6 +198,9 @@ class _PostListState extends State<PostList> {
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                   ),
+                                ),
+                                SizedBox(
+                                  height: 5,
                                 ),
                                 Wrap(
                                   children: [

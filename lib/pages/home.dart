@@ -5,6 +5,7 @@ import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
+import '../widgets/no_internet.dart';
 import '../widgets/post_list.dart';
 import 'package:get/get.dart';
 
@@ -43,28 +44,7 @@ class _HomeState extends State<Home> {
           body: Stack(
             children: [
               PostList(),
-              GetBuilder<NetworkController>(builder: (builder) {
-                return networkController.connectionType != 0
-                    ? SizedBox()
-                    : SafeArea(
-                    child: Container(
-                        height: 20,
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade400.withOpacity(0.7),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'No internet connection',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        )));
-              })
+              NoInternet()
               // BottomNav()
             ],
           ),
@@ -103,3 +83,4 @@ class _HomeState extends State<Home> {
     );
   }
 }
+

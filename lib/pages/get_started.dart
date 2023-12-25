@@ -243,12 +243,23 @@ class _SignInFormState extends State<SignInForm> {
                     borderRadius: BorderRadius.circular(20),
                     color: isLoading ? Colors.black : Colors.black,
                     onPressed: () async {
-                      setState(() {
-                        isLoading = true;
-                      });
+
 
                       print(user_text.text);
                       print(password_text.text);
+
+                      if(user_text.text.isEmpty || password_text.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please fill all the fields'),
+                          ),
+                        );
+                        return;
+                      }
+
+                      setState(() {
+                        isLoading = true;
+                      });
 
                       await serverUtils.login(user_text.text,
                           password_text.text, fcmToken, context);
@@ -394,6 +405,15 @@ class RegisterForm extends StatelessWidget {
                       print(user_text.text);
                       print(password_text.text);
 
+                      if(name_text.text.isEmpty || user_text.text.isEmpty || email_text.text.isEmpty || password_text.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please fill all the fields'),
+                          ),
+                        );
+                        return;
+                      }
+
                       await serverUtils.register(
                           name_text.text,
                           user_text.text,
@@ -530,6 +550,9 @@ class RegisterTextField extends StatelessWidget {
             )),
         TextFormField(
           controller: name_text,
+          obscureText: field == 'password' ? true : false,
+          enableSuggestions: false,
+          autocorrect: false,
           decoration: InputDecoration(
               fillColor: Colors.white.withOpacity(0.3),
               filled: true,
