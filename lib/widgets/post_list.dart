@@ -1,24 +1,15 @@
 
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/post_seen_controller.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/pages/create_post.dart';
 import 'package:lost_flutter/widgets/post_tag.dart';
-import 'package:path_provider/path_provider.dart';
-
 import '../models.dart';
 import '../pages/post_viewer.dart';
 import '../utils/server_utils.dart';
-import '../utils/shared_prefs.dart';
 import 'cab_sharing_container.dart';
 
 class PostList extends StatefulWidget {
@@ -39,56 +30,6 @@ class _PostListState extends State<PostList> {
   final NetworkController networkController = Get.find<NetworkController>();
   final PostListController postListController = Get.put(PostListController());
 
-  void initState() {
-    super.initState();
-    // fetchData();
-  }
-
-  // methods
-  Future<void> fetchData() async {
-    if (networkController.connectionType != 0) {
-
-      List<Post> posts =
-          await serverUtils.getPosts();
-
-      await postSeenController.getSeenPosts();
-
-      // List<String> seen_posts = await serverUtils.getSeenPosts(roll_no_);
-
-      setState(() {
-        // seenPosts = seen_posts;
-        items = posts;
-        if (widget.filter == null) {
-          filteredItems = items;
-        } else {
-          filteredItems =
-              items.where((post) => post.rollNo == '${widget.filter}').toList();
-        } // Update the state with the fetched data
-      });
-
-
-      // Store list in shared preferences
-      await SharedPrefs().storePosts(items);
-    } else {
-      items = await SharedPrefs().getPosts();
-      await postSeenController.getSeenPosts();
-
-      print('NO INTERNET');
-      items.forEach((element) async {
-        print(element.name);
-      });
-      setState(() {
-        if (widget.filter == null) {
-          filteredItems = items;
-        } else {
-          filteredItems =
-              items.where((post) => post.rollNo == '${widget.filter}').toList();
-        }
-      });
-    }
-  }
-
-
   void seenCheck(post) async {
     if(networkController.connectionType != 0){
       await ServerUtils().setSeenPosts(roll_no_, post);
@@ -102,12 +43,10 @@ class _PostListState extends State<PostList> {
   @override
   Widget build(BuildContext context) {
 
-    // debugInvertOversizedImages = true;
-
     return RefreshIndicator(
       onRefresh: () {
         return Future.delayed(
-          Duration(seconds: 1),
+          const Duration(seconds: 1),
           () {
             postListController.fetchData();
           },
@@ -145,14 +84,14 @@ class _PostListState extends State<PostList> {
                               alignment: Alignment.topLeft,
                               child: Obx((){
                                 return Text(
-                                  "${post.subject}",
+                                  post.subject,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
 
-                                      color: postSeenController.seenPosts.value.contains(post.id)
-                                          ? Color.fromRGBO(0, 0, 0, 0.6)
-                                          : Color.fromRGBO(0, 0, 0, 1),
+                                      color: postSeenController.seenPosts.contains(post.id)
+                                          ? const Color.fromRGBO(0, 0, 0, 0.6)
+                                          : const Color.fromRGBO(0, 0, 0, 1),
 
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15,
@@ -168,8 +107,8 @@ class _PostListState extends State<PostList> {
                             child: Align(
                                 alignment: Alignment.topRight,
                                 child: Text(
-                                  '${post.date}',
-                                  style: TextStyle(
+                                  post.date,
+                                  style: const TextStyle(
                                       color: Color.fromRGBO(0, 0, 0, 0.5),
                                       fontSize: 12),
                                 )),
@@ -191,15 +130,15 @@ class _PostListState extends State<PostList> {
                                 Align(
                                   alignment: Alignment.topLeft,
                                   child: Text(
-                                    "${post.content}",
-                                    style: TextStyle(
+                                    post.content,
+                                    style: const TextStyle(
                                       color: Color.fromRGBO(0, 0, 0, 0.7)
                                     ),
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
                                 Wrap(
@@ -222,7 +161,7 @@ class _PostListState extends State<PostList> {
                             ),
                           ),
                           post.image == ''
-                              ? SizedBox(
+                              ? const SizedBox(
                                   width: 0,
                                 )
                               : Expanded(
@@ -245,7 +184,7 @@ class _PostListState extends State<PostList> {
                                               memCacheWidth: 200,
                                               errorWidget:
                                                   (context, url, error) =>
-                                                      Icon(Icons.error),
+                                                      const Icon(Icons.error),
                                             ),
                                           ),
                                         )),

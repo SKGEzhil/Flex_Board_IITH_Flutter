@@ -40,21 +40,21 @@ class PostTag extends StatelessWidget {
               barrierDismissible: true,
               builder: (context) {
                 return CupertinoAlertDialog(
-                  title: Text('Create new tag'),
+                  title: const Text('Create new tag'),
                   content: CupertinoTextField(
                     controller: createTagController,
                     placeholder: 'Enter tag name',
                   ),
                   actions: [
                     CupertinoDialogAction(
-                      child: Text('Cancel',
+                      child: const Text('Cancel',
                           style: TextStyle(color: Colors.deepOrangeAccent)),
                       onPressed: () {
                         Navigator.pop(context);
                       },
                     ),
                     CupertinoDialogAction(
-                      child: Text('Create',
+                      child: const Text('Create',
                           style: TextStyle(color: Colors.deepOrangeAccent)),
                       onPressed: () {
                         postTagController.allTags
@@ -91,31 +91,31 @@ class PostTag extends StatelessWidget {
             // color: Color.fromRGBO(255, 114, 33, 0.3),
           ),
           child: Padding(
-            padding: EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(5.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
                 Icon(
                   tagName == 'Create new tag' ? Icons.add :
                   tagName == 'Time' ? Icons.time_to_leave :
                   Icons.sell,
-                  color: Color.fromRGBO(0, 0, 0, 0.7),
+                  color: const Color.fromRGBO(0, 0, 0, 0.7),
                   size: 15,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  '${tagName}',
-                  style: TextStyle(
+                  '$tagName',
+                  style: const TextStyle(
                       color: Color.fromRGBO(0, 0, 0, 0.7), fontSize: 12),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
               ],

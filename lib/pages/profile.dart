@@ -1,19 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
-import 'package:lost_flutter/widgets/bottom_nav.dart';
 import 'package:lost_flutter/widgets/no_internet.dart';
-
 import '../controllers/post_tag_controller.dart';
 import '../widgets/post_list.dart';
 import '../widgets/title_text.dart';
-import 'home.dart';
 import 'package:get/get.dart';
 
 class Profile extends StatefulWidget {
@@ -43,11 +39,11 @@ class _ProfileState extends State<Profile> {
             ),
           ),
           elevation: 1,
-          backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
+          backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6),
           title: TitleText(pageTitle: 'Profile'),
           actions: [
             IconButton(
-              icon: Icon(Icons.logout),
+              icon: const Icon(Icons.logout),
               onPressed: () async {
                 await SharedPrefs().logout();
                 Navigator.pushReplacementNamed(context, '/get_started');
@@ -80,7 +76,7 @@ class _ProfileState extends State<Profile> {
                                 name: username,
                                 radius: 50,
                                 fontsize: 40),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
                             Column(
@@ -92,7 +88,7 @@ class _ProfileState extends State<Profile> {
                                   child: Text(
                                     '${username}',
                                     maxLines: 1,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         overflow: TextOverflow.fade,
                                         color: Color.fromRGBO(0, 0, 0, 1),
                                         fontSize: 16,
@@ -104,8 +100,8 @@ class _ProfileState extends State<Profile> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      '${roll_no_}',
-                                      style: TextStyle(
+                                      roll_no_,
+                                      style: const TextStyle(
                                           color: Color.fromRGBO(0, 0, 0, 1),
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
@@ -134,8 +130,8 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                             elevation: 1,
-                            backgroundColor: Color.fromRGBO(255, 255, 255, 0.6),
-                            title: Align(
+                            backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6),
+                            title: const Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'My Posts',

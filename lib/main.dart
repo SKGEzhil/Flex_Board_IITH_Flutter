@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io' show Platform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -17,7 +16,6 @@ import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'pages/get_started.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -29,9 +27,7 @@ Future<void> onNotificationClick(message, notification_type) async {
   final Map<String, dynamic>? data = message?.data;
   final postId = data?['post_id'];
   final type = data?['type'];
-  print('_TYPE: $type');
   final post = await postListController.notificationHandler(postId, type);
-  print('Name :${post.name}');
   if(notification_type == 'get_init') {
     print('GET INIT ${message?.data}');
     print('TYPE: $notification_type');
@@ -55,7 +51,6 @@ Future<void> initializations() async {
 
   print("HELLO WORLD");
   isConnected = true;
-  final PostListController postListController = Get.put(PostListController());
   // onMessage: When the app is open and it receives a push notification
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     // await onNotificationClick(message, 'on_message');
@@ -155,7 +150,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         DefaultMaterialLocalizations.delegate,
         DefaultWidgetsLocalizations.delegate,
         DefaultCupertinoLocalizations.delegate,

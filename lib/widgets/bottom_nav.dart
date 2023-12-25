@@ -23,7 +23,7 @@ class BottomNav extends StatefulWidget {
 class _BottomNavState extends State<BottomNav> {
 
 
-  final BottomNavController bottom_nav_controller = Get.put(BottomNavController());
+  final BottomNavController bottomNavController = Get.put(BottomNavController());
   final currentIndex = Get.find<BottomNavController>().currentIndex;
   final PostListController postListController = Get.put(PostListController());
   final RepliesController repliesController = Get.put(RepliesController());
@@ -31,15 +31,9 @@ class _BottomNavState extends State<BottomNav> {
 
 
   void setBottomBarIndex(index) {
-    bottom_nav_controller.changeIndex(index);
+    bottomNavController.changeIndex(index);
     postListController.resetSearch();
     switch (index) {
-      case 0:
-        currentWidget = Home();
-        break;
-      case 1:
-        currentWidget = SearchPage();
-        break;
       case 2:
         repliesController.fetchData();
         currentWidget = Home();
@@ -84,12 +78,12 @@ class _BottomNavState extends State<BottomNav> {
                   child: FloatingActionButton(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50)),
-                      backgroundColor: Colors.deepOrangeAccent,
-                      child: Icon(Icons.add), elevation: 0.1,
+                      backgroundColor: Colors.deepOrangeAccent, elevation: 0.1,
                       onPressed: () {
                       ServerUtils().getSeenPosts(roll_no_);
                         Navigator.pushNamed(context, '/create_post');
-                      }
+                      },
+                      child: const Icon(Icons.add)
                   ),
                 ),
               ),
@@ -153,21 +147,6 @@ class _BottomNavState extends State<BottomNav> {
 class ClipPathClass extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    // var path = Path();
-    // path.lineTo(0.0, size.height - 30);
-    //
-    // var firstControlPoint = Offset(size.width / 4, size.height);
-    // var firstPoint = Offset(size.width / 2, size.height);
-    // path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-    //     firstPoint.dx, firstPoint.dy);
-    //
-    // var secondControlPoint = Offset(size.width - (size.width / 4), size.height);
-    // var secondPoint = Offset(size.width, size.height - 30);
-    // path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
-    //     secondPoint.dx, secondPoint.dy);
-    //
-    // path.lineTo(size.width, 0.0);
-    // path.close();
 
     Path path = Path();
     path.moveTo(0, 20); // Start

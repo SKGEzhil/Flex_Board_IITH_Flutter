@@ -34,23 +34,8 @@ class _GetStartedState extends State<GetStarted> {
         setState(() => _riveArtboard = artboard);
       },
     );
-    // fetchData();
   }
 
-  Future<void> fetchData() async {
-    int number = await SharedPrefs().checkFirstLaunch();
-    print(number);
-    if (number == 0) {
-      roll_no_ = await SharedPrefs().getRollNo();
-      username = await SharedPrefs().getUsername();
-      print('roll_no_ = $roll_no_');
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Home(),
-          ));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,18 +49,7 @@ class _GetStartedState extends State<GetStarted> {
             alignment: Alignment.bottomCenter,
             fit: BoxFit.cover,
           ),
-          // Rive(
-          //   artboard: _riveArtboard!.instance(),
-          // ),
-          // Positioned(
-          //   bottom: 0,
-          //   child: Image.asset(
-          //       'assets/bgr.gif',
-          //       width: 600,
-          //       height: 600,
-          //       fit: BoxFit.cover,
-          //   ),
-          // ),
+
           Positioned.fill(
               child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
@@ -102,7 +76,7 @@ class _GetStartedState extends State<GetStarted> {
                 },
                 color: Color.fromRGBO(0, 0, 0, 1),
                 borderRadius: BorderRadius.circular(20),
-                child: Text("Get Started")),
+                child: const Text("Get Started")),
           ),
           const SafeArea(
             child: Padding(
@@ -183,7 +157,7 @@ class _GetStartedState extends State<GetStarted> {
 }
 
 class SignInForm extends StatefulWidget {
-  SignInForm({
+  const SignInForm({
     super.key,
   });
 
@@ -206,9 +180,9 @@ class _SignInFormState extends State<SignInForm> {
       height: MediaQuery.of(context).size.height * 0.6,
       decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.5),
-          borderRadius: BorderRadius.all(Radius.circular(40))),
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          borderRadius: const BorderRadius.all(Radius.circular(40))),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
@@ -236,7 +210,7 @@ class _SignInFormState extends State<SignInForm> {
                   subText: "Password",
                   field: "password",
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 CupertinoButton(
@@ -266,11 +240,11 @@ class _SignInFormState extends State<SignInForm> {
                       username = await serverUtils.getUsername(user_text.text);
                     },
                     child: isLoading
-                        ? CircularProgressIndicator(
+                        ? const CircularProgressIndicator(
                             semanticsLabel: "Loading",
                             color: Colors.white,
                           )
-                        : Text(
+                        : const Text(
                             "Sign In",
                             style: TextStyle(color: Colors.white),
                           )),
@@ -300,11 +274,11 @@ class _SignInFormState extends State<SignInForm> {
                       child: RichText(
                           text: TextSpan(
                               text: "Don't have an account? ",
-                              style: TextStyle(color: Colors.black),
+                              style: const TextStyle(color: Colors.black),
                               children: [
                             TextSpan(
                                 text: "Register",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Color.fromRGBO(0, 89, 255, 1.0)),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
@@ -350,9 +324,9 @@ class RegisterForm extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.5),
-          borderRadius: BorderRadius.all(Radius.circular(40))),
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          borderRadius: const BorderRadius.all(Radius.circular(40))),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
@@ -391,15 +365,11 @@ class RegisterForm extends StatelessWidget {
                   subText: "Password",
                   field: "password",
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 CupertinoButton(
                     borderRadius: BorderRadius.circular(20),
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(color: Colors.white),
-                    ),
                     color: Colors.black,
                     onPressed: () async {
                       print(user_text.text);
@@ -421,7 +391,11 @@ class RegisterForm extends StatelessWidget {
                           password_text.text,
                           fcmToken,
                           context);
-                    }),
+                    },
+                    child: const Text(
+                      "Sign Up",
+                      style: TextStyle(color: Colors.white),
+                    )),
                 const SizedBox(
                   height: 19,
                 ),
@@ -436,7 +410,7 @@ class RegisterForm extends StatelessWidget {
                               child: BackdropFilter(
                                   filter:
                                       ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                                  child: SignInForm()),
+                                  child: const SignInForm()),
                             ));
                   },
                   child: Container(
@@ -448,11 +422,11 @@ class RegisterForm extends StatelessWidget {
                       child: RichText(
                           text: TextSpan(
                         text: "Already have an account? ",
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                         children: [
                           TextSpan(
                               text: "Sign In",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Color.fromRGBO(0, 89, 255, 1.0)),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
@@ -465,7 +439,7 @@ class RegisterForm extends StatelessWidget {
                                             child: BackdropFilter(
                                                 filter: ImageFilter.blur(
                                                     sigmaX: 20, sigmaY: 20),
-                                                child: SignInForm()),
+                                                child: const SignInForm()),
                                           ));
                                 })
                         ],

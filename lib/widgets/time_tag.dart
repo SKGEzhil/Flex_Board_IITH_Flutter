@@ -38,7 +38,7 @@ class _TimeTagState extends State<TimeTag> {
               child: Column(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                     ),
                     height: 200,
                     child: CupertinoDatePicker(
@@ -57,7 +57,7 @@ class _TimeTagState extends State<TimeTag> {
 
                   // Close the modal
                   CupertinoButton(
-                    child: Text('Done'),
+                    child: const Text('Done'),
                     onPressed: () => Navigator.of(context).pop(),
                   )
                 ],
@@ -73,29 +73,29 @@ class _TimeTagState extends State<TimeTag> {
             // color: Color.fromRGBO(255, 114, 33, 0.3),
           ),
           child: Padding(
-            padding: EdgeInsets.all(5.0),
+            padding: const EdgeInsets.all(5.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
-                Icon(
+                const Icon(
                   Icons.time_to_leave,
                   color: Color.fromRGBO(0, 0, 0, 0.7),
                   size: 15,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
                 Text(
-                  '${time}',
-                  style: TextStyle(
+                  time,
+                  style: const TextStyle(
                       color: Color.fromRGBO(0, 0, 0, 0.7), fontSize: 12),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
               ],

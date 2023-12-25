@@ -24,10 +24,6 @@ class _HomeState extends State<Home> {
   final PostTagController postTagController = Get.put(PostTagController());
   final PostListController postListController = Get.put(PostListController());
 
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -66,7 +62,7 @@ class _HomeState extends State<Home> {
         ),
       ),
       elevation: 1,
-      backgroundColor: Color.fromRGBO(255, 255, 255, 0.6784313725490196),
+      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6784313725490196),
       title: TitleText(pageTitle: 'Home'),
       actions: <Widget>[
         IconButton(

@@ -7,7 +7,6 @@ import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/pages/profile.dart';
 import 'package:lost_flutter/pages/replies_page.dart';
-import 'package:lost_flutter/pages/samle_list.dart';
 import 'package:lost_flutter/pages/search_page.dart';
 import 'package:lost_flutter/widgets/bottom_nav.dart';
 
@@ -38,10 +37,10 @@ class _PageBuilderState extends State<PageBuilder> {
       return Stack(
           children: [
             AnimatedSwitcher(
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               child: currentPage(),
             ),
-            BottomNav(),
+            const BottomNav(),
           ]
       );
   }
@@ -50,9 +49,9 @@ class _PageBuilderState extends State<PageBuilder> {
     return Obx(() => bottom_nav_controller.currentIndex.value == 0
         ? Home()
         : bottom_nav_controller.currentIndex.value == 1
-            ? SearchPage()
+            ? const SearchPage()
             : bottom_nav_controller.currentIndex.value == 2
-                ? RepliesPage()
-                : Profile());
+                ? const RepliesPage()
+                : const Profile());
   }
 }

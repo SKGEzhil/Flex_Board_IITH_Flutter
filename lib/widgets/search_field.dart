@@ -26,7 +26,7 @@ class _SearchFieldState extends State<SearchField> {
               color: Colors.black.withOpacity(0.7),
               size: 23,
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Expanded(

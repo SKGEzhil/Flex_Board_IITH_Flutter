@@ -5,14 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/notification_controller.dart';
 import 'package:lost_flutter/controllers/replies_controller.dart';
-import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/pages/image_viewer.dart';
 import 'package:lost_flutter/models.dart';
-import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
-import 'package:lost_flutter/widgets/post_list.dart';
-
 import '../widgets/cab_sharing_container.dart';
 import '../widgets/comment_list.dart';
 import '../widgets/title_text.dart';
@@ -33,6 +28,7 @@ class _PostViewerState extends State<PostViewer> {
 
   final RepliesController repliesController = RepliesController();
 
+  @override
   void initState() {
     super.initState();
     if(repliesController.isOpened.value == true){
@@ -55,14 +51,14 @@ class _PostViewerState extends State<PostViewer> {
             filter: ImageFilter.blur(
                 sigmaX: 20, sigmaY: 20),
             child: Container(
-                decoration: new BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color.fromRGBO(
                       255, 255, 255, 0.5),
-                  borderRadius: new BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                     topLeft:
-                    const Radius.circular(25.0),
+                    Radius.circular(25.0),
                     topRight:
-                    const Radius.circular(25.0),
+                    Radius.circular(25.0),
                   ),
                 ),
                 height:
@@ -94,7 +90,7 @@ class _PostViewerState extends State<PostViewer> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           elevation: 1,
-          backgroundColor: Color.fromRGBO(255, 255, 255, 0.4),
+          backgroundColor: const Color.fromRGBO(255, 255, 255, 0.4),
           flexibleSpace: ClipRRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
@@ -113,14 +109,14 @@ class _PostViewerState extends State<PostViewer> {
               Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider('${widget.post.image}'),
+                    image: CachedNetworkImageProvider(widget.post.image),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
             ),
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(255, 255, 255, 0.7),
               ),
             ),
@@ -140,8 +136,8 @@ class _PostViewerState extends State<PostViewer> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '${widget.post.subject}',
-                        style: TextStyle(
+                        widget.post.subject,
+                        style: const TextStyle(
                             color: Color.fromRGBO(0, 0, 0, 1),
                             fontSize: 30,
                             fontWeight: FontWeight.bold),
@@ -153,7 +149,7 @@ class _PostViewerState extends State<PostViewer> {
                     child: Row(
                       children: [
                         ProfilePicture(
-                          name: '${widget.post.name}',
+                          name: widget.post.name,
                           radius: 20,
                           fontsize: 16,
                           random: true,
@@ -161,8 +157,8 @@ class _PostViewerState extends State<PostViewer> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
-                            '${widget.post.name}',
-                            style: TextStyle(
+                            widget.post.name,
+                            style: const TextStyle(
                                 color: Color.fromRGBO(0, 0, 0, 1),
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600),
@@ -171,7 +167,7 @@ class _PostViewerState extends State<PostViewer> {
                         Expanded(
                             child: Align(
                                 alignment: Alignment.centerRight,
-                                child: Text('${widget.post.date}')))
+                                child: Text(widget.post.date)))
                       ],
                     ),
                   ),
@@ -180,21 +176,21 @@ class _PostViewerState extends State<PostViewer> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '${widget.post.content}',
-                        style: TextStyle(
+                        widget.post.content,
+                        style: const TextStyle(
                             color: Color.fromRGBO(0, 0, 0, 1),
                             fontSize: 18,
                             fontWeight: FontWeight.normal),
                       ),
                     ),
                   ),
-                  widget.post.cabFrom == 'From' ? SizedBox(height: 0,)
+                  widget.post.cabFrom == 'From' ? const SizedBox(height: 0,)
                       :
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
                     child: CabSharingContainer(cabDate: widget.post.cabDate, cabFrom: widget.post.cabFrom, cabTo: widget.post.cabTo, isCreatePost: false,),
                   ),
-                  widget.post.image == '' ? SizedBox(height: 0,)
+                  widget.post.image == '' ? const SizedBox(height: 0,)
                       :
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -213,7 +209,7 @@ class _PostViewerState extends State<PostViewer> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: CachedNetworkImage(
-                              imageUrl: '${widget.post.image}',
+                              imageUrl: widget.post.image,
                               fit: BoxFit.cover,
                               width: 400,
                               height: 200),
@@ -235,11 +231,11 @@ class _PostViewerState extends State<PostViewer> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Color.fromRGBO(0, 0, 0, 0.1),
+                            color: const Color.fromRGBO(0, 0, 0, 0.1),
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(5.0),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -258,7 +254,7 @@ class _PostViewerState extends State<PostViewer> {
                     ),
                   ),
 
-                  SizedBox(
+                  const SizedBox(
                     height: 50,
                   )
                 ]),

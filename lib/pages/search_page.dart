@@ -1,21 +1,14 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
-import 'package:lost_flutter/pages/home.dart';
-import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
-import 'package:lost_flutter/widgets/bottom_nav.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/widgets/no_internet.dart';
 import 'package:lost_flutter/widgets/post_list.dart';
-
 import '../controllers/post_list_controller.dart';
 import '../controllers/post_tag_controller.dart';
 import '../models.dart';
 import '../widgets/post_tag.dart';
 import '../widgets/search_field.dart';
-import 'create_post.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -37,12 +30,6 @@ class _SearchPageState extends State<SearchPage> {
   final BottomNavController bottomNavController = Get.put(BottomNavController());
   final tagSearch = TextEditingController();
 
-  void initState() {
-    super.initState();
-    // fetchData();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -53,16 +40,12 @@ class _SearchPageState extends State<SearchPage> {
         bottomNavController.changeIndex(0);
       },
       child: Scaffold(
-        // bottomNavigationBar: BottomNavigator(
-        //   index: 1,
-        // ),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: SearchField(onTextChanged: postListController.filterSearchResults)
         ),
         body: Stack(
           children: [
-
             Column(
               children: [
                 Padding(
@@ -101,20 +84,20 @@ class _SearchPageState extends State<SearchPage> {
                                         alignment: Alignment.centerLeft,
                                         child: Row(
                                           children: [
-                                            SizedBox(width: 7,),
+                                            const SizedBox(width: 7,),
                                             Icon(
                                               Icons.search,
                                               color: Colors.black.withOpacity(0.7),
                                               size: 17,
                                             ),
-                                            SizedBox(width: 7,),
+                                            const SizedBox(width: 7,),
                                             Expanded(
                                               child: TextFormField(
                                                 onChanged: (value) {
                                                   postTagController.searchTags(value);
                                                 },
                                                 controller: tagSearch,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontSize: 13,
                                                 ),
                                                 decoration: InputDecoration.collapsed(
@@ -127,7 +110,7 @@ class _SearchPageState extends State<SearchPage> {
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(width: 7,),
+                                            const SizedBox(width: 7,),
                                           ],
                                         ),
                                       ),

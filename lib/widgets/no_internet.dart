@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-
 import '../controllers/network_connectivity_controller.dart';
 import 'package:get/get.dart';
 
@@ -15,14 +13,14 @@ class NoInternet extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<NetworkController>(builder: (builder) {
       return networkController.connectionType != 0
-          ? SizedBox()
+          ? const SizedBox()
           : SafeArea(
           child: Container(
               height: 20,
               decoration: BoxDecoration(
                 color: Colors.red.shade400.withOpacity(0.7),
               ),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(

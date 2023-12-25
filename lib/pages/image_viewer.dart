@@ -24,10 +24,10 @@ class ImageViewer extends StatelessWidget {
           ),
         ),
         elevation: 1,
-        backgroundColor: Color.fromRGBO(255, 255, 255, 0.1),
+        backgroundColor: const Color.fromRGBO(255, 255, 255, 0.1),
         actions: [
           IconButton(
-            icon: Icon(Icons.close, color: Color.fromRGBO(255, 255, 255, 0.6),),
+            icon: const Icon(Icons.close, color: Color.fromRGBO(255, 255, 255, 0.6),),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -49,7 +49,7 @@ class ImageViewer extends StatelessWidget {
               ),
             ),
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color.fromRGBO(0, 0, 0, 0.8),
               ),
             ),
@@ -67,14 +67,14 @@ class ImageViewer extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Container(
-                color: Color.fromRGBO(0, 0, 0, 0),
+                color: const Color.fromRGBO(0, 0, 0, 0),
               ),),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 40.0),
               child: Center(
                 child: CachedNetworkImage(
                   imageUrl: '$image',
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 )
               ),
             ),

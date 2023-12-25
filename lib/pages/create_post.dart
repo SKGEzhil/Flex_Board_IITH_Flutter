@@ -1,24 +1,17 @@
 import 'dart:ui';
 import 'dart:io';
-import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
 import 'package:lost_flutter/controllers/image_picker_controller.dart';
-import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/widgets/cab_sharing_container.dart';
-import 'package:rive/rive.dart';
-
 import '../widgets/post_tag.dart';
-import '../widgets/time_tag.dart';
 import '../widgets/title_text.dart';
 
 class CreatePost extends StatefulWidget {
@@ -44,9 +37,6 @@ class _CreatePostState extends State<CreatePost> {
   final ImagePickerController imagePickerController =
       Get.put(ImagePickerController());
 
-  ScrollController _scrollController = ScrollController();
-
-  _scrollToBottom() {}
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +59,7 @@ class _CreatePostState extends State<CreatePost> {
             ),
           ),
           elevation: 1,
-          backgroundColor: Color.fromRGBO(255, 255, 255, 0.6784313725490196),
+          backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6784313725490196),
           title: TitleText(
             pageTitle: 'Create new post',
           ),
@@ -84,7 +74,7 @@ class _CreatePostState extends State<CreatePost> {
                   child: Obx(() {
                     return Column(
                       children: [
-                        Align(
+                        const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               "Subject:",
@@ -92,7 +82,7 @@ class _CreatePostState extends State<CreatePost> {
                                   fontSize: 16,
                                   color: Color.fromRGBO(68, 68, 68, 1.0)),
                             )),
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         TextFormField(
@@ -101,14 +91,14 @@ class _CreatePostState extends State<CreatePost> {
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 color: Colors.deepOrangeAccent,
                                 width: 1.5,
                               ),
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 color: Colors.black,
                                 width: 1,
                               ),
@@ -116,19 +106,19 @@ class _CreatePostState extends State<CreatePost> {
                             focusColor: Colors.black,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Align(
                             key: dataKey,
                             alignment: Alignment.centerLeft,
-                            child: Text(
+                            child: const Text(
                               "Body:",
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Color.fromRGBO(68, 68, 68, 1.0)),
                             )),
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         TextFormField(
@@ -140,14 +130,14 @@ class _CreatePostState extends State<CreatePost> {
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 color: Colors.deepOrangeAccent,
                                 width: 1.5,
                               ),
                             ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 color: Colors.black,
                                 width: 1,
                               ),
@@ -155,7 +145,7 @@ class _CreatePostState extends State<CreatePost> {
                             focusColor: Colors.black,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         Container(
@@ -181,7 +171,7 @@ class _CreatePostState extends State<CreatePost> {
                                     )
                                   ],
                                 ),
-                                Divider(
+                                const Divider(
                                   height: 10,
                                   thickness: 1,
                                 ),
@@ -200,7 +190,7 @@ class _CreatePostState extends State<CreatePost> {
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         postTagController.isCabSharing.value
@@ -227,7 +217,7 @@ class _CreatePostState extends State<CreatePost> {
                       height: 110,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color.fromRGBO(255, 114, 33, 0.5),
+                        color: const Color.fromRGBO(255, 114, 33, 0.5),
                         // border: Border.all(
                         //     color: Colors.black,
                         //     width: 1
@@ -237,7 +227,7 @@ class _CreatePostState extends State<CreatePost> {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            Align(
+                            const Align(
                               alignment: Alignment.centerRight,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -307,10 +297,9 @@ class _CreatePostState extends State<CreatePost> {
                                                 onTap: () {
                                                   imagePickerController
                                                       .resetImage();
-                                                  // imagePickerController.image = null;
-                                                  // imagePickerController.image.value = XFile('');
+
                                                 },
-                                                child: Align(
+                                                child: const Align(
                                                   alignment: Alignment.topRight,
                                                   child: CircleAvatar(
                                                     radius: 10.0,
@@ -342,7 +331,7 @@ class _CreatePostState extends State<CreatePost> {
                   alignment: Alignment.bottomCenter,
                   child: CupertinoButton(
                     color: Colors.black,
-                    child: Text('Post'),
+                    child: const Text('Post'),
                     onPressed: () async {
                       var cabDetails = {
                         'from': cabSharingController.fromLocation.value,

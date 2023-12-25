@@ -29,14 +29,14 @@ class CabSharingContainer extends StatelessWidget {
         ),
         actions: [
           CupertinoDialogAction(
-            child: Text('Cancel',
+            child: const Text('Cancel',
                 style: TextStyle(color: Colors.deepOrangeAccent)),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           CupertinoDialogAction(
-            child: Text('Select',
+            child: const Text('Select',
                 style: TextStyle(color: Colors.deepOrangeAccent)),
             onPressed: () {
               label == 'From' ? cabSharingController.fromLocation.value = cabSharingFrom.text : cabSharingController.toLocation.value = cabSharingTo.text;
@@ -91,17 +91,17 @@ class CabSharingContainer extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(width: 5,),
-                            Icon(Icons.time_to_leave,
+                            const SizedBox(width: 5,),
+                            const Icon(Icons.time_to_leave,
                               size: 17,),
-                            SizedBox(width: 3,),
+                            const SizedBox(width: 3,),
                             Text(
-                              '${cabDate}',
+                              '$cabDate',
                               style: TextStyle(
                                   color: Colors.black.withOpacity(0.5),
                                   fontSize: 12),
                             ),
-                            SizedBox(width: 5,),
+                            const SizedBox(width: 5,),
 
                           ],
                         ),
@@ -139,8 +139,8 @@ class CabSharingContainer extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(width: 5,),
-                            Text(
+                            const SizedBox(width: 5,),
+                            const Text(
                               'From : ',
                               style: TextStyle(
                                   color: Colors.black,
@@ -166,14 +166,14 @@ class CabSharingContainer extends StatelessWidget {
                                   ),)
                             else
                               Text(
-                                '${cabFrom}',
-                                style: TextStyle(
+                                '$cabFrom',
+                                style: const TextStyle(
                                     overflow: TextOverflow.ellipsis,
                                     color: Colors.green,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 14),
                               ),
-                            SizedBox(width: 5,),
+                            const SizedBox(width: 5,),
 
 
                           ],
@@ -183,7 +183,7 @@ class CabSharingContainer extends StatelessWidget {
                   }
                   ),
                 ),
-                SizedBox(height: 5,),
+                const SizedBox(height: 5,),
                 InkWell(
                   customBorder: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
@@ -205,8 +205,8 @@ class CabSharingContainer extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          SizedBox(width: 5,),
-                          Text(
+                          const SizedBox(width: 5,),
+                          const Text(
                             'To : ',
                             style: TextStyle(
                                 color: Colors.black,
@@ -224,14 +224,14 @@ class CabSharingContainer extends StatelessWidget {
                             ),)
                           else
                             Text(
-                              '${cabTo}',
-                              style: TextStyle(
+                              '$cabTo',
+                              style: const TextStyle(
                                   overflow: TextOverflow.ellipsis,
                                   color: Colors.redAccent,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 14),
                             ),
-                          SizedBox(width: 5,),
+                          const SizedBox(width: 5,),
 
 
                         ],

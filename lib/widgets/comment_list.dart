@@ -11,7 +11,7 @@ class CommentList extends StatefulWidget {
   final username;
   // final name;
 
-  CommentList({super.key, required this.postId, this.username, });
+  const CommentList({super.key, required this.postId, this.username, });
 
   @override
   State<CommentList> createState() => _CommentListState();
@@ -38,9 +38,10 @@ class _CommentListState extends State<CommentList> {
       items = replies; // Update the state with the fetched data
     });
 
-    items.forEach((element) {
-      print(element.name);
-    });
+    // items.forEach((element) {
+    //   print(element.name);
+    // });
+
   }
 
   @override
@@ -52,8 +53,8 @@ class _CommentListState extends State<CommentList> {
         children: [
           Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 0, 0, 0),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -65,7 +66,7 @@ class _CommentListState extends State<CommentList> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Expanded(
@@ -75,53 +76,51 @@ class _CommentListState extends State<CommentList> {
                     Reply reply = items[index];
                     return InkWell(
                       onTap: () {},
-                      child: Container(
-                        child: Row(
-                          children: [
-                            ProfilePicture(name: reply.name, radius: 15, fontsize: 12),
-                            SizedBox(width: 7),
-                            Flexible( // Replaced Expanded with Flexible
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text('${reply.name} ',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                      child: Row(
+                        children: [
+                          ProfilePicture(name: reply.name, radius: 15, fontsize: 12),
+                          const SizedBox(width: 7),
+                          Flexible( // Replaced Expanded with Flexible
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('${reply.name} ',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                      Flexible( // Added Flexible here
-                                        child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Text('${reply.date}',
-                                            style: TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black.withOpacity(0.5),
-                                            ),
+                                    ),
+                                    Flexible( // Added Flexible here
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(reply.date,
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black.withOpacity(0.5),
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  Text(reply.reply,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400,
                                     ),
+                                  ],
+                                ),
+                                Text(reply.reply,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
-                    return Divider();
+                    return const Divider();
                   },
                 ),
               ),
@@ -134,14 +133,14 @@ class _CommentListState extends State<CommentList> {
                         flex: 1,
                         child: ProfilePicture(
                           name: '${widget.username}', radius: 23, fontsize: 18, random: true,)),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       flex: 7,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(255, 255, 255, 0.4),
+                          color: const Color.fromRGBO(255, 255, 255, 0.4),
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Padding(
@@ -155,7 +154,7 @@ class _CommentListState extends State<CommentList> {
                                   child: TextFormField(
                                     controller: reply,
                                     maxLines: 1,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,
                                       hintText: 'Add a comment',
@@ -173,7 +172,7 @@ class _CommentListState extends State<CommentList> {
                                     fetchData();
                                   });
                                 },
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.send,
                                   color: Color.fromRGBO(0, 0, 0, 1),
                                 ),
