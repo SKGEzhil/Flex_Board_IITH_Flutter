@@ -4,11 +4,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:lost_flutter/controllers/login_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/home.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'package:rive/rive.dart';
+import 'package:get/get.dart';
 
 class GetStarted extends StatefulWidget {
   @override
@@ -70,7 +72,7 @@ class _GetStartedState extends State<GetStarted> {
                       pageBuilder: (context, _, __) => Center(
                             child: BackdropFilter(
                                 filter:
-                                    ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                    ImageFilter.blur(sigmaX: 50, sigmaY: 50),
                                 child: RegisterForm()),
                           ));
                 },
@@ -167,10 +169,9 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   final user_text = TextEditingController();
-
   final password_text = TextEditingController();
-
   final serverUtils = ServerUtils();
+  final LoginController loginController = Get.put(LoginController());
 
   bool isLoading = false;
 
@@ -213,41 +214,46 @@ class _SignInFormState extends State<SignInForm> {
                 const SizedBox(
                   height: 30,
                 ),
-                CupertinoButton(
-                    borderRadius: BorderRadius.circular(20),
-                    color: isLoading ? Colors.black : Colors.black,
-                    onPressed: () async {
-
-
-                      print(user_text.text);
-                      print(password_text.text);
-
-                      if(user_text.text.isEmpty || password_text.text.isEmpty){
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please fill all the fields'),
-                          ),
-                        );
-                        return;
-                      }
-
-                      setState(() {
-                        isLoading = true;
-                      });
-
-                      await serverUtils.login(user_text.text,
-                          password_text.text, fcmToken, context);
-                      username = await serverUtils.getUsername(user_text.text);
-                    },
-                    child: isLoading
+                Obx(() {
+                  return
+                    loginController.isLoading.value
                         ? const CircularProgressIndicator(
-                            semanticsLabel: "Loading",
-                            color: Colors.white,
-                          )
-                        : const Text(
-                            "Sign In",
-                            style: TextStyle(color: Colors.white),
-                          )),
+                      semanticsLabel: "Loading",
+                      color: Colors.deepOrangeAccent,
+                    )
+                        :
+                    CupertinoButton(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.black,
+                      onPressed: () async {
+
+                        FocusManager.instance.primaryFocus?.unfocus();
+
+                        print(user_text.text);
+                        print(password_text.text);
+
+                        if(user_text.text.isEmpty || password_text.text.isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please fill all the fields'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        loginController.startLoading();
+
+                        await serverUtils.login(user_text.text,
+                            password_text.text, fcmToken, context);
+                        username = await serverUtils.getUsername(user_text.text);
+                      },
+                      child: const Text(
+                              "Sign In",
+                              style: TextStyle(color: Colors.white),
+                            )
+                  );
+                }
+                ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -261,7 +267,7 @@ class _SignInFormState extends State<SignInForm> {
                         pageBuilder: (context, _, __) => Center(
                               child: BackdropFilter(
                                   filter:
-                                      ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                      ImageFilter.blur(sigmaX: 50, sigmaY: 50),
                                   child: RegisterForm()),
                             ));
                   },
@@ -279,7 +285,8 @@ class _SignInFormState extends State<SignInForm> {
                             TextSpan(
                                 text: "Register",
                                 style: const TextStyle(
-                                    color: Color.fromRGBO(0, 89, 255, 1.0)),
+                                  fontWeight: FontWeight.w500,
+                                    color: Colors.deepOrange),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Navigator.pop(context);
@@ -290,7 +297,7 @@ class _SignInFormState extends State<SignInForm> {
                                         pageBuilder: (context, _, __) => Center(
                                               child: BackdropFilter(
                                                   filter: ImageFilter.blur(
-                                                      sigmaX: 20, sigmaY: 20),
+                                                      sigmaX: 50, sigmaY: 50),
                                                   child: RegisterForm()),
                                             ));
                                   })
@@ -317,6 +324,7 @@ class RegisterForm extends StatelessWidget {
   final name_text = TextEditingController();
   final email_text = TextEditingController();
   final serverUtils = ServerUtils();
+  final LoginController loginController = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -368,6 +376,10 @@ class RegisterForm extends StatelessWidget {
                 const SizedBox(
                   height: 30,
                 ),
+                loginController.isLoading.value ? const CircularProgressIndicator(
+                  semanticsLabel: "Loading",
+                  color: Colors.black,
+                ) :
                 CupertinoButton(
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.black,
@@ -383,6 +395,8 @@ class RegisterForm extends StatelessWidget {
                         );
                         return;
                       }
+
+                      loginController.startLoading();
 
                       await serverUtils.register(
                           name_text.text,
@@ -409,7 +423,7 @@ class RegisterForm extends StatelessWidget {
                         pageBuilder: (context, _, __) => Center(
                               child: BackdropFilter(
                                   filter:
-                                      ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                      ImageFilter.blur(sigmaX: 50, sigmaY: 50),
                                   child: const SignInForm()),
                             ));
                   },
@@ -427,7 +441,8 @@ class RegisterForm extends StatelessWidget {
                           TextSpan(
                               text: "Sign In",
                               style: const TextStyle(
-                                  color: Color.fromRGBO(0, 89, 255, 1.0)),
+                                fontWeight: FontWeight.w500,
+                                  color: Colors.deepOrange),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   Navigator.pop(context);
@@ -438,7 +453,7 @@ class RegisterForm extends StatelessWidget {
                                       pageBuilder: (context, _, __) => Center(
                                             child: BackdropFilter(
                                                 filter: ImageFilter.blur(
-                                                    sigmaX: 20, sigmaY: 20),
+                                                    sigmaX: 50, sigmaY: 50),
                                                 child: const SignInForm()),
                                           ));
                                 })
@@ -524,6 +539,7 @@ class RegisterTextField extends StatelessWidget {
             )),
         TextFormField(
           controller: name_text,
+          cursorColor: Colors.deepOrange,
           obscureText: field == 'password' ? true : false,
           enableSuggestions: false,
           autocorrect: false,

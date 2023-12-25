@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
+import 'package:lost_flutter/controllers/login_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/pages/home.dart';
@@ -21,8 +22,10 @@ class ServerUtils {
 
   Future<void> login(roll_no, password, fcm_token, context) async {
 
-    final network_error_snackBar = ErrorSnackBar('Network error',);
-    final wrong_credentials_snackBar = ErrorSnackBar('Please check your credentials',);
+    final networkErrorSnackbar = ErrorSnackBar('Network error', context);
+    final serverErrorSnackbar = ErrorSnackBar('Server error', context);
+    final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
+    final LoginController loginController = Get.put(LoginController());
 
     final String url =
         '$endPoint/login'; // replace with your API endpoint
@@ -62,20 +65,32 @@ class ServerUtils {
           SharedPrefs().setFirstLaunch();
           SharedPrefs().setAuthToken(response.body);
           print("Login successful, TOKEN: ${await SharedPrefs().getAuthToken()}");
+          loginController.stopLoading();
+        } else {
+          loginController.stopLoading();
+          ScaffoldMessenger.of(context).showSnackBar(wrongCredentialsSnackbar);
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(wrong_credentials_snackBar as SnackBar);
+        loginController.stopLoading();
+        ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
       }
     } catch (error) {
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(network_error_snackBar as SnackBar);
+      loginController.stopLoading();
+      ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
       print('Error sending POST request: $error');
     }
   }
 
   Future<void> register(name, roll_no, email, password, fcmToken, context) async {
+
+    final networkErrorSnackbar = ErrorSnackBar('Network error', context);
+    final serverErrorSnackbar = ErrorSnackBar('Server error', context);
+    final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
+    final LoginController loginController = Get.put(LoginController());
+
     final String url =
         '$endPoint/register'; // replace with your API endpoint
 
@@ -103,35 +118,28 @@ class ServerUtils {
         print('POST request successful');
         print('Response: ${response.body}');
         if (response.body != 'failed') {
-          // Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => const Home(),
-          //     ));
-          // SharedPrefs().setRollNo(roll_no);
-          // roll_no_ = roll_no;
-          // username = name;
-          // SharedPrefs().setUsername(username);
-          // SharedPrefs().setFirstLaunch();
-          // SharedPrefs().setAuthToken(response.body);
-
           await SharedPrefs().setAuthToken(response.body);
           int isRegisterationSuccessful = await loginWithToken(response.body, roll_no, name);
           if (isRegisterationSuccessful == 1) {
+            loginController.stopLoading();
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => const PageBuilder(),
                 ));
           }
-
+          loginController.stopLoading();
         }
       } else {
         print('POST request failed with status: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
         print('Response: ${response.body}');
+        loginController.stopLoading();
       }
     } catch (error) {
       print('Error sending POST request: $error');
+      ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
+      loginController.stopLoading();
     }
   }
 
@@ -595,10 +603,12 @@ class ServerUtils {
 
 
 
-  SnackBar ErrorSnackBar(error_message) {
+  SnackBar ErrorSnackBar(error_message, BuildContext context) {
     return SnackBar(
       content: Text('$error_message'),
       elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      // margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       dismissDirection: DismissDirection.down,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0),
