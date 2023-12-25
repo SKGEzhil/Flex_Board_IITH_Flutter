@@ -90,7 +90,7 @@ class _GetStartedState extends State<GetStarted> {
                       Column(
                         children: [
                           Text(
-                            "Text",
+                            "Forum",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 70,
@@ -107,7 +107,7 @@ class _GetStartedState extends State<GetStarted> {
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text(
-                                "Text",
+                                "Hub",
                                 style: TextStyle(fontSize: 60),
                               ),
                             ),
@@ -121,7 +121,7 @@ class _GetStartedState extends State<GetStarted> {
                       Column(
                         children: [
                           Text(
-                            "Text",
+                            "@",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 43,
@@ -138,7 +138,7 @@ class _GetStartedState extends State<GetStarted> {
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text(
-                                "Text",
+                                "IITH",
                                 style: TextStyle(
                                     fontSize: 43, fontWeight: FontWeight.bold),
                               ),
