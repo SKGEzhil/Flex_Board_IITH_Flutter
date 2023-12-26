@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-class LoginController extends GetxController {
+class LoadingController extends GetxController {
 
   var isLoading = false.obs;
 

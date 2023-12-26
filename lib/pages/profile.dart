@@ -11,6 +11,7 @@ import '../controllers/post_tag_controller.dart';
 import '../widgets/post_list.dart';
 import '../widgets/title_text.dart';
 import 'package:get/get.dart';
+import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key, });
@@ -72,10 +73,18 @@ class _ProfileState extends State<Profile> {
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
                           children: [
-                            ProfilePicture(
-                                name: username,
-                                radius: 50,
-                                fontsize: 40),
+                            AdvancedAvatar(
+                              name: username,
+                              size: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.redAccent.withOpacity(0.7),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            // ProfilePicture(
+                            //     name: username,
+                            //     radius: 50,
+                            //     fontsize: 40),
                             const SizedBox(
                               width: 10,
                             ),

@@ -153,6 +153,7 @@ class _CommentListState extends State<CommentList> {
                                   const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                   child: TextFormField(
                                     controller: reply,
+                                    cursorColor: Colors.deepOrange,
                                     maxLines: 1,
                                     decoration: const InputDecoration(
                                       border: InputBorder.none,

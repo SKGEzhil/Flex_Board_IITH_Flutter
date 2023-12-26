@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
 import 'package:lost_flutter/controllers/image_picker_controller.dart';
+import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
@@ -36,6 +37,7 @@ class _CreatePostState extends State<CreatePost> {
       Get.put(CabSharingController());
   final ImagePickerController imagePickerController =
       Get.put(ImagePickerController());
+  final LoadingController loadingController = Get.put(LoadingController());
 
 
   @override
@@ -88,6 +90,7 @@ class _CreatePostState extends State<CreatePost> {
                         TextFormField(
                           controller: subject,
                           maxLines: 1,
+                          cursorColor: Colors.black,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -125,6 +128,7 @@ class _CreatePostState extends State<CreatePost> {
                           onTap: () {
                             Scrollable.ensureVisible(dataKey.currentContext!);
                           },
+                          cursorColor: Colors.black,
                           controller: content,
                           maxLines: 4,
                           decoration: InputDecoration(
@@ -327,33 +331,90 @@ class _CreatePostState extends State<CreatePost> {
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: CupertinoButton(
-                    color: Colors.black,
-                    child: const Text('Post'),
-                    onPressed: () async {
-                      var cabDetails = {
-                        'from': cabSharingController.fromLocation.value,
-                        'to': cabSharingController.toLocation.value,
-                        'time': cabSharingController.dateTime.value
-                      };
-                      final tags = postTagController.selectedTags;
-                      if(imagePickerController.image != null){
-                        await serverUtils
-                            .uploadImage(imagePickerController.image);
-                      }
+                child: Obx(() {
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child:
+                    loadingController.isLoading.value
+                        ? Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CupertinoActivityIndicator(
+                                  radius: 15,
+                                  color: Colors.deepOrange,
+                                ),
+                                SizedBox(width: 10,),
+                                Text('Posting...',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black.withOpacity(0.7),
+                                  ),
+                                )
 
-                      serverUtils.createPost(
-                          roll_no_,
-                          subject.text,
-                          content.text,
-                          post_image_link,
-                          tags,
-                          cabDetails,
-                          context);
-                    },
-                  ),
+                              ],
+                            ),
+                          ),
+                        )
+                        :
+                    CupertinoButton(
+                      color: Colors.black,
+                      child: const Text('Post'),
+                      onPressed: () async {
+
+                        if(subject.text.isEmpty || content.text.isEmpty){
+                          Get.snackbar('Error', 'Subject or Body cannot be empty',
+                              isDismissible: true,
+                              mainButton: TextButton(
+                                child: Text('OK',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.5),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                              ),
+                              snackPosition: SnackPosition.TOP,
+                              animationDuration: Duration(milliseconds: 150),
+                              borderRadius: 8,
+                              margin: EdgeInsets.all(10),
+                              backgroundColor: Colors.redAccent.withOpacity(0.7),
+                              colorText: Colors.black
+                          );
+                          return;
+                        }
+
+                        loadingController.startLoading();
+
+                        var cabDetails = {
+                          'from': cabSharingController.fromLocation.value,
+                          'to': cabSharingController.toLocation.value,
+                          'time': cabSharingController.dateTime.value
+                        };
+                        final tags = postTagController.selectedTags;
+                        if (imagePickerController.image != null) {
+                          await serverUtils
+                              .uploadImage(imagePickerController.image);
+                        }
+
+                        serverUtils.createPost(
+                            roll_no_,
+                            subject.text,
+                            content.text,
+                            post_image_link,
+                            tags,
+                            cabDetails,
+                            context);
+                      },
+                    ),
+                  );
+                }
                 ),
               ),
             ],

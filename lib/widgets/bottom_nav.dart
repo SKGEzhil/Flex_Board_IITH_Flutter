@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
+import 'package:lost_flutter/controllers/post_tag_controller.dart';
 import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/search_page.dart';
@@ -27,12 +28,14 @@ class _BottomNavState extends State<BottomNav> {
   final currentIndex = Get.find<BottomNavController>().currentIndex;
   final PostListController postListController = Get.put(PostListController());
   final RepliesController repliesController = Get.put(RepliesController());
+  final PostTagController postTagController = Get.put(PostTagController());
   late Widget currentWidget;
 
 
   void setBottomBarIndex(index) {
     bottomNavController.changeIndex(index);
     postListController.resetSearch();
+    postTagController.resetTags();
     switch (index) {
       case 2:
         repliesController.fetchData();

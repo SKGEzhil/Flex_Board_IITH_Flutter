@@ -43,6 +43,29 @@ class _RepliesPageState extends State<RepliesPage> {
         children: [
           GetBuilder<RepliesController>(
           builder: (_) =>
+            repliesController.items.isEmpty ?
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.red.withOpacity(0.1),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('No replies yet',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.red.withOpacity(0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ) :
             ListView.builder(
               itemCount: repliesController.items.length,
                 itemBuilder: (context, index) {

@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
-import 'package:lost_flutter/controllers/login_controller.dart';
+import 'package:lost_flutter/controllers/loading_controller.dart';
+import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/pages/home.dart';
@@ -25,7 +26,7 @@ class ServerUtils {
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
     final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
-    final LoginController loginController = Get.put(LoginController());
+    final LoadingController loginController = Get.put(LoadingController());
 
     final String url =
         '$endPoint/login'; // replace with your API endpoint
@@ -89,7 +90,7 @@ class ServerUtils {
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
     final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
-    final LoginController loginController = Get.put(LoginController());
+    final LoadingController loginController = Get.put(LoadingController());
 
     final String url =
         '$endPoint/register'; // replace with your API endpoint
@@ -195,6 +196,10 @@ class ServerUtils {
     final String url =
         '$endPoint/create_post'; // replace with your API endpoint
     final CabSharingController cabSharingController = Get.put(CabSharingController());
+    final LoadingController loadingController = Get.put(LoadingController());
+    final networkErrorSnackbar = ErrorSnackBar('Network error', context);
+    final serverErrorSnackbar = ErrorSnackBar('Server error', context);
+    final PostListController postListController = Get.put(PostListController());
 
     Map<String, String> headers = {
       'Content-Type':
@@ -224,18 +229,24 @@ class ServerUtils {
           post_image_link = "";
           cabSharingController.fromLocation.value = "From";
           cabSharingController.toLocation.value = "To";
+          postListController.fetchData();
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => const PageBuilder(),
               ));
+          loadingController.stopLoading();
         }
       } else {
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
+        loadingController.stopLoading();
+        ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
       }
     } catch (error) {
       print('Error sending POST request: $error');
+      loadingController.stopLoading();
+      ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
     }
   }
 
