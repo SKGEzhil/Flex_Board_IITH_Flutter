@@ -1,11 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/utils/shared_prefs.dart';
+import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:lost_flutter/widgets/no_internet.dart';
 import '../controllers/post_tag_controller.dart';
 import '../widgets/post_list.dart';
@@ -46,8 +45,11 @@ class _ProfileState extends State<Profile> {
             IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () async {
-                await SharedPrefs().logout();
-                Navigator.pushReplacementNamed(context, '/get_started');
+
+                await ServerUtils().logout(roll_no_, fcmToken, context);
+
+                // await SharedPrefs().logout();
+                // Navigator.pushReplacementNamed(context, '/get_started');
               },
             )
           ]
@@ -150,7 +152,7 @@ class _ProfileState extends State<Profile> {
                                     fontWeight: FontWeight.bold),
                               ),
                             )),
-                        body: PostList()
+                        body: PostList(page: 'profile',)
                     ),
                   )
                 ]),

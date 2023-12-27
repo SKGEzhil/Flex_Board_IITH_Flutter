@@ -94,3 +94,14 @@ class seenPosts {
   List<String> seenPostsFromJson(String str) => List<String>.from(json.decode(str).map((x) => x));
   String seenPostsToJson(List<String> data) => json.encode(List<dynamic>.from(data.map((x) => x)));
 }
+
+class PostDraft{
+  late String subject;
+  late String content;
+
+  PostDraft({
+    required this.subject,
+    required this.content,
+  });
+
+}

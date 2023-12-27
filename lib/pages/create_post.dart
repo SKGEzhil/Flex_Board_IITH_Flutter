@@ -9,8 +9,10 @@ import 'package:lost_flutter/controllers/image_picker_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
 import 'package:lost_flutter/globals.dart';
+import 'package:lost_flutter/models.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:get/get.dart';
+import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'package:lost_flutter/widgets/cab_sharing_container.dart';
 import '../widgets/post_tag.dart';
 import '../widgets/title_text.dart';
@@ -39,6 +41,19 @@ class _CreatePostState extends State<CreatePost> {
       Get.put(ImagePickerController());
   final LoadingController loadingController = Get.put(LoadingController());
 
+  void getDraft() async {
+    final PostDraft draft = await SharedPrefs().getDraft();
+    setState(() {
+      subject.text = draft.subject;
+      content.text = draft.content;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getDraft();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +63,17 @@ class _CreatePostState extends State<CreatePost> {
         cabSharingController.toLocation.value = 'To';
         postTagController.isCabSharing.value = false;
         postTagController.resetTags();
+        imagePickerController.resetImage();
+        await SharedPrefs().saveDraft(subject.text, content.text);
+        if (subject.text.isNotEmpty || content.text.isNotEmpty) {
+          Get.snackbar('Draft', 'Post saved as Draft',
+              snackPosition: SnackPosition.TOP,
+              animationDuration: Duration(milliseconds: 150),
+              borderRadius: 8,
+              margin: EdgeInsets.all(10),
+              backgroundColor: Colors.deepOrangeAccent.withOpacity(0.7),
+              colorText: Colors.black);
+        }
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -62,7 +88,7 @@ class _CreatePostState extends State<CreatePost> {
           ),
           elevation: 1,
           backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6784313725490196),
-          title: TitleText(
+          title: const TitleText(
             pageTitle: 'Create new post',
           ),
         ),

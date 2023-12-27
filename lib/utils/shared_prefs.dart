@@ -108,4 +108,19 @@ class SharedPrefs {
     return token;
   }
 
+  // set auth token
+  Future<void> saveDraft(String subject, String body) async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    await _sharedPrefs!.setString('draft_subject', subject);
+    await _sharedPrefs!.setString('draft_body', body);
+  }
+
+  Future<PostDraft> getDraft() async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    final subject = await _sharedPrefs!.getString('draft_subject') ?? '';
+    final body = await _sharedPrefs!.getString('draft_body') ?? '';
+    PostDraft post = PostDraft(subject: subject, content: body);
+    return post;
+  }
+
 }

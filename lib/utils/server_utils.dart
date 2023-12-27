@@ -192,6 +192,54 @@ class ServerUtils {
     }
   }
 
+  Future<void> logout(roll_no, fcm_token, context) async {
+
+    final networkErrorSnackbar = ErrorSnackBar('Network error', context);
+    final serverErrorSnackbar = ErrorSnackBar('Server error', context);
+    final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
+    final LoadingController loginController = Get.put(LoadingController());
+
+    final String url =
+        '$endPoint/logout'; // replace with your API endpoint
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'roll_no': roll_no,
+      'fcm_token': fcm_token,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+        if (response.body != 'failed') {
+          await SharedPrefs().logout();
+          Navigator.pushReplacementNamed(context, '/get_started');
+        } else {
+          await SharedPrefs().logout();
+          Navigator.pushReplacementNamed(context, '/get_started');
+        }
+      } else {
+        await SharedPrefs().logout();
+        Navigator.pushReplacementNamed(context, '/get_started');
+      }
+    } catch (error) {
+      await SharedPrefs().logout();
+      Navigator.pushReplacementNamed(context, '/get_started');
+    }
+  }
+
+
   Future<void> createPost(roll_no, subject, content, image, List<String> tags, cab, context) async {
     final String url =
         '$endPoint/create_post'; // replace with your API endpoint
@@ -329,6 +377,10 @@ class ServerUtils {
     final String url =
         '$endPoint/add_reply'; // replace with your API endpoint
 
+    final LoadingController loadingController = Get.put(LoadingController());
+    final networkErrorSnackbar = ErrorSnackBar('Network error', context);
+    final serverErrorSnackbar = ErrorSnackBar('Server error', context);
+
     Map<String, String> headers = {
       'Content-Type':
       'application/json', // adjust the content type based on your API
@@ -350,19 +402,17 @@ class ServerUtils {
       if (response.statusCode == 200) {
         print('POST request successful');
         print('Response: ${response.body}');
-        if (response.body == 'success') {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Home(),
-              ));
-        }
+        loadingController.stopLoading();
       } else {
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
+        loadingController.stopLoading();
+        ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
       }
     } catch (error) {
       print('Error sending POST request: $error');
+      loadingController.stopLoading();
+      ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
     }
   }
 

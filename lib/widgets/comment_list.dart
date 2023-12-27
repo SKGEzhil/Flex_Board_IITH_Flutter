@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
+import 'package:lost_flutter/controllers/loading_controller.dart';
 
 import '../globals.dart';
 import '../models.dart';
 import '../utils/server_utils.dart';
+import 'package:get/get.dart';
 
 class CommentList extends StatefulWidget {
   final postId;
@@ -24,6 +26,7 @@ class _CommentListState extends State<CommentList> {
   final serverUtils = ServerUtils();
   bool refresh_var = false;
   final reply = TextEditingController();
+  final LoadingController loadingController = Get.put(LoadingController());
 
   void initState() {
     super.initState();
@@ -132,7 +135,7 @@ class _CommentListState extends State<CommentList> {
                     Expanded(
                         flex: 1,
                         child: ProfilePicture(
-                          name: '${widget.username}', radius: 23, fontsize: 18, random: true,)),
+                          name: '$username', radius: 23, fontsize: 18,)),
                     const SizedBox(
                       width: 10,
                     ),
@@ -145,40 +148,52 @@ class _CommentListState extends State<CommentList> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                  const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                  child: TextFormField(
-                                    controller: reply,
-                                    cursorColor: Colors.deepOrange,
-                                    maxLines: 1,
-                                    decoration: const InputDecoration(
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      hintText: 'Add a comment',
-                                      focusColor: Colors.black,
+                          child: Obx(() {
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                    child: TextFormField(
+                                      controller: reply,
+                                      cursorColor: Colors.deepOrange,
+                                      maxLines: 1,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        hintText: 'Add a comment',
+                                        focusColor: Colors.black,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  await serverUtils.addReply(roll_no_,
-                                      reply.text, widget.postId, context);
-                                  setState(() {
-                                    reply.text = "";
-                                    fetchData();
-                                  });
-                                },
-                                icon: const Icon(
-                                  Icons.send,
-                                  color: Color.fromRGBO(0, 0, 0, 1),
-                                ),
-                              )
-                            ],
+
+                                loadingController.isLoading.value
+                                    ? Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: const CupertinoActivityIndicator(),
+                                    )
+                                    :
+                                IconButton(
+                                  onPressed: () async {
+                                    loadingController.startLoading();
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                    await serverUtils.addReply(roll_no_,
+                                        reply.text, widget.postId, context);
+                                    setState(() {
+                                      reply.text = "";
+                                      fetchData();
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    Icons.send,
+                                    color: Color.fromRGBO(0, 0, 0, 1),
+                                  ),
+                                )
+                              ],
+                            );
+                          }
                           ),
                         ),
                       ),
