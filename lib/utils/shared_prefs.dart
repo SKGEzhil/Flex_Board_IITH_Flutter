@@ -36,6 +36,11 @@ class SharedPrefs {
     await _sharedPrefs!.setString('roll_no', '');
     await _sharedPrefs!.setString('username', '');
     await _sharedPrefs!.setStringList('posts', postListString);
+    await _sharedPrefs!.setString('auth_token', '');
+    await _sharedPrefs!.setString('seen_posts', '');
+    await _sharedPrefs!.setString('draft_subject', '');
+    await _sharedPrefs!.setString('draft_body', '');
+    await _sharedPrefs!.setString('pfp', '');
     bottomNavController.changeIndex(0);
   }
 
@@ -62,6 +67,17 @@ class SharedPrefs {
     _sharedPrefs = await SharedPreferences.getInstance();
     final username = await _sharedPrefs!.getString('username') ?? '';
     return username;
+  }
+
+  Future<void> setProfilePic(String pfp) async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    await _sharedPrefs!.setString('pfp', pfp);
+  }
+
+  Future<String> getProfilePic() async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    final pfp = await _sharedPrefs!.getString('pfp') ?? '';
+    return pfp;
   }
 
   Future<void> storePosts(List<Post> posts) async {

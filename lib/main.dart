@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lost_flutter/controllers/global_binding.dart';
 import 'package:lost_flutter/controllers/notification_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
+import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
@@ -113,9 +115,42 @@ var isUserLoggedIn = 0;
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // if(Platform.isAndroid){
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // }
+  // if (Platform.isIOS) {
+  //   FlutterNativeSplash.remove();
+  // }
 
   await initializations();
+
+  if (Platform.isIOS) {
+    String? apnsToken = await _firebaseMessaging.getAPNSToken();
+    if (apnsToken != null) {
+      // await _firebaseMessaging.subscribeToTopic("notificationChannel");
+      try {
+        await _firebaseMessaging.subscribeToTopic('topic');
+      } on FirebaseException catch (e) {
+        debugPrint("George here is the error: $e");
+      }
+    } else {
+      await Future<void>.delayed(const Duration(seconds: 3));
+      apnsToken = await _firebaseMessaging.getAPNSToken();
+      if (apnsToken != null) {
+        try {
+          await _firebaseMessaging.subscribeToTopic('topic');
+        } on FirebaseException catch (e) {
+          debugPrint("George here is the error: $e");
+        }
+      }
+    }
+  } else {
+    try {
+      await _firebaseMessaging.subscribeToTopic('topic');
+    } on FirebaseException catch (e) {
+      debugPrint("George here is the error: $e");
+    }
+  }
 
   isConnected = true;
   isUserLoggedIn = await userInit();

@@ -426,7 +426,7 @@ class _CreatePostState extends State<CreatePost> {
                         final tags = postTagController.selectedTags;
                         if (imagePickerController.image != null) {
                           await serverUtils
-                              .uploadImage(imagePickerController.image);
+                              .uploadImage(imagePickerController.image, false);
                         }
 
                         serverUtils.createPost(

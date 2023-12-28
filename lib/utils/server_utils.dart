@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
+import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/pages/home.dart';
+import 'package:lost_flutter/pages/profile.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 
 import '../models.dart';
@@ -27,6 +29,7 @@ class ServerUtils {
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
     final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
     final LoadingController loginController = Get.put(LoadingController());
+    final ProfileController profileController = Get.put(ProfileController());
 
     final String url =
         '$endPoint/login'; // replace with your API endpoint
@@ -61,10 +64,18 @@ class ServerUtils {
               ));
           SharedPrefs().setRollNo(roll_no);
           roll_no_ = roll_no;
-          username = await getUsername(roll_no);
+          // username = await getUserDetails(roll_no);
+          final UserDetails userDetails = await getUserDetails(roll_no);
+          print('USER DETAILS: ${userDetails.name}');
+          username = userDetails.name;
+          profileController.current_profile_pic.value = userDetails.profilePic;
+          profileController.current_username.value = username;
+          profileController.current_roll_no.value = roll_no;
           SharedPrefs().setUsername(username);
+          SharedPrefs().setProfilePic(userDetails.profilePic);
           SharedPrefs().setFirstLaunch();
           SharedPrefs().setAuthToken(response.body);
+          profileController.getUserDetails();
           print("Login successful, TOKEN: ${await SharedPrefs().getAuthToken()}");
           loginController.stopLoading();
         } else {
@@ -90,8 +101,11 @@ class ServerUtils {
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
     final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
+    final alreadyRegistered = ErrorSnackBar('You have already registered.. Proceed to login', context);
+    final invalidRollNo = ErrorSnackBar('Invalid Roll no', context);
+    final invalidEmail = ErrorSnackBar('Invalid email', context);
     final LoadingController loginController = Get.put(LoadingController());
-
+    final ProfileController profileController = Get.put(ProfileController());
     final String url =
         '$endPoint/register'; // replace with your API endpoint
 
@@ -115,13 +129,26 @@ class ServerUtils {
         body: jsonEncode(body),
       );
 
+
+
       if (response.statusCode == 200) {
         print('POST request successful');
         print('Response: ${response.body}');
-        if (response.body != 'failed') {
+
+        if (response.body == 'invalid_roll_no') {
+          loginController.stopLoading();
+          ScaffoldMessenger.of(context).showSnackBar(invalidRollNo);
+        }
+        else if (response.body == 'invalid_email') {
+          loginController.stopLoading();
+          ScaffoldMessenger.of(context).showSnackBar(invalidEmail);
+        }
+
+        if (response.body != 'failed' && response.body != 'invalid_roll_no' && response.body != 'invalid_email') {
           await SharedPrefs().setAuthToken(response.body);
           int isRegisterationSuccessful = await loginWithToken(response.body, roll_no, name);
           if (isRegisterationSuccessful == 1) {
+            profileController.getUserDetails();
             loginController.stopLoading();
             Navigator.pushReplacement(
                 context,
@@ -130,6 +157,10 @@ class ServerUtils {
                 ));
           }
           loginController.stopLoading();
+        }
+        else if(response.body == 'failed') {
+          loginController.stopLoading();
+          ScaffoldMessenger.of(context).showSnackBar(alreadyRegistered);
         }
       } else {
         print('POST request failed with status: ${response.statusCode}');
@@ -145,6 +176,7 @@ class ServerUtils {
   }
 
   Future<int> loginWithToken(token, roll_no, name) async {
+
     final String url =
         '$endPoint/token_auth'; // replace with your API endpoint
 
@@ -236,6 +268,43 @@ class ServerUtils {
     } catch (error) {
       await SharedPrefs().logout();
       Navigator.pushReplacementNamed(context, '/get_started');
+    }
+  }
+
+  Future<void> updateProfile(roll_no, pfp, name) async {
+    final String url =
+        '$endPoint/update_profile'; // replace with your API endpoint
+
+    final ProfileController profileController = Get.put(ProfileController());
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'roll_no': roll_no,
+      'name': name,
+      'pfp': pfp,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+
+      } else {
+        print('POST request failed with status: ${response.statusCode}');
+        print('Response: ${response.body}');
+      }
+    } catch (error) {
+      print('Error sending POST request: $error');
     }
   }
 
@@ -344,13 +413,14 @@ class ServerUtils {
     }
   }
 
-  Future<void> uploadImage(_image) async {
+  Future<String> uploadImage(_image, isPfp) async {
     if (_image == null) {
       // Handle case when no image is selected
-      return;
+      return '';
     }
 
     final url = '$endPoint/upload'; // Replace with your Flask server endpoint
+
 
     final request = http.MultipartRequest('POST', Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
@@ -361,15 +431,22 @@ class ServerUtils {
         // Handle success
         print('Image uploaded successfully');
         final responseBody = await response.stream.bytesToString();
-        post_image_link = responseBody;
-        print('Response: $responseBody');
+        print(responseBody);
+        if (isPfp) {
+          return responseBody;
+        } else {
+          post_image_link = responseBody;
+          return responseBody;
+        }
       } else {
         // Handle error
         print('Failed to upload image. Status code: ${response.statusCode}');
+        return "";
       }
     } catch (error) {
       // Handle network or other errors
       print('Error during image upload: $error');
+      return "";
     }
   }
 
@@ -466,9 +543,9 @@ class ServerUtils {
     }
   }
 
-  Future<String> getUsername(roll_no) async {
+  Future<UserDetails> getUserDetails(roll_no) async {
     final String url =
-        '$endPoint/get_username'; // replace with your API endpoint
+        '$endPoint/get_user_details'; // replace with your API endpoint
 
     Map<String, String> headers = {
       'Content-Type':
@@ -488,16 +565,35 @@ class ServerUtils {
 
       if (response.statusCode == 200) {
         print('POST request successful');
-        print('Response: ${response.body}');
-        return response.body;
+        print('Respo0000nse: ${response.body}');
+        // return response.body;
+
+        final userJson = jsonDecode(response.body);
+        print('USER DETAILS:');
+
+        final UserDetails user = UserDetails(
+          rollNo: userJson['roll_no'],
+          name: userJson['name'],
+          profilePic: userJson['pfp'],
+        );
+
+        print('USER DETAILS: ${user.name}');
+
+        return user;
+
       } else {
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
-        return "";
+        // return "";
+        print('USER DETAILS:');
+        return UserDetails(rollNo: '', name: '', profilePic: '');
       }
     } catch (error) {
       print('Error sending POST request: $error');
-      return "";
+      print('USER DETAILS error:');
+      // return "";
+      return UserDetails(rollNo: '', name: '', profilePic: '');
+
     }
   }
 

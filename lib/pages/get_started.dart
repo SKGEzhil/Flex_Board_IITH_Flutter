@@ -91,7 +91,7 @@ class _GetStartedState extends State<GetStarted> {
                             "Forum",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 70,
+                              fontSize: 60,
                             ),
                           ),
                         ],
@@ -106,7 +106,7 @@ class _GetStartedState extends State<GetStarted> {
                               alignment: Alignment.bottomLeft,
                               child: Text(
                                 "Hub",
-                                style: TextStyle(fontSize: 60),
+                                style: TextStyle(fontSize: 50),
                               ),
                             ),
                           ],
@@ -243,7 +243,7 @@ class _SignInFormState extends State<SignInForm> {
 
                         await serverUtils.login(user_text.text,
                             password_text.text, fcmToken, context);
-                        username = await serverUtils.getUsername(user_text.text);
+                        // username = await serverUtils.getUserDetails(user_text.text);
                       },
                       child: const Text(
                               "Sign In",
