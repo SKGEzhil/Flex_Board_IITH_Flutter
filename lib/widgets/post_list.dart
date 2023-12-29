@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/post_seen_controller.dart';
+import 'package:lost_flutter/controllers/post_viewer_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/widgets/post_tag.dart';
 import '../models.dart';
@@ -32,6 +33,8 @@ class _PostListState extends State<PostList> {
   final PostSeenController postSeenController = Get.put(PostSeenController());
   final NetworkController networkController = Get.find<NetworkController>();
   final PostListController postListController = Get.put(PostListController());
+  final PostViewerController postViewerController =
+      Get.put(PostViewerController());
   int scrollPosition = 0;
 
   void seenCheck(post) async {
@@ -111,6 +114,7 @@ class _PostListState extends State<PostList> {
                             return InkWell(
                               onTap: () {
                                 seenCheck(post.id);
+                                postViewerController.getProfilePic(post.rollNo);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

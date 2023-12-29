@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
@@ -88,7 +89,17 @@ class _RepliesPageState extends State<RepliesPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      ProfilePicture(name: reply.name, radius: 12, fontsize: 11),
+                      reply.profilePic != '' ?
+                          ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: CachedNetworkImage(
+                          imageUrl: reply.profilePic,
+                          width: 30,
+                          fit: BoxFit.cover,
+                          height: 30,
+                        ),
+                      ) :
+                      ProfilePicture(name: reply.name, radius: 15, fontsize: 14),
                       const SizedBox(width: 7),
                       Flexible( // Replaced Expanded with Flexible
                         child: Column(

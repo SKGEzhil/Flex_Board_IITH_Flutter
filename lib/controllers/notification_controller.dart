@@ -12,7 +12,7 @@ class NotificationController extends GetxController {
     subject: '',
     tags: [''],
     date: '',
-    image: '', content: '', cabFrom: '', cabTo: '', cabDate: '',
+    image: '', content: '', cabFrom: '', cabTo: '', cabDate: '', profilePic: '',
   );
 
 }

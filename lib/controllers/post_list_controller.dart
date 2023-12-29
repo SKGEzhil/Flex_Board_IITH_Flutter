@@ -10,6 +10,7 @@ class PostListController extends GetxController {
 
   List<Post> items = <Post>[].obs;
   List<Post> result = <Post>[].obs;
+  List<UserDetails> knownUsers = <UserDetails>[].obs;
   Post notificationPost = Post(
     id: '',
     rollNo: '',
@@ -17,7 +18,7 @@ class PostListController extends GetxController {
     subject: '',
     tags: [''],
     date: '',
-    image: '', content: '', cabFrom: '', cabTo: '', cabDate: '',
+    image: '', content: '', cabFrom: '', cabTo: '', cabDate: '', profilePic: '',
   );
   final serverUtils = ServerUtils();
   final sharedPrefs = SharedPrefs();
@@ -27,6 +28,7 @@ class PostListController extends GetxController {
     if(isConnected){
       print('GETTING POSTS');
       items = await serverUtils.getPosts();
+
       sharedPrefs.storePosts(items);
     } else {
       print('GETTING POSTS FROM SHARED PREFS');

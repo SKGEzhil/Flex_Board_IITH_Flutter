@@ -5,6 +5,7 @@ class Post {
   late String id;
   late String rollNo;
   late String name;
+  late String profilePic;
   late String subject;
   late String content;
   late String image;
@@ -18,6 +19,7 @@ class Post {
     required this.id,
     required this.rollNo,
     required this.name,
+    required this.profilePic,
     required this.subject,
     required this.content,
     required this.image,
@@ -31,8 +33,9 @@ class Post {
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       id: json['_id']['\$oid'],
-      rollNo: json['roll_no'],
-      name: json['name'],
+      rollNo: json['user_details']['roll_no'],
+      name: json['user_details']['name'],
+      profilePic: json['user_details']['pfp'],
       subject: json['subject'],
       content: json['content'],
       image: json['image'],
@@ -48,7 +51,11 @@ class Post {
     "_id": {
       "\$oid": id,
     },
-    "roll_no": rollNo,
+    " user_details": {
+      "roll_no": rollNo,
+      "name": name,
+      "pfp": profilePic,
+    },
     "name": name,
     "subject": subject,
     "content": content,
@@ -67,6 +74,7 @@ class Post {
 class Reply {
   late String rollNo;
   late String name;
+  late String profilePic;
   late String reply;
   late String post_id;
   late String date;
@@ -77,12 +85,14 @@ class Reply {
     required this.reply,
     required this.post_id,
     required this.date,
+    required this.profilePic,
   });
 
   factory Reply.fromJson(Map<String, dynamic> json) {
     return Reply(
-      rollNo: json['roll_no'],
-      name: json['name'],
+      rollNo: json['user_details']['roll_no'],
+      name: json['user_details']['name'],
+      profilePic: json['user_details']['pfp'],
       reply: json['reply'],
       post_id: json['post_id'],
       date: json['date'],

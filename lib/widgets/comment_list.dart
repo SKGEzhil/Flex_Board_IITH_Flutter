@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
+import 'package:lost_flutter/controllers/profile_controller.dart';
 
 import '../globals.dart';
 import '../models.dart';
@@ -27,6 +29,7 @@ class _CommentListState extends State<CommentList> {
   bool refresh_var = false;
   final reply = TextEditingController();
   final LoadingController loadingController = Get.put(LoadingController());
+  final ProfileController profileController = Get.put(ProfileController());
 
   void initState() {
     super.initState();
@@ -81,6 +84,16 @@ class _CommentListState extends State<CommentList> {
                       onTap: () {},
                       child: Row(
                         children: [
+                          reply.profilePic != '' ?
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: CachedNetworkImage(
+                                  imageUrl: reply.profilePic,
+                                  width: 30,
+                                  fit: BoxFit.cover,
+                                  height: 30,
+                                ),
+                              ) :
                           ProfilePicture(name: reply.name, radius: 15, fontsize: 12),
                           const SizedBox(width: 7),
                           Flexible( // Replaced Expanded with Flexible
@@ -134,7 +147,18 @@ class _CommentListState extends State<CommentList> {
                   children: [
                     Expanded(
                         flex: 1,
-                        child: ProfilePicture(
+                        child:
+
+                        profileController.current_profile_pic.value != '' ?
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: CachedNetworkImage(
+                                imageUrl: profileController.current_profile_pic.value,
+                                width: 46,
+                                fit: BoxFit.cover,
+                                height: 46,),
+                            ) :
+                        ProfilePicture(
                           name: '$username', radius: 23, fontsize: 18,)),
                     const SizedBox(
                       width: 10,

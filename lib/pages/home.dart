@@ -72,7 +72,8 @@ class _HomeState extends State<Home> {
           ),
           tooltip: 'Create Post',
           onPressed: () {
-            Navigator.pushNamed(context, '/create_post');
+            throw Exception();
+            // Navigator.pushNamed(context, '/create_post');
           },
         )
       ],
