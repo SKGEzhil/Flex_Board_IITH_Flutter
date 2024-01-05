@@ -159,7 +159,7 @@ class _CommentListState extends State<CommentList> {
                                 height: 46,),
                             ) :
                         ProfilePicture(
-                          name: '$username', radius: 23, fontsize: 18,)),
+                          name: '$username_', radius: 23, fontsize: 18,)),
                     const SizedBox(
                       width: 10,
                     ),

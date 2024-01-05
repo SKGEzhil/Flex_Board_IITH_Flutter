@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
+import 'package:lost_flutter/controllers/google_auth_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models.dart';
@@ -7,6 +8,17 @@ import '../models.dart';
 class SharedPrefs {
   SharedPreferences? _sharedPrefs;
   final BottomNavController bottomNavController = Get.put(BottomNavController());
+
+  Future<void> setAuthMethod(auth_method) async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    await _sharedPrefs?.setString('auth_method', auth_method);
+  }
+
+  Future<String> getAuthMethod() async {
+    _sharedPrefs = await SharedPreferences.getInstance();
+    final authMethod = await _sharedPrefs!.getString('auth_method') ?? '';
+    return authMethod;
+  }
 
   Future<int> checkFirstLaunch() async {
     _sharedPrefs = await SharedPreferences.getInstance();
@@ -41,6 +53,18 @@ class SharedPrefs {
     await _sharedPrefs!.setString('draft_subject', '');
     await _sharedPrefs!.setString('draft_body', '');
     await _sharedPrefs!.setString('pfp', '');
+
+    final auth_method = await getAuthMethod();
+    final GoogleAuthController googleAuthController = Get.put(GoogleAuthController());
+    // final LoginController loginController = Get.put(LoginController());
+    // final RegistrationController registrationController = Get.put(RegistrationController());
+
+    if(auth_method == 'google'){
+      googleAuthController.signOut();
+      // loginController.signOut();
+      // registrationController.signOut();
+    }
+
     bottomNavController.changeIndex(0);
   }
 

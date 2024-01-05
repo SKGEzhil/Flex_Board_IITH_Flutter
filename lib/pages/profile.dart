@@ -81,7 +81,7 @@ class _ProfileState extends State<Profile> {
                                       width: 100,
                                     )
                                   : AdvancedAvatar(
-                                      name: username,
+                                      name: username_,
                                       size: 100,
                                       decoration: BoxDecoration(
                                         color: Colors.redAccent.withOpacity(0.7),
@@ -244,7 +244,7 @@ class _ProfileState extends State<Profile> {
                                           ),
                                       )
                                       : AdvancedAvatar(
-                                          name: username,
+                                          name: username_,
                                           size: 100,
                                           decoration: BoxDecoration(
                                             color: Colors.redAccent

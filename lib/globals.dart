@@ -1,7 +1,7 @@
 
 
 String roll_no_ = "Hello User";
-String username = "";
+String username_ = "";
 String profile_pic = "";
 String post_image_link = "";
 String fcmToken = "";

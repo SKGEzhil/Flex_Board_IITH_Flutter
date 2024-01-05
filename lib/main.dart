@@ -70,14 +70,15 @@ Future<void> initializations() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.instance.subscribeToTopic("topic");
   FirebaseMessaging.instance
-      .getInitialMessage()
-      .then((message) async {
+        .getInitialMessage()
+        .then((message) async {
       await onNotificationClick(message, 'get_init');
-  });
+    });
 
-  final token = await FirebaseMessaging.instance.getToken();
-  fcmToken = token!;
-  print(token);
+    final token = await FirebaseMessaging.instance.getToken();
+    fcmToken = token!;
+    print(token);
+
 
 }
 
@@ -99,6 +100,14 @@ Future<int> userInit() async {
   if (number == 0) {
     final roll_no = await SharedPrefs().getRollNo();
     final username = await SharedPrefs().getUsername();
+    final auth_method = await SharedPrefs().getAuthMethod();
+
+    if(auth_method == 'google'){
+      roll_no_ = roll_no;
+      username_ = username;
+      return 1;
+    }
+
     final token = await SharedPrefs().getAuthToken();
     print('token = $token');
     int isAuthSuccess =
@@ -125,7 +134,10 @@ void main() async {
   //   FlutterNativeSplash.remove();
   // }
 
-  await initializations();
+  if(await ServerUtils().isConnected()){
+    await initializations();
+
+  }
 
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
@@ -170,7 +182,7 @@ void main() async {
   if (await SharedPrefs().checkFirstLaunch() == 0) {
     isUserLoggedIn = 1;
     roll_no_ = await SharedPrefs().getRollNo();
-    username = await SharedPrefs().getUsername();
+    username_ = await SharedPrefs().getUsername();
   } else {
     isUserLoggedIn = 0;
   }

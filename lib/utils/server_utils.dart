@@ -1,10 +1,13 @@
 
+import 'dart:ffi';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
+import 'package:lost_flutter/controllers/google_auth_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/globals.dart';
@@ -21,7 +24,7 @@ class ServerUtils {
 
   final endPoint = 'http://65.0.8.179';
   // final endPoint = 'http://localhost:5000';
-  // final endPoint = 'http://10.0.2.2:5000';
+  // final endPoint = 'http://10.0.2.2:80';
 
   Future<void> login(roll_no, password, fcm_token, context) async {
 
@@ -67,11 +70,11 @@ class ServerUtils {
           // username = await getUserDetails(roll_no);
           final UserDetails userDetails = await getUserDetails(roll_no);
           print('USER DETAILS: ${userDetails.name}');
-          username = userDetails.name;
+          username_ = userDetails.name;
           profileController.current_profile_pic.value = userDetails.profilePic;
-          profileController.current_username.value = username;
+          profileController.current_username.value = username_;
           profileController.current_roll_no.value = roll_no;
-          SharedPrefs().setUsername(username);
+          SharedPrefs().setUsername(username_);
           SharedPrefs().setProfilePic(userDetails.profilePic);
           SharedPrefs().setFirstLaunch();
           SharedPrefs().setAuthToken(response.body);
@@ -175,6 +178,206 @@ class ServerUtils {
     }
   }
 
+  Future<bool> googleRegister(name, email, roll_no, pfp, fcmToken, context) async {
+
+    final networkErrorSnackbar = ErrorSnackBar('Network error', context);
+    final serverErrorSnackbar = ErrorSnackBar('Server error', context);
+    final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
+    final alreadyRegistered = ErrorSnackBar('You have already registered.. Proceed to login', context);
+    final invalidRollNo = ErrorSnackBar('Invalid Roll no', context);
+    final invalidEmail = ErrorSnackBar('Invalid email', context);
+    final LoadingController loadingController = Get.put(LoadingController());
+    final GoogleAuthController googleAuthController = Get.put(GoogleAuthController());
+    final ProfileController profileController = Get.put(ProfileController());
+    final String url =
+        '$endPoint/google_auth'; // replace with your API endpoint
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'name': name,
+      'email': email,
+      'roll_no': roll_no,
+      'pfp': pfp,
+      'fcm_token': fcmToken,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+
+        if (response.body == 'invalid_roll_no') {
+          loadingController.stopLoading();
+          ScaffoldMessenger.of(context).showSnackBar(invalidRollNo);
+          return false;
+        }
+        else if (response.body == 'invalid_email') {
+          await googleAuthController.signOut();
+          loadingController.stopLoading();
+          ScaffoldMessenger.of(context).showSnackBar(invalidEmail);
+          return false;
+        } else if(response.body == 'native_login'){
+          loadingController.stopLoading();
+          ScaffoldMessenger.of(context).showSnackBar(ErrorSnackBar('Please ue native login', context));
+          await googleAuthController.signOut();
+          return false;
+
+        }
+
+        if(response.body == 'success'){
+          SharedPrefs().setAuthMethod('google');
+          return true;
+        }
+        return false;
+      } else {
+        // await registrationController.googleSignIn.signOut();
+        await googleAuthController.signOut();
+        print('POST request failed with status: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+        print('Response: ${response.body}');
+        loadingController.stopLoading();
+        return false;
+
+      }
+    } catch (error) {
+      print('Error sending POST request: $error');
+      ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
+      loadingController.stopLoading();
+      return false;
+
+    }
+  }
+
+  // Future<bool> googleLogin(roll_no, auth_token, context) async {
+  //
+  //   final networkErrorSnackbar = ErrorSnackBar('Network error', context);
+  //   final serverErrorSnackbar = ErrorSnackBar('Server error', context);
+  //   final wrongCredentialsSnackbar = ErrorSnackBar('Please check your credentials', context);
+  //   final alreadyRegistered = ErrorSnackBar('You have already registered.. Proceed to login', context);
+  //   final invalidRollNo = ErrorSnackBar('Invalid Roll no', context);
+  //   final invalidEmail = ErrorSnackBar('Invalid email', context);
+  //   final LoadingController loadingController = Get.put(LoadingController());
+  //   final RegistrationController registrationController = Get.put(RegistrationController());
+  //   final LoginController loginController = Get.put(LoginController());
+  //   final ProfileController profileController = Get.put(ProfileController());
+  //   final String url =
+  //       '$endPoint/google_login'; // replace with your API endpoint
+  //
+  //   Map<String, String> headers = {
+  //     'Content-Type':
+  //     'application/json', // adjust the content type based on your API
+  //   };
+  //
+  //   Map<String, dynamic> body = {
+  //     'token': auth_token,
+  //   };
+  //
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(url),
+  //       headers: headers,
+  //       body: jsonEncode(body),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       print('POST request successful');
+  //       print('Response: ${response.body}');
+  //
+  //       if(response.body == 'success'){
+  //         SharedPrefs().setAuthMethod('google');
+  //         loadingController.stopLoading();
+  //         return true;
+  //
+  //       } else if (response.body == 'native_login') {
+  //         ScaffoldMessenger.of(context).showSnackBar(ErrorSnackBar('Please login using native method', context));
+  //         loadingController.stopLoading();
+  //         return false;
+  //       } else {
+  //         ScaffoldMessenger.of(context).showSnackBar(ErrorSnackBar('Server Error', context));
+  //         loadingController.stopLoading();
+  //         return false;
+  //       }
+  //
+  //     } else {
+  //       print('POST request failed with status: ${response.statusCode}');
+  //       ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+  //       print('Response: ${response.body}');
+  //       loadingController.stopLoading();
+  //       return false;
+  //     }
+  //   } catch (error) {
+  //     print('Error sending POST request: $error');
+  //     ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
+  //     loadingController.stopLoading();
+  //     return false;
+  //   }
+  // }
+
+
+  Future<bool> validateRollNo(roll_no, context) async {
+
+    final networkErrorSnackbar = ErrorSnackBar('Network error', context);
+    final serverErrorSnackbar = ErrorSnackBar('Server error', context);
+    final LoadingController loginController = Get.put(LoadingController());
+
+    final String url =
+        '$endPoint/validate_roll_no'; // replace with your API endpoint
+
+    Map<String, String> headers = {
+      'Content-Type':
+      'application/json', // adjust the content type based on your API
+    };
+
+    Map<String, dynamic> body = {
+      'roll_no': roll_no,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        print('POST request successful');
+        print('Response: ${response.body}');
+
+        if(response.body == 'invalid_roll_no'){
+          ScaffoldMessenger.of(context).showSnackBar(ErrorSnackBar('Invalid Roll No', context));
+          loginController.stopLoading();
+          return false;
+        } else{
+          return true;
+        }
+
+      } else {
+        loginController.stopLoading();
+        ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
+        print('POST request failed with status: ${response.statusCode}');
+        print('Response: ${response.body}');
+        return false;
+      }
+    } catch (error) {
+      Navigator.pop(context);
+      loginController.stopLoading();
+      ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
+      print('Error sending POST request: $error');
+      return false;
+    }
+  }
+
+
   Future<int> loginWithToken(token, roll_no, name) async {
 
     final String url =
@@ -207,8 +410,8 @@ class ServerUtils {
           //     ));
           roll_no_ = roll_no;
           SharedPrefs().setRollNo(roll_no_);
-          username = name;
-          SharedPrefs().setUsername(username);
+          username_ = name;
+          SharedPrefs().setUsername(username_);
           SharedPrefs().setFirstLaunch();
           return 1;
         }
