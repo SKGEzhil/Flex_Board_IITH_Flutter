@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:lost_flutter/controllers/authentication_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/google_auth_controller.dart';
 import 'package:lost_flutter/globals.dart';
@@ -164,12 +165,15 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<SignInForm> {
-  final user_text = TextEditingController();
+  final roll_no_text = TextEditingController();
   final google_roll_no = TextEditingController();
   final password_text = TextEditingController();
   final serverUtils = ServerUtils();
   final LoadingController loadingController = Get.put(LoadingController());
-  final GoogleAuthController googleAuthController = Get.put(GoogleAuthController());
+  final GoogleAuthController googleAuthController =
+      Get.put(GoogleAuthController());
+  final AuthenticationController authenticationController =
+      Get.put(AuthenticationController());
   // final LoginController loginController = Get.put(LoginController());
   // final RegistrationController registrationController = Get.put(RegistrationController());
 
@@ -200,7 +204,7 @@ class _SignInFormState extends State<SignInForm> {
                 child: Column(
               children: [
                 RegisterTextField(
-                  name_text: user_text,
+                  name_text: roll_no_text,
                   hintText: "Enter your Roll No",
                   subText: "Roll No",
                   field: "roll_no",
@@ -226,23 +230,25 @@ class _SignInFormState extends State<SignInForm> {
                           onPressed: () async {
                             FocusManager.instance.primaryFocus?.unfocus();
 
-                            print(user_text.text);
+                            print(roll_no_text.text);
                             print(password_text.text);
 
-                            if (user_text.text.isEmpty ||
-                                password_text.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please fill all the fields'),
-                                ),
-                              );
-                              return;
-                            }
+                            authenticationController.login(roll_no_text.text, password_text.text, context);
 
-                            loadingController.startLoading();
-
-                            await serverUtils.login(user_text.text,
-                                password_text.text, fcmToken, context);
+                            // if (roll_no_text.text.isEmpty ||
+                            //     password_text.text.isEmpty) {
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     const SnackBar(
+                            //       content: Text('Please fill all the fields'),
+                            //     ),
+                            //   );
+                            //   return;
+                            // }
+                            //
+                            // loadingController.startLoading();
+                            //
+                            // await serverUtils.login(roll_no_text.text,
+                            //     password_text.text, fcmToken, context);
                             // username = await serverUtils.getUserDetails(user_text.text);
                           },
                           child: const Text(
@@ -250,67 +256,77 @@ class _SignInFormState extends State<SignInForm> {
                             style: TextStyle(color: Colors.white),
                           ));
                 }),
-                SizedBox(height: 10,),
-                Text('OR',
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.7)
-                  ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'OR',
+                  style: TextStyle(color: Colors.black.withOpacity(0.7)),
                 ),
                 Divider(
                   height: 0,
                   color: Colors.black.withOpacity(0.1),
                 ),
-                SizedBox(height: 15,),
+                SizedBox(
+                  height: 15,
+                ),
                 GestureDetector(
                   onTap: () {
-
-                    showCupertinoDialog(context: context, barrierDismissible: true, builder: (context) {
-                      return CupertinoAlertDialog(
-                        // title: Text('Enter roll to to continue'),
-                        content: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text('Enter Roll No to continue: ',
-                                style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500
+                    showCupertinoDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (context) {
+                          return CupertinoAlertDialog(
+                            // title: Text('Enter roll to to continue'),
+                            content: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    'Enter Roll No to continue: ',
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
+                                SizedBox(
+                                  height: 7,
+                                ),
+                                CupertinoTextField(
+                                  controller: google_roll_no,
+                                  placeholder: 'Roll No',
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              CupertinoDialogAction(
+                                child: const Text('Cancel',
+                                    style: TextStyle(color: Colors.black)),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
                               ),
-                            ),
-                            SizedBox(height: 7,),
-                            CupertinoTextField(
-                              controller: google_roll_no,
-                              placeholder: 'Roll No',
-                            ),
-                          ],
-                        ),
-                        actions: [
-                          CupertinoDialogAction(
-                            child: const Text('Cancel',
-                                style: TextStyle(color: Colors.black)),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          CupertinoDialogAction(
-                            child: const Text('Select',
-                                style: TextStyle(color: Colors.deepOrangeAccent)),
-                            onPressed: () async {
-                              final isValidRollNo = await serverUtils.validateRollNo(google_roll_no.text, context);
-                              if(isValidRollNo){
-                                googleAuthController.login(google_roll_no.text, context);
+                              CupertinoDialogAction(
+                                child: const Text('Select',
+                                    style: TextStyle(
+                                        color: Colors.deepOrangeAccent)),
+                                onPressed: () async {
+                                  final isValidRollNo =
+                                      await serverUtils.validateRollNo(
+                                          google_roll_no.text, context);
+                                  if (isValidRollNo) {
+                                    googleAuthController.login(
+                                        google_roll_no.text, context);
 
-                                // registrationController.register(context, google_roll_no.text);
-                              }
-                            },
-                          ),
-                        ],
-                      );
-                    });
-
+                                    // registrationController.register(context, google_roll_no.text);
+                                  }
+                                },
+                              ),
+                            ],
+                          );
+                        });
 
                     // registrationController.register(context);
 
@@ -390,7 +406,6 @@ class _SignInFormState extends State<SignInForm> {
                     //             ),
                     //           )),
                     //     ))
-
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -400,31 +415,33 @@ class _SignInFormState extends State<SignInForm> {
                       padding: const EdgeInsets.all(4.0),
                       child: Container(
                           child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/google_icon.png',
-                                  width: 30,
-                                  height: 30,
-                                ),
-                                SizedBox(width: 10,),
-                                Text('SignIn with Google',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500
-                                  ),
-                                ),
-                              ],
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/google_icon.png',
+                              width: 30,
+                              height: 30,
                             ),
-                          )
-                      ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              'SignIn with Google',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      )),
                     ),
                   ),
                 ),
-                SizedBox(height: 25,),
+                SizedBox(
+                  height: 25,
+                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
@@ -433,11 +450,11 @@ class _SignInFormState extends State<SignInForm> {
                         barrierLabel: "SignIn",
                         context: context,
                         pageBuilder: (context, _, __) => Center(
-                          child: BackdropFilter(
-                              filter:
-                              ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                              child: RegisterForm()),
-                        ));
+                              child: BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                  child: RegisterForm()),
+                            ));
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -450,33 +467,29 @@ class _SignInFormState extends State<SignInForm> {
                               text: "Don't have an account? ",
                               style: const TextStyle(color: Colors.black),
                               children: [
-                                TextSpan(
-                                    text: "Register",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.deepOrange),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.pop(context);
-                                        showGeneralDialog(
-                                            barrierDismissible: true,
-                                            barrierLabel: "SignIn",
-                                            context: context,
-                                            pageBuilder: (context, _, __) => Center(
+                            TextSpan(
+                                text: "Register",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.deepOrange),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.pop(context);
+                                    showGeneralDialog(
+                                        barrierDismissible: true,
+                                        barrierLabel: "SignIn",
+                                        context: context,
+                                        pageBuilder: (context, _, __) => Center(
                                               child: BackdropFilter(
                                                   filter: ImageFilter.blur(
                                                       sigmaX: 50, sigmaY: 50),
                                                   child: RegisterForm()),
                                             ));
-                                      })
-                              ])),
+                                  })
+                          ])),
                     ),
                   ),
                 ),
-
-
-
-
               ],
             ))
           ],
@@ -491,14 +504,17 @@ class RegisterForm extends StatelessWidget {
     super.key,
   });
 
-  final user_text = TextEditingController();
+  final roll_no_text = TextEditingController();
   final google_roll_no = TextEditingController();
   final password_text = TextEditingController();
   final name_text = TextEditingController();
   final email_text = TextEditingController();
   final serverUtils = ServerUtils();
   final LoadingController loadingController = Get.put(LoadingController());
-  final GoogleAuthController googleAuthController = Get.put(GoogleAuthController());
+  final GoogleAuthController googleAuthController =
+      Get.put(GoogleAuthController());
+  final AuthenticationController authenticationController =
+      Get.put(AuthenticationController());
   // final RegistrationController _registrationController = Get.put(RegistrationController());
 
   @override
@@ -531,7 +547,7 @@ class RegisterForm extends StatelessWidget {
                   field: "name",
                 ),
                 RegisterTextField(
-                  name_text: user_text,
+                  name_text: roll_no_text,
                   hintText: "Enter your Roll No",
                   subText: "Roll No",
                   field: "roll_no",
@@ -560,214 +576,227 @@ class RegisterForm extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         color: Colors.black,
                         onPressed: () async {
-                          print(user_text.text);
+                          print(roll_no_text.text);
                           print(password_text.text);
 
-                          if (name_text.text.isEmpty ||
-                              user_text.text.isEmpty ||
-                              email_text.text.isEmpty ||
-                              password_text.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Please fill all the fields'),
-                              ),
-                            );
-                            return;
-                          }
-
-                          loadingController.startLoading();
-
-                          await serverUtils.register(
+                          authenticationController.register(
                               name_text.text,
-                              user_text.text,
+                              roll_no_text.text,
                               email_text.text,
                               password_text.text,
-                              fcmToken,
                               context);
+
+                          // if (name_text.text.isEmpty ||
+                          //     roll_no_text.text.isEmpty ||
+                          //     email_text.text.isEmpty ||
+                          //     password_text.text.isEmpty) {
+                          //   ScaffoldMessenger.of(context).showSnackBar(
+                          //     const SnackBar(
+                          //       content: Text('Please fill all the fields'),
+                          //     ),
+                          //   );
+                          //   return;
+                          // }
+                          //
+                          // loadingController.startLoading();
+                          //
+                          // await serverUtils.register(
+                          //     name_text.text,
+                          //     roll_no_text.text,
+                          //     email_text.text,
+                          //     password_text.text,
+                          //     fcmToken,
+                          //     context);
                         },
                         child: const Text(
                           "Sign Up",
                           style: TextStyle(color: Colors.white),
                         )),
-                SizedBox(height: 5,),
-                Text('OR',
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.7)
-                  ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  'OR',
+                  style: TextStyle(color: Colors.black.withOpacity(0.7)),
                 ),
                 Divider(
                   height: 0,
                   color: Colors.black.withOpacity(0.1),
                 ),
-                SizedBox(height: 10,),
-                loadingController.isLoading.value ?
-                    CupertinoActivityIndicator() :
-                GestureDetector(
-                  onTap: () {
-
-                    showCupertinoDialog(context: context, barrierDismissible: true, builder: (context) {
-                      return CupertinoAlertDialog(
-                        // title: Text('Enter roll to to continue'),
-                        content: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Text('Enter Roll No to continue: ',
-                                style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 7,),
-                            CupertinoTextField(
-                              controller: google_roll_no,
-                              placeholder: 'Roll No',
-                            ),
-                          ],
-                        ),
-                        actions: [
-                          CupertinoDialogAction(
-                            child: const Text('Cancel',
-                                style: TextStyle(color: Colors.black)),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          CupertinoDialogAction(
-                            child: loadingController.isLoading.value ?
-                                CupertinoActivityIndicator() :
-                            Text('Select',
-                                style: TextStyle(color: Colors.deepOrangeAccent)),
-                            onPressed: () async {
-                              // loadingController.startLoading();
-                              final isValidRollNo = await serverUtils.validateRollNo(google_roll_no.text, context);
-                              if(isValidRollNo){
-                                googleAuthController.login(google_roll_no.text, context);
-                                // _registrationController.register(context, google_roll_no.text);
-                              }
-                            },
-                          ),
-                        ],
-                      );
-                    });
-
-
-                    // registrationController.register(context);
-
-                    // showGeneralDialog(
-                    //     barrierLabel: "Password Reset",
-                    //     context: context,
-                    //     pageBuilder: (context, _, __) => Center(
-                    //       child: BackdropFilter(
-                    //           filter:
-                    //           ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-                    //           child: Padding(
-                    //             padding: const EdgeInsets.all(20.0),
-                    //             child: Material(
-                    //               color: Colors.transparent,
-                    //               child: Container(
-                    //                 decoration: BoxDecoration(
-                    //                   color: Colors.white,
-                    //                   borderRadius: BorderRadius.circular(20)
-                    //                 ),
-                    //                 child: Padding(
-                    //                   padding: const EdgeInsets.all(10.0),
-                    //                   child: Column(
-                    //                     crossAxisAlignment: CrossAxisAlignment.start,
-                    //                     mainAxisSize: MainAxisSize.min,
-                    //                     children: [
-                    //                       Text('Password Reset',
-                    //                         style: TextStyle(
-                    //                           fontSize: 25,
-                    //                           fontWeight: FontWeight.w500
-                    //                         ),
-                    //                       ),
-                    //                       Divider(height: 5,),
-                    //
-                    //                       Text('A password reset link has been sent to your email',
-                    //                         style: TextStyle(
-                    //                           fontSize: 17
-                    //                         ),
-                    //                       ),
-                    //
-                    //                       Row(
-                    //                         mainAxisAlignment: MainAxisAlignment.end,
-                    //                         children: [
-                    //                           Align(
-                    //                             alignment: Alignment.bottomLeft,
-                    //                             child: GestureDetector(
-                    //                               onTap: () {
-                    //                                 Navigator.of(context).pop();
-                    //                               },
-                    //                               child: Container(
-                    //                                   decoration: BoxDecoration(
-                    //                                     borderRadius: BorderRadius.circular(50),
-                    //                                     color: Colors.black.withOpacity(0.1)
-                    //                                   ),
-                    //                                   child: Padding(
-                    //                                     padding: const EdgeInsets.all(8.0),
-                    //                                     child: Row(
-                    //                                         children: [
-                    //                                           SizedBox(width: 7,),
-                    //                                           Text('OK',
-                    //                                             style: TextStyle(
-                    //                                               color: Colors.deepOrange
-                    //                                             ),
-                    //                                           ),
-                    //                                           SizedBox(width: 7,),
-                    //                                         ]
-                    //                                     ),
-                    //                                   )
-                    //                               ),
-                    //                             ),
-                    //                           ),
-                    //                         ],
-                    //                       )
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           )),
-                    //     ))
-
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white.withOpacity(0.2)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Container(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/google_icon.png',
-                                  width: 30,
-                                  height: 30,
-                                ),
-                                SizedBox(width: 10,),
-                                Text('SignUp with Google',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                      ),
-                    ),
-                  ),
+                SizedBox(
+                  height: 10,
                 ),
+                loadingController.isLoading.value
+                    ? CupertinoActivityIndicator()
+                    : GestureDetector(
+                        onTap: () {
+                          showCupertinoDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context) {
+                                return CupertinoAlertDialog(
+                                  // title: Text('Enter roll to to continue'),
+                                  content: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          'Enter Roll No to continue: ',
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 7,
+                                      ),
+                                      CupertinoTextField(
+                                        controller: google_roll_no,
+                                        placeholder: 'Roll No',
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    CupertinoDialogAction(
+                                      child: const Text('Cancel',
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    CupertinoDialogAction(
+                                      child: loadingController.isLoading.value
+                                          ? CupertinoActivityIndicator()
+                                          : Text('Select',
+                                              style: TextStyle(
+                                                  color:
+                                                      Colors.deepOrangeAccent)),
+                                      onPressed: () async {
+                                        // loadingController.startLoading();
+                                        authenticationController.googleSignIn(
+                                            google_roll_no, context);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
 
+                          // registrationController.register(context);
+
+                          // showGeneralDialog(
+                          //     barrierLabel: "Password Reset",
+                          //     context: context,
+                          //     pageBuilder: (context, _, __) => Center(
+                          //       child: BackdropFilter(
+                          //           filter:
+                          //           ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                          //           child: Padding(
+                          //             padding: const EdgeInsets.all(20.0),
+                          //             child: Material(
+                          //               color: Colors.transparent,
+                          //               child: Container(
+                          //                 decoration: BoxDecoration(
+                          //                   color: Colors.white,
+                          //                   borderRadius: BorderRadius.circular(20)
+                          //                 ),
+                          //                 child: Padding(
+                          //                   padding: const EdgeInsets.all(10.0),
+                          //                   child: Column(
+                          //                     crossAxisAlignment: CrossAxisAlignment.start,
+                          //                     mainAxisSize: MainAxisSize.min,
+                          //                     children: [
+                          //                       Text('Password Reset',
+                          //                         style: TextStyle(
+                          //                           fontSize: 25,
+                          //                           fontWeight: FontWeight.w500
+                          //                         ),
+                          //                       ),
+                          //                       Divider(height: 5,),
+                          //
+                          //                       Text('A password reset link has been sent to your email',
+                          //                         style: TextStyle(
+                          //                           fontSize: 17
+                          //                         ),
+                          //                       ),
+                          //
+                          //                       Row(
+                          //                         mainAxisAlignment: MainAxisAlignment.end,
+                          //                         children: [
+                          //                           Align(
+                          //                             alignment: Alignment.bottomLeft,
+                          //                             child: GestureDetector(
+                          //                               onTap: () {
+                          //                                 Navigator.of(context).pop();
+                          //                               },
+                          //                               child: Container(
+                          //                                   decoration: BoxDecoration(
+                          //                                     borderRadius: BorderRadius.circular(50),
+                          //                                     color: Colors.black.withOpacity(0.1)
+                          //                                   ),
+                          //                                   child: Padding(
+                          //                                     padding: const EdgeInsets.all(8.0),
+                          //                                     child: Row(
+                          //                                         children: [
+                          //                                           SizedBox(width: 7,),
+                          //                                           Text('OK',
+                          //                                             style: TextStyle(
+                          //                                               color: Colors.deepOrange
+                          //                                             ),
+                          //                                           ),
+                          //                                           SizedBox(width: 7,),
+                          //                                         ]
+                          //                                     ),
+                          //                                   )
+                          //                               ),
+                          //                             ),
+                          //                           ),
+                          //                         ],
+                          //                       )
+                          //                     ],
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           )),
+                          //     ))
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white.withOpacity(0.2)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Container(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/google_icon.png',
+                                    width: 30,
+                                    height: 30,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'SignUp with Google',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
+                            )),
+                          ),
+                        ),
+                      ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -901,7 +930,6 @@ class RegisterTextField extends StatelessWidget {
           obscureText: field == 'password' ? true : false,
           enableSuggestions: false,
           autocorrect: false,
-
           decoration: InputDecoration(
               fillColor: Colors.white.withOpacity(0.3),
               filled: true,
@@ -920,8 +948,7 @@ class RegisterTextField extends StatelessWidget {
                     color: Colors.white.withOpacity(0)), //<-- SEE HERE
               ),
               prefixIcon:
-                  Padding(padding: EdgeInsets.all(15), child: TextFieldIcon())
-          ),
+                  Padding(padding: EdgeInsets.all(15), child: TextFieldIcon())),
         ),
       ],
     );

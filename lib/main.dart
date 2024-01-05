@@ -7,7 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:lost_flutter/controllers/authentication_controller.dart';
 import 'package:lost_flutter/controllers/global_binding.dart';
+import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
 import 'package:lost_flutter/controllers/notification_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/profile_controller.dart';
@@ -69,11 +71,11 @@ Future<void> initializations() async {
   // Firebase message handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.instance.subscribeToTopic("topic");
-  FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((message) async {
-      await onNotificationClick(message, 'get_init');
-    });
+  // FirebaseMessaging.instance
+  //       .getInitialMessage()
+  //       .then((message) async {
+  //     await onNotificationClick(message, 'get_init');
+  //   });
 
     final token = await FirebaseMessaging.instance.getToken();
     fcmToken = token!;
@@ -94,49 +96,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('FIREBASE BG HANDLER ${message.data}');
 }
 
-Future<int> userInit() async {
-  int number = await SharedPrefs().checkFirstLaunch();
-  print(number);
-  if (number == 0) {
-    final roll_no = await SharedPrefs().getRollNo();
-    final username = await SharedPrefs().getUsername();
-    final auth_method = await SharedPrefs().getAuthMethod();
-
-    if(auth_method == 'google'){
-      roll_no_ = roll_no;
-      username_ = username;
-      return 1;
-    }
-
-    final token = await SharedPrefs().getAuthToken();
-    print('token = $token');
-    int isAuthSuccess =
-        await ServerUtils().loginWithToken(token, roll_no, username);
-    if (isAuthSuccess == 1) {
-      print('roll_no_ = $roll_no_');
-      return 1;
-    } else {
-      return 0;
-    }
-  } else {
-    return 0;
-  }
-}
-
-var isUserLoggedIn = 0;
-
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // if(Platform.isAndroid){
-    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // }
-  // if (Platform.isIOS) {
-  //   FlutterNativeSplash.remove();
-  // }
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  final NetworkController networkController = Get.put(NetworkController());
 
   if(await ServerUtils().isConnected()){
     await initializations();
-
   }
 
   FlutterError.onError = (errorDetails) {
@@ -177,33 +143,21 @@ void main() async {
   }
 
   isConnected = true;
-  isUserLoggedIn = await userInit();
-  FlutterNativeSplash.remove();
-  if (await SharedPrefs().checkFirstLaunch() == 0) {
-    isUserLoggedIn = 1;
-    roll_no_ = await SharedPrefs().getRollNo();
-    username_ = await SharedPrefs().getUsername();
-  } else {
-    isUserLoggedIn = 0;
-  }
+  // isUserLoggedIn = await userInit();
+
+  final AuthenticationController authenticationController = Get.put(AuthenticationController());
+  await authenticationController.initialization();
+
   FlutterNativeSplash.remove();
 
   GestureBinding.instance.resamplingEnabled = true;
-  runApp(MyApp(isUserLoggedIn: isUserLoggedIn));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.isUserLoggedIn});
+  MyApp({super.key,});
 
-  final int isUserLoggedIn;
-
-  Widget _getScreenId() {
-    if (isUserLoggedIn == 1) {
-      return const PageBuilder();
-    } else {
-      return GetStarted();
-    }
-  }
+  final AuthenticationController authenticationController = Get.put(AuthenticationController());
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +181,7 @@ class MyApp extends StatelessWidget {
         '/create_post': (context) => const CreatePost(),
         '/get_started': (context) => GetStarted(),
       },
-      home: _getScreenId(),
+      home: authenticationController.initialPage()
     );
   }
 }

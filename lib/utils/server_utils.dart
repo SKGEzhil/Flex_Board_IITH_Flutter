@@ -26,7 +26,7 @@ class ServerUtils {
   // final endPoint = 'http://localhost:5000';
   // final endPoint = 'http://10.0.2.2:80';
 
-  Future<void> login(roll_no, password, fcm_token, context) async {
+  Future<String> login(roll_no, password, fcm_token, context) async {
 
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
@@ -59,47 +59,53 @@ class ServerUtils {
         print('POST request successful');
         print('Response: ${response.body}');
         if (response.body != 'failed') {
-          Navigator.of(context).pop();
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PageBuilder(),
-              ));
-          SharedPrefs().setRollNo(roll_no);
-          roll_no_ = roll_no;
-          // username = await getUserDetails(roll_no);
-          final UserDetails userDetails = await getUserDetails(roll_no);
-          print('USER DETAILS: ${userDetails.name}');
-          username_ = userDetails.name;
-          profileController.current_profile_pic.value = userDetails.profilePic;
-          profileController.current_username.value = username_;
-          profileController.current_roll_no.value = roll_no;
-          SharedPrefs().setUsername(username_);
-          SharedPrefs().setProfilePic(userDetails.profilePic);
-          SharedPrefs().setFirstLaunch();
-          SharedPrefs().setAuthToken(response.body);
-          profileController.getUserDetails();
-          print("Login successful, TOKEN: ${await SharedPrefs().getAuthToken()}");
-          loginController.stopLoading();
+
+          return response.body;
+
+          // Navigator.of(context).pop();
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const PageBuilder(),
+          //     ));
+          // SharedPrefs().setRollNo(roll_no);
+          // roll_no_ = roll_no;
+          // // username = await getUserDetails(roll_no);
+          // final UserDetails userDetails = await getUserDetails(roll_no);
+          // print('USER DETAILS: ${userDetails.name}');
+          // username_ = userDetails.name;
+          // profileController.current_profile_pic.value = userDetails.profilePic;
+          // profileController.current_username.value = username_;
+          // profileController.current_roll_no.value = roll_no;
+          // SharedPrefs().setUsername(username_);
+          // SharedPrefs().setProfilePic(userDetails.profilePic);
+          // SharedPrefs().setFirstLaunch();
+          // SharedPrefs().setAuthToken(response.body);
+          // profileController.getUserDetails();
+          // print("Login successful, TOKEN: ${await SharedPrefs().getAuthToken()}");
+          // loginController.stopLoading();
         } else {
           loginController.stopLoading();
           ScaffoldMessenger.of(context).showSnackBar(wrongCredentialsSnackbar);
+          return '';
         }
       } else {
         loginController.stopLoading();
         ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
+        return '';
       }
     } catch (error) {
       Navigator.pop(context);
       loginController.stopLoading();
       ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
       print('Error sending POST request: $error');
+      return '';
     }
   }
 
-  Future<void> register(name, roll_no, email, password, fcmToken, context) async {
+  Future<String> register(name, roll_no, email, password, fcmToken, context) async {
 
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
@@ -141,40 +147,51 @@ class ServerUtils {
         if (response.body == 'invalid_roll_no') {
           loginController.stopLoading();
           ScaffoldMessenger.of(context).showSnackBar(invalidRollNo);
+          return '';
         }
         else if (response.body == 'invalid_email') {
           loginController.stopLoading();
           ScaffoldMessenger.of(context).showSnackBar(invalidEmail);
+          return '';
         }
 
         if (response.body != 'failed' && response.body != 'invalid_roll_no' && response.body != 'invalid_email') {
-          await SharedPrefs().setAuthToken(response.body);
-          int isRegisterationSuccessful = await loginWithToken(response.body, roll_no, name);
-          if (isRegisterationSuccessful == 1) {
-            profileController.getUserDetails();
-            loginController.stopLoading();
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PageBuilder(),
-                ));
-          }
-          loginController.stopLoading();
+
+          return response.body;
+
+          // await SharedPrefs().setAuthToken(response.body);
+          // bool isRegisterationSuccessful = await loginWithToken(response.body, roll_no, name);
+          // if (isRegisterationSuccessful) {
+          //   profileController.getUserDetails();
+          //   loginController.stopLoading();
+          //   Navigator.pushReplacement(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => const PageBuilder(),
+          //       ));
+          // }
+          // loginController.stopLoading();
         }
         else if(response.body == 'failed') {
           loginController.stopLoading();
           ScaffoldMessenger.of(context).showSnackBar(alreadyRegistered);
+          return '';
         }
+
+        return '';
+
       } else {
         print('POST request failed with status: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(serverErrorSnackbar);
         print('Response: ${response.body}');
         loginController.stopLoading();
+        return '';
       }
     } catch (error) {
       print('Error sending POST request: $error');
       ScaffoldMessenger.of(context).showSnackBar(networkErrorSnackbar);
       loginController.stopLoading();
+      return '';
     }
   }
 
@@ -378,7 +395,7 @@ class ServerUtils {
   }
 
 
-  Future<int> loginWithToken(token, roll_no, name) async {
+  Future<bool> loginWithToken(token, roll_no, name) async {
 
     final String url =
         '$endPoint/token_auth'; // replace with your API endpoint
@@ -408,22 +425,24 @@ class ServerUtils {
           //     MaterialPageRoute(
           //       builder: (context) => const Home(),
           //     ));
-          roll_no_ = roll_no;
-          SharedPrefs().setRollNo(roll_no_);
-          username_ = name;
-          SharedPrefs().setUsername(username_);
-          SharedPrefs().setFirstLaunch();
-          return 1;
+
+
+          // roll_no_ = roll_no;
+          // SharedPrefs().setRollNo(roll_no_);
+          // username_ = name;
+          // SharedPrefs().setUsername(username_);
+          // SharedPrefs().setFirstLaunch();
+          return true;
         }
-        return 0;
+        return false;
       } else {
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
-        return 0;
+        return false;
       }
     } catch (error) {
       print('Error sending POST request: $error');
-      return 2;
+      return false;
     }
   }
 
@@ -458,19 +477,11 @@ class ServerUtils {
         print('POST request successful');
         print('Response: ${response.body}');
         if (response.body != 'failed') {
-          await SharedPrefs().logout();
-          Navigator.pushReplacementNamed(context, '/get_started');
-        } else {
-          await SharedPrefs().logout();
-          Navigator.pushReplacementNamed(context, '/get_started');
+
         }
-      } else {
-        await SharedPrefs().logout();
-        Navigator.pushReplacementNamed(context, '/get_started');
       }
     } catch (error) {
-      await SharedPrefs().logout();
-      Navigator.pushReplacementNamed(context, '/get_started');
+      print('Network error: $error');
     }
   }
 
@@ -580,7 +591,7 @@ class ServerUtils {
     // Check if the request was successful (status code 200)
     if (response.statusCode == 200) {
       // Parse the JSON response
-      print('Response data: ${response.body}');
+      // print('Response data: ${response.body}');
 
       // Your JSON data as a string
       String jsonString = response.body;
@@ -592,20 +603,20 @@ class ServerUtils {
       List<Post> posts = jsonList.map((json) => Post.fromJson(json)).toList();
 
       // Access the data in Dart objects
-      posts.forEach((post) {
-        print('Post ID: ${post.id}');
-        print('Roll No: ${post.rollNo}');
-        print('Name: ${post.name}');
-        print('Subject: ${post.subject}');
-        print('Content: ${post.content}');
-        print('Image: ${post.image}');
-        print('tags: ${post.tags}');
-        print('Date: ${post.date}');
-        print('Cab From: ${post.cabFrom}');
-        print('Cab To: ${post.cabTo}');
-        print('Cab Date: ${post.cabDate}');
-        print('\n');
-      });
+      // posts.forEach((post) {
+      //   print('Post ID: ${post.id}');
+      //   print('Roll No: ${post.rollNo}');
+      //   print('Name: ${post.name}');
+      //   print('Subject: ${post.subject}');
+      //   print('Content: ${post.content}');
+      //   print('Image: ${post.image}');
+      //   print('tags: ${post.tags}');
+      //   print('Date: ${post.date}');
+      //   print('Cab From: ${post.cabFrom}');
+      //   print('Cab To: ${post.cabTo}');
+      //   print('Cab Date: ${post.cabDate}');
+      //   print('\n');
+      // });
 
       return posts;
 

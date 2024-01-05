@@ -54,17 +54,6 @@ class SharedPrefs {
     await _sharedPrefs!.setString('draft_body', '');
     await _sharedPrefs!.setString('pfp', '');
 
-    final auth_method = await getAuthMethod();
-    final GoogleAuthController googleAuthController = Get.put(GoogleAuthController());
-    // final LoginController loginController = Get.put(LoginController());
-    // final RegistrationController registrationController = Get.put(RegistrationController());
-
-    if(auth_method == 'google'){
-      googleAuthController.signOut();
-      // loginController.signOut();
-      // registrationController.signOut();
-    }
-
     bottomNavController.changeIndex(0);
   }
 

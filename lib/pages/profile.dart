@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lost_flutter/controllers/authentication_controller.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/controllers/image_picker_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
@@ -35,6 +36,8 @@ class _ProfileState extends State<Profile> {
   final ImagePickerController imagePickerController =
       Get.put(ImagePickerController());
   final ProfileController profileController = Get.put(ProfileController());
+  final AuthenticationController authenticationController =
+      Get.put(AuthenticationController());
 
   void editProfile() {
     showCupertinoDialog(
@@ -201,8 +204,8 @@ class _ProfileState extends State<Profile> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.logout),
-                onPressed: () async {
-                  await ServerUtils().logout(roll_no_, fcmToken, context);
+                onPressed: () {
+                  authenticationController.logout(context);
                 },
               )
             ]),

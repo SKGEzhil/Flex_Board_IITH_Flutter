@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:lost_flutter/controllers/authentication_controller.dart';
 import 'package:lost_flutter/controllers/image_picker_controller.dart';
 import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
 import 'package:lost_flutter/controllers/notification_controller.dart';
@@ -14,7 +15,8 @@ class GlobalBindings extends Bindings{
   @override
   void dependencies() {
     // TODO: implement dependencies
-    Get.lazyPut<NetworkController>(() => NetworkController());
+    Get.put<AuthenticationController>(AuthenticationController());
+    Get.put<NetworkController>(NetworkController());
     Get.lazyPut<PostListController>(() => PostListController());
     Get.lazyPut<PostSeenController>(() => PostSeenController());
     Get.lazyPut<RepliesController>(() => RepliesController());

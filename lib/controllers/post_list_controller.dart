@@ -101,6 +101,7 @@ class PostListController extends GetxController {
     @override
   void onInit() {
     super.onInit();
+    print('PostListController onInit');
     fetchData();
   }
 
