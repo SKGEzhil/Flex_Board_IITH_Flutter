@@ -1,16 +1,36 @@
-# lost_flutter
 
-A new Flutter project.
+# Forum Hub IITH App
 
-## Getting Started
+## Description
+This Flutter app is designed for the IIT Hyderabad student community to share personal updates, such as lost and found items, cab sharing requests, and more. It aims to declutter the college email system from non-academic content, providing a dedicated platform for students personal needs.
 
-This project is a starting point for a Flutter application.
+## Features
+- **User Authentication**: Secure login with Google and native sign-in options.
+- **Post Interaction**: Create, view, and interact with posts.
+- **Cab Sharing Feature**: Post and view cab sharing requests easily.
+- **Profile Management**: Personalize user profiles with editable options.
+- **Search Functionality**: Efficiently search for specific posts or content.
+- **Notifications**: Stay updated with in-app notifications for relevant activities.
+- **Responsive UI**: A clean and responsive user interface for a seamless experience.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Dependencies
+- Flutter SDK
+- Firebase
+- GetX for state management
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Contributing
+Contributions to the Forum Hub IITH App are welcome. Please read the [CONTRIBUTING.md] file for guidelines on how to contribute.
+
+## License
+This project is licensed under the [MIT License] - see the [LICENSE] file for details.
+
+## Contact
+For any queries or feedback, please contact [skgezhil2005@gmail.com].
+
+## Acknowledgements
+- IIT Hyderabad
+- Flutter Community
+
+---
+
