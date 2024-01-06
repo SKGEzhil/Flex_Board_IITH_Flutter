@@ -20,13 +20,13 @@ This Flutter app is designed for the IIT Hyderabad student community to share pe
 - GetX for state management
 
 ## Contributing
-Contributions to the Forum Hub IITH App are welcome. Please read the [CONTRIBUTING.md] file for guidelines on how to contribute.
+Contributions to the Forum Hub IITH App are welcome. Please read the [CONTRIBUTING.md](/CONTRIBUTING.md) file for guidelines on how to contribute.
 
 ## License
-This project is licensed under the [MIT License] - see the [LICENSE] file for details.
+This project is licensed under the [MIT License](/LICENSE) - see the [LICENSE](/LICENSE) file for details.
 
 ## Contact
-For any queries or feedback, please contact [skgezhil2005@gmail.com].
+For any queries or feedback, please contact skgezhil2005@gmail.com.
 
 ## Acknowledgements
 - IIT Hyderabad
