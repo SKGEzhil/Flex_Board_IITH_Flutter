@@ -23,6 +23,8 @@ class PostViewer extends StatefulWidget {
 }
 
 class _PostViewerState extends State<PostViewer> {
+
+  /// GetX Controllers
   final RepliesController repliesController = RepliesController();
   final PostViewerController postViewerController =
       Get.put(PostViewerController());
@@ -114,7 +116,8 @@ class _PostViewerState extends State<PostViewer> {
                     : Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.post.image),
+                            image:
+                                CachedNetworkImageProvider(widget.post.image),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -158,8 +161,7 @@ class _PostViewerState extends State<PostViewer> {
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(50),
                                       child: CachedNetworkImage(
-                                        imageUrl:
-                                            widget.post.profilePic,
+                                        imageUrl: widget.post.profilePic,
                                         width: 40,
                                         height: 40,
                                         fit: BoxFit.cover,

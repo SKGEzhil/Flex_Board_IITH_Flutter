@@ -8,9 +8,12 @@ import 'network_connectivity_controller.dart';
 
 class PostListController extends GetxController {
 
+  /// Observables
   List<Post> items = <Post>[].obs;
   List<Post> result = <Post>[].obs;
   List<UserDetails> knownUsers = <UserDetails>[].obs;
+
+  /// Declarations
   Post notificationPost = Post(
     id: '',
     rollNo: '',
@@ -22,8 +25,11 @@ class PostListController extends GetxController {
   );
   final serverUtils = ServerUtils();
   final sharedPrefs = SharedPrefs();
+
+  /// GetX Controllers
   final NetworkController networkController = Get.put(NetworkController());
 
+  /// Fetch posts from server
   Future<void> fetchData() async {
     if(isConnected){
       print('GETTING POSTS');
@@ -35,11 +41,11 @@ class PostListController extends GetxController {
       items = await sharedPrefs.getPosts();
     }
     result = items;
-    for (var element in result) {print('Element');}
     update();
 
   }
 
+  /// Gets initial post notification
   Future<Post> notificationHandler(postId, type) async {
     if(type == 'reply'){
       final posts = await sharedPrefs.getPosts();
@@ -52,6 +58,7 @@ class PostListController extends GetxController {
     }
   }
 
+  /// Filters posts based on search query
   void filterSearchResults(String query) {
     print(query);
 
@@ -68,6 +75,7 @@ class PostListController extends GetxController {
     update(); // This is important to update the UI
   }
 
+  /// Filters posts based on tag
   void filterTagResults(String query) {
     print(query);
 
@@ -84,11 +92,13 @@ class PostListController extends GetxController {
     update(); // This is important to update the UI
   }
 
+  /// Resets search results
   void resetSearch() {
     result = items;
     update();
   }
 
+  /// Filters posts posted by logged in user
   void userPosts(String rollNo) {
     result = items
         .where(
@@ -98,7 +108,7 @@ class PostListController extends GetxController {
     update();
   }
 
-    @override
+  @override
   void onInit() {
     super.onInit();
     print('PostListController onInit');

@@ -6,14 +6,15 @@ import '../utils/shared_prefs.dart';
 
 class ProfileController extends GetxController{
 
-  final sharedPrefs = SharedPrefs();
-  final serverUtils = ServerUtils();
+  /// Observables
+  var currentUsername = ''.obs;
+  var currentRollNo = ''.obs;
+  var currentProfilePic = ''.obs;
+  var currentProfileColor = ''.obs;
+
+  /// GetX Controllers
   final ImagePickerController imagePickerController = Get.put(ImagePickerController());
 
-  var current_username = "".obs;
-  var current_roll_no = "".obs;
-  var current_profile_pic = "".obs;
-  var current_profile_color = ''.obs;
 
   @override
   void onInit() {
@@ -21,37 +22,41 @@ class ProfileController extends GetxController{
     getUserDetails();
   }
 
+  /// Sets username
   void setUsername(String username) {
-    current_username.value = username;
+    currentUsername.value = username;
   }
 
+  /// Gets user details from shared preferences
   void getUserDetails() async {
-    current_username.value = await sharedPrefs.getUsername();
-    current_roll_no.value = await sharedPrefs.getRollNo();
-    current_profile_pic.value = await sharedPrefs.getProfilePic();
+    currentUsername.value = await SharedPrefs().getUsername();
+    currentRollNo.value = await SharedPrefs().getRollNo();
+    currentProfilePic.value = await SharedPrefs().getProfilePic();
     update();
   }
 
   void printUserDetails() {
-    print('USERNAME: ${current_username.value}');
-    print('ROLL NO: ${current_roll_no.value}');
-    print('PROFILE PIC: ${current_profile_pic.value}');
+    print('USERNAME: ${currentUsername.value}');
+    print('ROLL NO: ${currentRollNo.value}');
+    print('PROFILE PIC: ${currentProfilePic.value}');
   }
 
+  /// Updates user details from shared preferences
   void refreshProfile() async {
-    current_profile_pic.value = await sharedPrefs.getProfilePic();
+    currentProfilePic.value = await SharedPrefs().getProfilePic();
     update();
   }
 
+  /// Updates user details to server
   void updateProfile() async {
-    if(current_profile_pic.value == '') {
-      final profilePic = await serverUtils.uploadImage(imagePickerController.image, true);
-      current_profile_pic.value = profilePic;
+    if(currentProfilePic.value == '') {
+      final profilePic = await ServerUtils().uploadImage(imagePickerController.image, true);
+      currentProfilePic.value = profilePic;
     }
-    await serverUtils.updateProfile(current_roll_no.value, current_profile_pic.value, current_username.value);
-    await sharedPrefs.setUsername(current_username.value);
-    await sharedPrefs.setUsername(current_username.value);
-    await sharedPrefs.setProfilePic(current_profile_pic.value);
+    await ServerUtils().updateProfile(currentRollNo.value, currentProfilePic.value, currentUsername.value);
+    await SharedPrefs().setUsername(currentUsername.value);
+    await SharedPrefs().setUsername(currentUsername.value);
+    await SharedPrefs().setProfilePic(currentProfilePic.value);
     update();
   }
 

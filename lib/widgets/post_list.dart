@@ -25,18 +25,23 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  // inits
+
+  /// Declarations
   List<Post> items = [];
   List<String> seenPosts = [];
-  final serverUtils = ServerUtils();
   List<Post> filteredItems = [];
+  final serverUtils = ServerUtils();
+
+  /// GetX Controllers
   final PostSeenController postSeenController = Get.put(PostSeenController());
   final NetworkController networkController = Get.find<NetworkController>();
   final PostListController postListController = Get.put(PostListController());
   final PostViewerController postViewerController =
       Get.put(PostViewerController());
+
   int scrollPosition = 0;
 
+  /// Check if post is seen
   void seenCheck(post) async {
     if (networkController.connectionType != 0) {
       await ServerUtils().setSeenPosts(roll_no_, post);
@@ -69,24 +74,6 @@ class _PostListState extends State<PostList> {
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
     super.initState();
-  }
-
-  _onStartScroll(ScrollMetrics metrics) {
-    setState(() {
-      // scrollPosition = 0;
-    });
-  }
-
-  _onUpdateScroll(ScrollMetrics metrics) {
-    setState(() {
-      // scrollPosition = 0;
-    });
-  }
-
-  _onEndScroll(ScrollMetrics metrics) {
-    setState(() {
-      // scrollPosition = 0;
-    });
   }
 
   @override

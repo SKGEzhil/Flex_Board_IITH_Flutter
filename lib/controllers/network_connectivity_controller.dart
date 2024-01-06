@@ -21,7 +21,7 @@ class NetworkController extends GetxController
     _streamSubscription = _connectivity.onConnectivityChanged.listen(_updateState);
   }
 
-  // a method to get which connection result, if you we connected to internet or no if yes then which network
+  /// a method to get which connection result, if you we connected to internet or no if yes then which network
   Future<void>GetConnectionType() async{
     var connectivityResult;
     try{
@@ -32,8 +32,8 @@ class NetworkController extends GetxController
     return _updateState(connectivityResult);
   }
 
-  // state update, of network, if you are connected to WIFI connectionType will get set to 1,
-  // and update the state to the consumer of that variable.
+  /// state update, of network, if you are connected to WIFI connectionType will get set to 1,
+  /// and update the state to the consumer of that variable.
   _updateState(ConnectivityResult result)
   {
     switch(result)

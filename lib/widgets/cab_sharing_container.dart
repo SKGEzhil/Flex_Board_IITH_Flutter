@@ -10,15 +10,20 @@ class CabSharingContainer extends StatelessWidget {
 
   });
 
+   /// Declarations
   final cabDate;
   final cabFrom;
   final cabTo;
   final isCreatePost;
 
+  /// Define the controller for the text field
   final cabSharingFrom = TextEditingController();
   final cabSharingTo = TextEditingController();
+
+  /// GetX Controllers
   final CabSharingController cabSharingController = Get.put(CabSharingController());
 
+  /// Show popup to select location
   void showPopup(context, label){
     showCupertinoDialog(context: context, barrierDismissible: true, builder: (context) {
       return CupertinoAlertDialog(

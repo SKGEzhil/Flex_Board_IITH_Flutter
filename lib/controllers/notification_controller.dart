@@ -4,7 +4,10 @@ import '../models.dart';
 
 class NotificationController extends GetxController {
 
+  /// Observables
   var isNotification = false.obs;
+
+  /// Declarations
   Post post = Post(
     id: '',
     rollNo: '',

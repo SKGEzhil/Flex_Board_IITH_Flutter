@@ -5,9 +5,10 @@ import 'dart:convert';
 import '../models.dart';
 
 class SharedPrefs {
+  /// Declarations
   SharedPreferences? _sharedPrefs;
-  final BottomNavController bottomNavController = Get.put(BottomNavController());
 
+  /// To set Authentication method (Google or Native)
   Future<void> setAuthMethod(authMethod) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs?.setString('auth_method', authMethod);
@@ -19,6 +20,7 @@ class SharedPrefs {
     return authMethod;
   }
 
+  /// To check if the app is launched for the first time
   Future<int> checkFirstLaunch() async {
     _sharedPrefs = await SharedPreferences.getInstance();
 
@@ -35,12 +37,18 @@ class SharedPrefs {
     }
   }
 
+  /// To set the [firstLaunch] key to false
   Future<void> setFirstLaunch() async {
     _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs?.setBool('firstLaunch', false);
   }
 
-  Future<void> logout() async {
+  /// To clear all the data stored in the shared preferences
+  Future<void> clearAll() async {
+
+    final BottomNavController bottomNavController =
+    Get.put(BottomNavController());
+
     _sharedPrefs = await SharedPreferences.getInstance();
     List<String> postListString = [];
     await _sharedPrefs?.setBool('firstLaunch', true);
@@ -57,9 +65,7 @@ class SharedPrefs {
     bottomNavController.changeIndex(0);
   }
 
-  Future<void> init() async =>
-      _sharedPrefs = await SharedPreferences.getInstance();
-
+  /// To set the [rollNo] key
   Future<void> setRollNo(String rollNo) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs!.setString('roll_no', rollNo);
@@ -67,10 +73,11 @@ class SharedPrefs {
 
   Future<String> getRollNo() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final rollno = _sharedPrefs!.getString('roll_no') ?? '';
-    return rollno;
+    final rollNo = _sharedPrefs!.getString('roll_no') ?? '';
+    return rollNo;
   }
 
+  /// To set the [username] key
   Future<void> setUsername(String username) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs!.setString('username', username);
@@ -82,6 +89,7 @@ class SharedPrefs {
     return username;
   }
 
+  /// To set the [pfp] key
   Future<void> setProfilePic(String pfp) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs!.setString('pfp', pfp);
@@ -93,6 +101,7 @@ class SharedPrefs {
     return pfp;
   }
 
+  /// To store posts in shared preferences (key: [posts])
   Future<void> storePosts(List<Post> posts) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     List<String> postListString =
@@ -111,6 +120,8 @@ class SharedPrefs {
     return posts;
   }
 
+  /// To mark post as seen in shared preferences (key: [seen_posts])
+  /// (only in offline mode)
   Future<void> storeSeenPosts(List<String> seenPosts) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     final seenPostsJsonString = SeenPosts().seenPostsToJson(seenPosts);
@@ -119,25 +130,25 @@ class SharedPrefs {
 
   Future<List<String>> getSeenPosts() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final seenPostsList = SeenPosts().seenPostsFromJson(_sharedPrefs!.getString('seen_posts') ?? '').toList();
+    final seenPostsList = SeenPosts()
+        .seenPostsFromJson(_sharedPrefs!.getString('seen_posts') ?? '')
+        .toList();
     return seenPostsList;
   }
 
-
-  // set auth token
+  /// To set [auth_token] key
   Future<void> setAuthToken(String token) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs!.setString('auth_token', token);
   }
 
-  // get auth token
   Future<String> getAuthToken() async {
     _sharedPrefs = await SharedPreferences.getInstance();
     final token = _sharedPrefs!.getString('auth_token') ?? '';
     return token;
   }
 
-  // set auth token
+  /// To save draft in shared preferences (key: [draft_subject] and [draft_body])
   Future<void> saveDraft(String subject, String body) async {
     _sharedPrefs = await SharedPreferences.getInstance();
     await _sharedPrefs!.setString('draft_subject', subject);
@@ -151,5 +162,4 @@ class SharedPrefs {
     PostDraft post = PostDraft(subject: subject, content: body);
     return post;
   }
-
 }

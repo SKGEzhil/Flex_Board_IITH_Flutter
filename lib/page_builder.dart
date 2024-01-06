@@ -18,15 +18,18 @@ class PageBuilder extends StatefulWidget {
 }
 
 class _PageBuilderState extends State<PageBuilder> {
-  final BottomNavController bottom_nav_controller =
-      Get.put(BottomNavController());
 
+  /// Bottom Navigation Controller
+  final BottomNavController bottomNavController =
+      Get.put(BottomNavController());
 
   @override
   void initState() {
     super.initState();
     final NotificationController notificationController =
     Get.put(NotificationController());
+
+    /// Redirects to a specific post when app is opened from notification
     if(notificationController.isNotification.value == true){
       Get.to(PostViewer(post: notificationController.post));
     }
@@ -46,11 +49,11 @@ class _PageBuilderState extends State<PageBuilder> {
   }
 
   Widget currentPage() {
-    return Obx(() => bottom_nav_controller.currentIndex.value == 0
+    return Obx(() => bottomNavController.currentIndex.value == 0
         ? const Home()
-        : bottom_nav_controller.currentIndex.value == 1
+        : bottomNavController.currentIndex.value == 1
             ? const SearchPage()
-            : bottom_nav_controller.currentIndex.value == 2
+            : bottomNavController.currentIndex.value == 2
                 ? const RepliesPage()
                 : const Profile());
   }

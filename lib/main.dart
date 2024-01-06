@@ -22,8 +22,10 @@ import 'pages/get_started.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
+/// Getting Firebase Messaging Instance
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
+/// Callback for Notification Click
 Future<void> onNotificationClick(message, notificationType) async {
   final NotificationController notificationController = Get.put(NotificationController());
   final RepliesController repliesController = Get.put(RepliesController());
@@ -44,20 +46,21 @@ Future<void> onNotificationClick(message, notificationType) async {
   }
 }
 
+/// Firebase initialization
 Future<void> initializations() async {
+
   // Firebase initialization
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final notificationSettings =
-      await FirebaseMessaging.instance.requestPermission();
+  await FirebaseMessaging.instance.requestPermission();
 
   print("HELLO WORLD");
-  isConnected = true;
+
   // onMessage: When the app is open and it receives a push notification
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    // await onNotificationClick(message, 'on_message');
+    // TODO: Handle foreground messages
   });
 
   // replacement for onResume: When the app is in the background and opened directly from the push notification.
@@ -68,12 +71,13 @@ Future<void> initializations() async {
   // Firebase message handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.instance.subscribeToTopic("topic");
-  // FirebaseMessaging.instance
-  //       .getInitialMessage()
-  //       .then((message) async {
-  //     await onNotificationClick(message, 'get_init');
-  //   });
+  FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((message) async {
+      await onNotificationClick(message, 'get_init');
+    });
 
+    // Getting the FCM token
     final token = await FirebaseMessaging.instance.getToken();
     fcmToken = token!;
     print(token);
@@ -81,6 +85,7 @@ Future<void> initializations() async {
 
 }
 
+/// Callback for handling background messages
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("SKGEzhil Notification");
@@ -93,28 +98,38 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('FIREBASE BG HANDLER ${message.data}');
 }
 
+
 void main() async {
+
+  // Ensuring the initialization of WidgetsBinding
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+
+  // Initializing Flutter Native Splash
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   final NetworkController networkController = Get.put(NetworkController());
 
+  // Checking for network connectivity and initializing the app
   if(await ServerUtils().isConnected()){
+    isConnected = true;
     await initializations();
   }
 
+  // Enabling Firebase Crashlytics
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
+
   // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
 
+  // Initializing Firebase Messaging for iOS (Not functional)
   if (Platform.isIOS) {
     String? apnsToken = await _firebaseMessaging.getAPNSToken();
     if (apnsToken != null) {
-      // await _firebaseMessaging.subscribeToTopic("notificationChannel");
       try {
         await _firebaseMessaging.subscribeToTopic('topic');
       } on FirebaseException catch (e) {
@@ -139,12 +154,11 @@ void main() async {
     }
   }
 
-  isConnected = true;
-  // isUserLoggedIn = await userInit();
-
+  // Initializing the Authentication Controller
   final AuthenticationController authenticationController = Get.put(AuthenticationController());
   await authenticationController.initialization();
 
+  // Removing the splash screen
   FlutterNativeSplash.remove();
 
   GestureBinding.instance.resamplingEnabled = true;

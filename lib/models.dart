@@ -76,14 +76,14 @@ class Reply {
   late String name;
   late String profilePic;
   late String reply;
-  late String post_id;
+  late String postId;
   late String date;
 
   Reply({
     required this.rollNo,
     required this.name,
     required this.reply,
-    required this.post_id,
+    required this.postId,
     required this.date,
     required this.profilePic,
   });
@@ -94,7 +94,7 @@ class Reply {
       name: json['user_details']['name'],
       profilePic: json['user_details']['pfp'],
       reply: json['reply'],
-      post_id: json['post_id'],
+      postId: json['post_id'],
       date: json['date'],
     );
   }

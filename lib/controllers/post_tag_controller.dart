@@ -1,11 +1,14 @@
 import 'package:get/get.dart';
 
 class PostTagController extends GetxController {
+
+  /// Observables
   var selectedTags = <String>[].obs;
   var allTags = <String>['Lost and Found', 'Cab Sharing', 'Tag 3', 'Tag 4'].obs;
   var isCabSharing = false.obs;
   var resultTags = <String>[].obs;
 
+  /// To search tags
   void searchTags(String query) {
     if(query.isEmpty) {
       resultTags.value = allTags.value;
@@ -21,11 +24,13 @@ class PostTagController extends GetxController {
     resultTags.value = allTags.value;
   }
 
+  /// Clears selected tags
   void resetTags() {
     selectedTags.value = [];
   }
 
+  /// Adds tag to selected tags
   void addTag(String tag_) {
-    allTags.value.add(tag_);
+    allTags.add(tag_);
   }
 }

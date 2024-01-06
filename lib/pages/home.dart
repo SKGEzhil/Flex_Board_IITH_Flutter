@@ -19,7 +19,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  /// Declarations
   final serverUtils = ServerUtils();
+
+  /// GetX Controllers
   final NetworkController networkController = Get.find<NetworkController>();
   final PostTagController postTagController = Get.put(PostTagController());
   final PostListController postListController = Get.put(PostListController());

@@ -4,9 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageViewer extends StatelessWidget {
-  const ImageViewer({super.key,required this.image});
+  const ImageViewer({super.key, required this.image});
 
-  final image;
+  final String image;
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +26,25 @@ class ImageViewer extends StatelessWidget {
         backgroundColor: const Color.fromRGBO(255, 255, 255, 0.1),
         actions: [
           IconButton(
-            icon: const Icon(Icons.close, color: Color.fromRGBO(255, 255, 255, 0.6),),
+            icon: const Icon(
+              Icons.close,
+              color: Color.fromRGBO(255, 255, 255, 0.6),
+            ),
             onPressed: () {
               Navigator.pop(context);
             },
-          )],
+          )
+        ],
       ),
       body: InteractiveViewer(
         panEnabled: true,
         child: Stack(
           children: [
-
             Center(
               child: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: CachedNetworkImageProvider('$image'),
+                    image: CachedNetworkImageProvider(image),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -54,28 +57,28 @@ class ImageViewer extends StatelessWidget {
             ),
             Positioned.fill(
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                  child: const SizedBox(
-                    width: 10,
-                    height: 10,
-                  ),
-                )),
-
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: const SizedBox(
+                width: 10,
+                height: 10,
+              ),
+            )),
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
               },
               child: Container(
                 color: const Color.fromRGBO(0, 0, 0, 0),
-              ),),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 40.0),
-              child: Center(
-                child: CachedNetworkImage(
-                  imageUrl: '$image',
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                )
               ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 0, vertical: 40.0),
+              child: Center(
+                  child: CachedNetworkImage(
+                imageUrl: image,
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              )),
             ),
           ],
         ),

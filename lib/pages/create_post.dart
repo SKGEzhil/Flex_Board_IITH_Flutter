@@ -27,20 +27,25 @@ class CreatePost extends StatefulWidget {
 class _CreatePostState extends State<CreatePost> {
   XFile? image;
 
+  /// Declarations
   final ImagePicker picker = ImagePicker();
   final serverUtils = ServerUtils();
   final subject = TextEditingController();
   final content = TextEditingController();
   final dataKey = GlobalKey();
-  final PostTagController postTagController = Get.put(PostTagController());
   final cabSharingFrom = TextEditingController();
   final cabSharingTo = TextEditingController();
+
+  /// GetX Controllers
   final CabSharingController cabSharingController =
       Get.put(CabSharingController());
   final ImagePickerController imagePickerController =
       Get.put(ImagePickerController());
   final LoadingController loadingController = Get.put(LoadingController());
+  final PostTagController postTagController = Get.put(PostTagController());
 
+
+  /// Get Draft from Shared Preferences
   void getDraft() async {
     final PostDraft draft = await SharedPrefs().getDraft();
     setState(() {
@@ -64,6 +69,8 @@ class _CreatePostState extends State<CreatePost> {
         postTagController.isCabSharing.value = false;
         postTagController.resetTags();
         imagePickerController.resetImage();
+
+        // Save post as draft if subject or content is not empty
         await SharedPrefs().saveDraft(subject.text, content.text);
         if (subject.text.isNotEmpty || content.text.isNotEmpty) {
           Get.snackbar('Draft', 'Post saved as Draft',
@@ -87,7 +94,8 @@ class _CreatePostState extends State<CreatePost> {
             ),
           ),
           elevation: 1,
-          backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6784313725490196),
+          backgroundColor:
+              const Color.fromRGBO(255, 255, 255, 0.6784313725490196),
           title: const TitleText(
             pageTitle: 'Create new post',
           ),
@@ -248,10 +256,6 @@ class _CreatePostState extends State<CreatePost> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: const Color.fromRGBO(255, 114, 33, 0.5),
-                        // border: Border.all(
-                        //     color: Colors.black,
-                        //     width: 1
-                        // )
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -292,13 +296,13 @@ class _CreatePostState extends State<CreatePost> {
                                           ? ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                            child: CachedNetworkImage(
+                                              child: CachedNetworkImage(
                                                 imageUrl:
                                                     'https://via.placeholder.com/500', // Placeholder image URL
                                                 fit: BoxFit
                                                     .contain, // Ensure the image fits within the space
                                               ),
-                                          )
+                                            )
                                           : Padding(
                                               padding:
                                                   const EdgeInsets.all(3.0),
@@ -316,34 +320,31 @@ class _CreatePostState extends State<CreatePost> {
                                     ),
                                     GetBuilder<ImagePickerController>(
                                         builder: (_) =>
-
-                                            imagePickerController.image ==
-                                                    null
+                                            imagePickerController.image == null
                                                 ? const SizedBox()
-                                                :
-                                            Positioned(
-                                              right: 0.0,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  imagePickerController
-                                                      .resetImage();
-
-                                                },
-                                                child: const Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: CircleAvatar(
-                                                    radius: 10.0,
-                                                    backgroundColor:
-                                                        Colors.black,
-                                                    child: Icon(
-                                                      Icons.close,
-                                                      color: Colors.white,
-                                                      size: 15.0,
+                                                : Positioned(
+                                                    right: 0.0,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        imagePickerController
+                                                            .resetImage();
+                                                      },
+                                                      child: const Align(
+                                                        alignment:
+                                                            Alignment.topRight,
+                                                        child: CircleAvatar(
+                                                          radius: 10.0,
+                                                          backgroundColor:
+                                                              Colors.black,
+                                                          child: Icon(
+                                                            Icons.close,
+                                                            color: Colors.white,
+                                                            size: 15.0,
+                                                          ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ))
+                                                  ))
                                   ],
                                 ),
                               ),
@@ -360,88 +361,92 @@ class _CreatePostState extends State<CreatePost> {
                 child: Obx(() {
                   return Align(
                     alignment: Alignment.bottomCenter,
-                    child:
-                    loadingController.isLoading.value
+                    child: loadingController.isLoading.value
                         ? Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const CupertinoActivityIndicator(
-                                  radius: 15,
-                                  color: Colors.deepOrange,
-                                ),
-                                const SizedBox(width: 10,),
-                                Text('Posting...',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black.withOpacity(0.7),
+                            padding: const EdgeInsets.all(20.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const CupertinoActivityIndicator(
+                                    radius: 15,
+                                    color: Colors.deepOrange,
                                   ),
-                                )
-
-                              ],
-                            ),
-                          ),
-                        )
-                        :
-                    CupertinoButton(
-                      color: Colors.black,
-                      child: const Text('Post'),
-                      onPressed: () async {
-
-                        if(subject.text.isEmpty || content.text.isEmpty){
-                          Get.snackbar('Error', 'Subject or Body cannot be empty',
-                              isDismissible: true,
-                              mainButton: TextButton(
-                                child: Text('OK',
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.5),
+                                  const SizedBox(
+                                    width: 10,
                                   ),
-                                ),
-                                onPressed: () {
-                                  Get.back();
-                                },
+                                  Text(
+                                    'Posting...',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black.withOpacity(0.7),
+                                    ),
+                                  )
+                                ],
                               ),
-                              snackPosition: SnackPosition.TOP,
-                              animationDuration: const Duration(milliseconds: 150),
-                              borderRadius: 8,
-                              margin: const EdgeInsets.all(10),
-                              backgroundColor: Colors.redAccent.withOpacity(0.7),
-                              colorText: Colors.black
-                          );
-                          return;
-                        }
+                            ),
+                          )
+                        : CupertinoButton(
+                            color: Colors.black,
+                            child: const Text('Post'),
+                            onPressed: () async {
+                              if (subject.text.isEmpty ||
+                                  content.text.isEmpty) {
+                                Get.snackbar(
+                                    'Error', 'Subject or Body cannot be empty',
+                                    isDismissible: true,
+                                    mainButton: TextButton(
+                                      child: Text(
+                                        'OK',
+                                        style: TextStyle(
+                                          color: Colors.white.withOpacity(0.5),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Get.back();
+                                      },
+                                    ),
+                                    snackPosition: SnackPosition.TOP,
+                                    animationDuration:
+                                        const Duration(milliseconds: 150),
+                                    borderRadius: 8,
+                                    margin: const EdgeInsets.all(10),
+                                    backgroundColor:
+                                        Colors.redAccent.withOpacity(0.7),
+                                    colorText: Colors.black);
+                                return;
+                              }
 
-                        loadingController.startLoading();
+                              loadingController.startLoading();
 
-                        var cabDetails = {
-                          'from': cabSharingController.fromLocation.value,
-                          'to': cabSharingController.toLocation.value,
-                          'time': cabSharingController.dateTime.value
-                        };
-                        final tags = postTagController.selectedTags;
-                        if (imagePickerController.image != null) {
-                          await serverUtils
-                              .uploadImage(imagePickerController.image, false);
-                        }
+                              // stores cab details in [cabDetails]
+                              var cabDetails = {
+                                'from': cabSharingController.fromLocation.value,
+                                'to': cabSharingController.toLocation.value,
+                                'time': cabSharingController.dateTime.value
+                              };
+                              final tags = postTagController.selectedTags;
+                              if (imagePickerController.image != null) {
+                                await serverUtils.uploadImage(
+                                    imagePickerController.image, false);
+                              }
 
-                        serverUtils.createPost(
-                            roll_no_,
-                            subject.text,
-                            content.text,
-                            post_image_link,
-                            tags,
-                            cabDetails,
-                            context);
-                      },
-                    ),
+                              // sends post to server
+                              serverUtils.createPost(
+                                  roll_no_,
+                                  subject.text,
+                                  content.text,
+                                  post_image_link,
+                                  tags,
+                                  cabDetails,
+                                  context);
+                            },
+                          ),
                   );
-                }
-                ),
+                }),
               ),
             ],
           ),

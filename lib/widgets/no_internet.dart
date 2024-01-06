@@ -7,6 +7,7 @@ class NoInternet extends StatelessWidget {
     super.key,
   });
 
+  /// GetX Controllers
   final NetworkController networkController = Get.find<NetworkController>();
 
   @override

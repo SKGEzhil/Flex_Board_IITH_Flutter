@@ -22,12 +22,13 @@ class CommentList extends StatefulWidget {
 }
 
 class _CommentListState extends State<CommentList> {
-  // final List<String> items = List.generate(30, (index) => 'Item ${index + 1}');
-  List<Reply> items = []; // Initialize the list
 
+  /// Declarations
+  List<Reply> items = []; // Initialize the list
   final serverUtils = ServerUtils();
-  bool refresh_var = false;
   final reply = TextEditingController();
+
+  /// GetX Controllers
   final LoadingController loadingController = Get.put(LoadingController());
   final ProfileController profileController = Get.put(ProfileController());
 
@@ -44,10 +45,6 @@ class _CommentListState extends State<CommentList> {
     setState(() {
       items = replies; // Update the state with the fetched data
     });
-
-    // items.forEach((element) {
-    //   print(element.name);
-    // });
 
   }
 
@@ -150,11 +147,11 @@ class _CommentListState extends State<CommentList> {
                         flex: 1,
                         child:
 
-                        profileController.current_profile_pic.value != '' ?
+                        profileController.currentProfilePic.value != '' ?
                             ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               child: CachedNetworkImage(
-                                imageUrl: profileController.current_profile_pic.value,
+                                imageUrl: profileController.currentProfilePic.value,
                                 width: 46,
                                 fit: BoxFit.cover,
                                 height: 46,),

@@ -11,36 +11,46 @@ import '../models.dart';
 import '../utils/shared_prefs.dart';
 
 class GoogleAuthController extends GetxController {
+
+  /// Declarations
   final currentUserDetails = UserDetails(rollNo: '', name: '', profilePic: '');
   final serverUtils = ServerUtils();
+
+  /// GetX Controllers
   final ProfileController profileController = Get.put(ProfileController());
   final LoadingController loadingController = Get.put(LoadingController());
 
+  /// Starts the authentication process
   Future<void> login(context) async {
 
     loadingController.startLoading();
 
-    final UserCredential userLogin = await signInWithGoogle();
+    // Authenticates user with Google and fetches user credential
+    final UserCredential userCredential = await signInWithGoogle();
 
-    if(userLogin.user == null){
+    // Checks if user is authenticated successfully
+    if(userCredential.user == null){
       await FirebaseAuth.instance.signOut();
       return;
     }
 
-    currentUserDetails.name = userLogin.user!.displayName!;
-    if(userLogin.user?.photoURL != null){
-      currentUserDetails.profilePic = userLogin.user!.photoURL!;
+    // Fetches user details from user credential
+    currentUserDetails.name = userCredential.user!.displayName!;
+    if(userCredential.user?.photoURL != null){
+      currentUserDetails.profilePic = userCredential.user!.photoURL!;
     }
 
+    // Authorizes user with server
     bool isAuthorized = await serverUtils.googleRegister(
         currentUserDetails.name,
-        userLogin.user!.email!,
+        userCredential.user!.email!,
         currentUserDetails.profilePic,
         fcmToken,
         context);
 
+    // Checks if user is authorized successfully and initializes user details
     if (isAuthorized) {
-      final rollNo = userLogin.user!.email!.split('@')[0];
+      final rollNo = userCredential.user!.email!.split('@')[0];
       currentUserDetails.rollNo = rollNo;
       username_ = currentUserDetails.name;
       roll_no_ = rollNo;
@@ -51,9 +61,9 @@ class GoogleAuthController extends GetxController {
       SharedPrefs().setProfilePic(currentUserDetails.profilePic);
       SharedPrefs().setFirstLaunch();
 
-      profileController.current_username.value = currentUserDetails.name;
-      profileController.current_roll_no.value = currentUserDetails.rollNo;
-      profileController.current_profile_pic.value = currentUserDetails.profilePic;
+      profileController.currentUsername.value = currentUserDetails.name;
+      profileController.currentRollNo.value = currentUserDetails.rollNo;
+      profileController.currentProfilePic.value = currentUserDetails.profilePic;
 
       Navigator.of(context).pop();
 
@@ -66,6 +76,7 @@ class GoogleAuthController extends GetxController {
     loadingController.stopLoading();
   }
 
+  /// To sign out user
   Future<void> signOut() async {
     await GoogleSignIn().signOut();
     await FirebaseAuth.instance.signOut();
@@ -74,7 +85,9 @@ class GoogleAuthController extends GetxController {
     currentUserDetails.profilePic = '';
   }
 
+  /// To sign in user with [Google] and get [UserCredential]
   Future<UserCredential> signInWithGoogle() async {
+
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 

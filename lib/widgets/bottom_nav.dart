@@ -99,7 +99,7 @@ class _BottomNavState extends State<BottomNav> {
                     IconButton(
                       icon: Icon(
                         Icons.home,
-                        color: currentIndex == 0 ? Colors.orange : Colors.grey.shade400,
+                        color: currentIndex.value == 0 ? Colors.orange : Colors.grey.shade400,
                       ),
                       onPressed: () {
                         setBottomBarIndex(0);
@@ -109,7 +109,7 @@ class _BottomNavState extends State<BottomNav> {
                     IconButton(
                         icon: Icon(
                           Icons.search,
-                          color: currentIndex == 1 ? Colors.orange : Colors.grey.shade400,
+                          color: currentIndex.value == 1 ? Colors.orange : Colors.grey.shade400,
                         ),
                         onPressed: () {
                           setBottomBarIndex(1);
@@ -120,7 +120,7 @@ class _BottomNavState extends State<BottomNav> {
                     IconButton(
                         icon: Icon(
                           Icons.comment,
-                          color: currentIndex == 2 ? Colors.orange : Colors.grey.shade400,
+                          color: currentIndex.value == 2 ? Colors.orange : Colors.grey.shade400,
                         ),
                         onPressed: () {
                           setBottomBarIndex(2);
@@ -128,7 +128,7 @@ class _BottomNavState extends State<BottomNav> {
                     IconButton(
                         icon: Icon(
                           Icons.person,
-                          color: currentIndex == 3 ? Colors.orange : Colors.grey.shade400,
+                          color: currentIndex.value == 3 ? Colors.orange : Colors.grey.shade400,
                         ),
                         onPressed: () {
                           setBottomBarIndex(3);

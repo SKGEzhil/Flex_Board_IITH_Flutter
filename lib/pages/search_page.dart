@@ -18,17 +18,20 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+
+  /// Declarations
   List<Post> items = []; // Initialize the list
   List<Post> initialItems = [];
   List<Post> result = [];
   final serverUtils = ServerUtils();
-  final BottomNavController bottom_nav_controller =
-      Get.put(BottomNavController());
-  final PostListController postListController =
-      Get.put(PostListController());
-  final PostTagController postTagController = Get.put(PostTagController());
-  final BottomNavController bottomNavController = Get.put(BottomNavController());
   final tagSearch = TextEditingController();
+
+
+  /// GetX Controllers
+  final PostListController postListController = Get.put(PostListController());
+  final PostTagController postTagController = Get.put(PostTagController());
+  final BottomNavController bottomNavController =
+      Get.put(BottomNavController());
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +44,9 @@ class _SearchPageState extends State<SearchPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: SearchField(onTextChanged: postListController.filterSearchResults)
-        ),
+            automaticallyImplyLeading: false,
+            title: SearchField(
+                onTextChanged: postListController.filterSearchResults)),
         body: Stack(
           children: [
             Column(
@@ -62,13 +65,13 @@ class _SearchPageState extends State<SearchPage> {
                         children: [
                           Row(
                             children: [
-                              Text('Search with Tags',
+                              Text(
+                                'Search with Tags',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                      color: Colors.black.withOpacity(0.7),
-                                      fontSize: 13),
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black.withOpacity(0.7),
+                                    fontSize: 13),
                               ),
-
                               Expanded(
                                 child: Align(
                                   alignment: Alignment.centerRight,
@@ -76,41 +79,52 @@ class _SearchPageState extends State<SearchPage> {
                                     height: 30,
                                     width: 150,
                                     decoration: BoxDecoration(
-                                        color: Colors.deepOrange.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(60)),
+                                        color:
+                                            Colors.deepOrange.withOpacity(0.1),
+                                        borderRadius:
+                                            BorderRadius.circular(60)),
                                     child: Padding(
                                       padding: const EdgeInsets.all(3.0),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Row(
                                           children: [
-                                            const SizedBox(width: 7,),
+                                            const SizedBox(
+                                              width: 7,
+                                            ),
                                             Icon(
                                               Icons.search,
-                                              color: Colors.black.withOpacity(0.7),
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
                                               size: 17,
                                             ),
-                                            const SizedBox(width: 7,),
+                                            const SizedBox(
+                                              width: 7,
+                                            ),
                                             Expanded(
                                               child: TextFormField(
                                                 onChanged: (value) {
-                                                  postTagController.searchTags(value);
+                                                  postTagController
+                                                      .searchTags(value);
                                                 },
                                                 controller: tagSearch,
                                                 style: const TextStyle(
                                                   fontSize: 13,
                                                 ),
-                                                decoration: InputDecoration.collapsed(
-                                                    hintText: "Search",
-                                                    hintStyle: TextStyle(
+                                                decoration:
+                                                    InputDecoration.collapsed(
+                                                  hintText: "Search",
+                                                  hintStyle: TextStyle(
                                                       fontSize: 13,
-                                                        color: Colors.black.withOpacity(0.5)),
-                                                    border: InputBorder.none,
-
+                                                      color: Colors.black
+                                                          .withOpacity(0.5)),
+                                                  border: InputBorder.none,
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(width: 7,),
+                                            const SizedBox(
+                                              width: 7,
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -118,7 +132,6 @@ class _SearchPageState extends State<SearchPage> {
                                   ),
                                 ),
                               )
-
                             ],
                           ),
                           Divider(
@@ -126,28 +139,28 @@ class _SearchPageState extends State<SearchPage> {
                             color: Colors.black.withOpacity(0.1),
                           ),
                           SingleChildScrollView(
-                            scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                            scrollDirection:
+                                Axis.horizontal, // Enable horizontal scrolling
                             child: Obx(() {
                               return Wrap(
                                 direction: Axis.horizontal,
                                 spacing: 5,
                                 runSpacing: 5,
                                 children: postTagController.resultTags
-                                    .map((tag) => PostTag(tagName: tag, isSearch: true,))
+                                    .map((tag) => PostTag(
+                                          tagName: tag,
+                                          isSearch: true,
+                                        ))
                                     .toList(),
                               );
-                            }
-                            ),
+                            }),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                const Expanded(
-                    child: PostList()
-                )
-
+                const Expanded(child: PostList())
               ],
             ),
             NoInternet()
@@ -159,4 +172,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-

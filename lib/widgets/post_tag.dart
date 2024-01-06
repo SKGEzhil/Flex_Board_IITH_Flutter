@@ -11,8 +11,11 @@ class PostTag extends StatelessWidget {
     required this.tagName, this.isSearch,
   });
 
+  /// GetX Controllers
   final PostTagController postTagController = Get.put(PostTagController());
   final PostListController postListController = Get.put(PostListController());
+
+  /// Declarations
   final createTagController = TextEditingController();
   final tagName;
   final isSearch;

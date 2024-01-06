@@ -28,6 +28,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
+  /// GetX Controllers
   final BottomNavController bottomNavController =
       Get.put(BottomNavController());
   final PostListController postListController = Get.put(PostListController());
@@ -38,6 +40,8 @@ class _ProfileState extends State<Profile> {
   final AuthenticationController authenticationController =
       Get.put(AuthenticationController());
 
+
+  /// Show popup to edit profile
   void editProfile() {
     showCupertinoDialog(
         context: context,
@@ -56,41 +60,38 @@ class _ProfileState extends State<Profile> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
                             ),
-                            child:
-
-                                profileController.current_profile_pic.value !=
-                                        ''
-                                    ? ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(50),
-                                        child: CachedNetworkImage(
-                                          imageUrl: profileController
-                                              .current_profile_pic.value,
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                    :
-
-                            Container(
-                              child: imagePickerController.image != null
-
-                                  ? Image.file(
-                                      File(imagePickerController.image!.path),
-                                      fit: BoxFit.cover,
+                            child: profileController.currentProfilePic.value !=
+                                    ''
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: CachedNetworkImage(
+                                      imageUrl: profileController
+                                          .currentProfilePic.value,
                                       height: 100,
                                       width: 100,
-                                    )
-                                  : AdvancedAvatar(
-                                      name: username_,
-                                      size: 100,
-                                      decoration: BoxDecoration(
-                                        color: Colors.redAccent.withOpacity(0.7),
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
+                                      fit: BoxFit.cover,
                                     ),
-                            ),
+                                  )
+                                : Container(
+                                    child: imagePickerController.image != null
+                                        ? Image.file(
+                                            File(imagePickerController
+                                                .image!.path),
+                                            fit: BoxFit.cover,
+                                            height: 100,
+                                            width: 100,
+                                          )
+                                        : AdvancedAvatar(
+                                            name: username_,
+                                            size: 100,
+                                            decoration: BoxDecoration(
+                                              color: Colors.redAccent
+                                                  .withOpacity(0.7),
+                                              borderRadius:
+                                                  BorderRadius.circular(50),
+                                            ),
+                                          ),
+                                  ),
                           ),
                         ),
                         Material(
@@ -150,7 +151,7 @@ class _ProfileState extends State<Profile> {
                     placeholder: 'Username',
                     onChanged: (value) {
                       profileController.setUsername(value);
-                      print(profileController.current_username.value);
+                      print(profileController.currentUsername.value);
                     },
                   ),
                   const SizedBox(
@@ -232,19 +233,19 @@ class _ProfileState extends State<Profile> {
                               padding: const EdgeInsets.all(16.0),
                               child: Row(
                                 children: [
-                                  profileController.current_profile_pic.value !=
+                                  profileController.currentProfilePic.value !=
                                           ''
                                       ? ClipRRect(
-                                    borderRadius:
+                                          borderRadius:
                                               BorderRadius.circular(50),
-                                        child: CachedNetworkImage(
+                                          child: CachedNetworkImage(
                                             imageUrl: profileController
-                                                .current_profile_pic.value,
+                                                .currentProfilePic.value,
                                             height: 100,
                                             width: 100,
                                             fit: BoxFit.cover,
                                           ),
-                                      )
+                                        )
                                       : AdvancedAvatar(
                                           name: username_,
                                           size: 100,
@@ -271,7 +272,8 @@ class _ProfileState extends State<Profile> {
                                         padding:
                                             const EdgeInsets.only(left: 8.0),
                                         child: Text(
-                                          profileController.current_username.value,
+                                          profileController
+                                              .currentUsername.value,
                                           maxLines: 1,
                                           style: const TextStyle(
                                               overflow: TextOverflow.fade,
@@ -287,7 +289,7 @@ class _ProfileState extends State<Profile> {
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             profileController
-                                                .current_roll_no.value,
+                                                .currentRollNo.value,
                                             style: const TextStyle(
                                                 color:
                                                     Color.fromRGBO(0, 0, 0, 1),

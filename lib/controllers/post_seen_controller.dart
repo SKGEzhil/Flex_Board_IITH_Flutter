@@ -6,9 +6,13 @@ import 'package:lost_flutter/utils/shared_prefs.dart';
 
 class PostSeenController extends GetxController {
 
+  /// Observables
   var seenPosts = <String>[].obs;
+
+  /// GetX Controllers
   final NetworkController networkController = Get.put(NetworkController());
 
+  /// Fetches seen posts data from server
   Future<void> getSeenPosts() async {
     print('GETTING SEEN POSTS');
     if(networkController.connectionType != 0){
