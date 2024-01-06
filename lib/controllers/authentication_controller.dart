@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/google_auth_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
+import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 
@@ -24,6 +25,7 @@ class AuthenticationController extends GetxController {
   final NetworkController networkController = Get.put(NetworkController());
   final LoadingController loadingController = Get.put(LoadingController());
   final ProfileController profileController = Get.put(ProfileController());
+  final PostListController postListController = Get.put(PostListController());
 
 
   Future<void> initialization() async {
@@ -59,6 +61,11 @@ class AuthenticationController extends GetxController {
       return true;
     }
 
+    if(await sharedPrefs.getAuthMethod() == 'google'){
+      print('GOOGLE USER TOKEN AUTH');
+      return true;
+    }
+
     bool isAuthSuccess =
         await serverUtils.loginWithToken(token, roll_no, username);
 
@@ -76,12 +83,14 @@ class AuthenticationController extends GetxController {
     return isAuthSuccess;
   }
 
-  void googleSignIn(roll_no, BuildContext context) async {
-    final isValidRollNo = await serverUtils.validateRollNo(roll_no, context);
-
-
-    if (isValidRollNo) {
-      googleAuthController.login(roll_no, context);
+  void googleSignIn(BuildContext context) async {
+    // final isValidRollNo = await serverUtils.validateRollNo(roll_no, context);
+    // if (isValidRollNo) {
+      await googleAuthController.login(context);
+      print('AUTH METHOD: ${await sharedPrefs.getAuthMethod()}');
+    // }
+    if(postListController.result.isEmpty){
+      postListController.fetchData();
     }
   }
 
@@ -104,8 +113,18 @@ class AuthenticationController extends GetxController {
     await sharedPrefs.setAuthToken(auth_token);
     bool isRegisterationSuccessful = await serverUtils.loginWithToken(auth_token, roll_no, name);
     if (isRegisterationSuccessful) {
+      roll_no_ = roll_no;
+      sharedPrefs.setRollNo(roll_no);
+      username_ = name;
+      sharedPrefs.setUsername(username_);
+      sharedPrefs.setFirstLaunch();
       profileController.getUserDetails();
       loadingController.stopLoading();
+
+      if(postListController.result.isEmpty){
+        postListController.fetchData();
+      }
+
       Navigator.of(context).pop();
       Navigator.pushReplacement(
           context,
@@ -134,6 +153,9 @@ class AuthenticationController extends GetxController {
     final auth_token = await serverUtils.login(roll_no, password, fcmToken, context);
 
     if(auth_token != ''){
+      if(postListController.result.isEmpty){
+        postListController.fetchData();
+      }
       Navigator.of(context).pop();
       Navigator.pushReplacement(
           context,
@@ -160,13 +182,13 @@ class AuthenticationController extends GetxController {
   }
 
   Future<void> logout(BuildContext context) async {
-
-    await serverUtils.logout(roll_no_, fcmToken, context);
-    await sharedPrefs.logout();
-    if(await sharedPrefs.getAuthMethod() == 'google_user'){
+    print('AUTH METHOD: ${await sharedPrefs.getAuthMethod()}');
+    if(await sharedPrefs.getAuthMethod() == 'google'){
       print('GOOGLE USER LOGOUT');
       await googleAuthController.signOut();
     }
+    await serverUtils.logout(roll_no_, fcmToken, context);
+    await sharedPrefs.logout();
     isUserLoggedIn.value = false;
     Navigator.pushReplacementNamed(context, '/get_started');
   }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
@@ -14,8 +15,12 @@ class GoogleAuthController extends GetxController {
   final currentUserDetails = UserDetails(rollNo: '', name: '', profilePic: '');
   final serverUtils = ServerUtils();
   final ProfileController profileController = Get.put(ProfileController());
+  final LoadingController loadingController = Get.put(LoadingController());
 
-  Future<void> login(roll_no, context) async {
+  Future<void> login(context) async {
+
+    loadingController.startLoading();
+
     final UserCredential userLogin = await signInWithGoogle();
 
     if(userLogin.user == null){
@@ -27,19 +32,21 @@ class GoogleAuthController extends GetxController {
     if(userLogin.user?.photoURL != null){
       currentUserDetails.profilePic = userLogin.user!.photoURL!;
     }
-    currentUserDetails.rollNo = roll_no;
 
-    if (await serverUtils.googleRegister(
+    bool isAuthorized = await serverUtils.googleRegister(
         currentUserDetails.name,
         userLogin.user!.email!,
-        roll_no,
         currentUserDetails.profilePic,
         fcmToken,
-        context)) {
+        context);
 
+    if (isAuthorized) {
+      final roll_no = userLogin.user!.email!.split('@')[0];
+      currentUserDetails.rollNo = roll_no;
       username_ = currentUserDetails.name;
       roll_no_ = roll_no;
-
+      SharedPrefs().setAuthMethod('google');
+      print('AUTH METHOD //: ${await SharedPrefs().getAuthMethod()}');
       SharedPrefs().setUsername(currentUserDetails.name);
       SharedPrefs().setRollNo(roll_no);
       SharedPrefs().setProfilePic(currentUserDetails.profilePic);
@@ -49,9 +56,15 @@ class GoogleAuthController extends GetxController {
       profileController.current_roll_no.value = currentUserDetails.rollNo;
       profileController.current_profile_pic.value = currentUserDetails.profilePic;
 
+      Navigator.of(context).pop();
+
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const PageBuilder()));
+
+      loadingController.stopLoading();
     }
+
+    loadingController.stopLoading();
   }
 
   Future<void> signOut() async {

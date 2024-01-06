@@ -49,6 +49,7 @@ class SharedPrefs {
     await _sharedPrefs!.setString('username', '');
     await _sharedPrefs!.setStringList('posts', postListString);
     await _sharedPrefs!.setString('auth_token', '');
+    await _sharedPrefs!.setString('auth_method', '');
     await _sharedPrefs!.setString('seen_posts', '');
     await _sharedPrefs!.setString('draft_subject', '');
     await _sharedPrefs!.setString('draft_body', '');

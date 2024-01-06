@@ -195,7 +195,7 @@ class ServerUtils {
     }
   }
 
-  Future<bool> googleRegister(name, email, roll_no, pfp, fcmToken, context) async {
+  Future<bool> googleRegister(name, email, pfp, fcmToken, context) async {
 
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
@@ -217,7 +217,6 @@ class ServerUtils {
     Map<String, dynamic> body = {
       'name': name,
       'email': email,
-      'roll_no': roll_no,
       'pfp': pfp,
       'fcm_token': fcmToken,
     };
@@ -252,7 +251,6 @@ class ServerUtils {
         }
 
         if(response.body == 'success'){
-          SharedPrefs().setAuthMethod('google');
           return true;
         }
         return false;
