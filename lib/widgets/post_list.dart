@@ -13,7 +13,7 @@ import '../utils/server_utils.dart';
 import 'cab_sharing_container.dart';
 
 class PostList extends StatefulWidget {
-  PostList({
+  const PostList({
     super.key,
     this.filter, this.page,
   });
@@ -144,7 +144,7 @@ class _PostListState extends State<PostList> {
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 5,
                                                 ),
                                                 Text('Posted by you',
@@ -153,7 +153,7 @@ class _PostListState extends State<PostList> {
                                                     color: Colors.black.withOpacity(0.7),
                                                   ),
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 5,
                                                 ),
                                               ],
@@ -273,7 +273,7 @@ class _PostListState extends State<PostList> {
                                                       flex: 1,
                                                       child: Align(
                                                         alignment: Alignment.topRight,
-                                                        child: Container(
+                                                        child: SizedBox(
                                                             height: 70,
                                                             width: 70,
                                                             child: Card(
@@ -286,7 +286,7 @@ class _PostListState extends State<PostList> {
                                                                   height: 75,
                                                                   fit: BoxFit.cover,
                                                                   imageUrl:
-                                                                      '${post.image}',
+                                                                      post.image,
                                                                   memCacheHeight: 200,
                                                                   memCacheWidth: 200,
                                                                   errorWidget: (context,
@@ -316,7 +316,7 @@ class _PostListState extends State<PostList> {
                             );
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 100,
                         )
                       ],

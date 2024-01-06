@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
-import 'package:lost_flutter/controllers/google_auth_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models.dart';
@@ -9,14 +8,14 @@ class SharedPrefs {
   SharedPreferences? _sharedPrefs;
   final BottomNavController bottomNavController = Get.put(BottomNavController());
 
-  Future<void> setAuthMethod(auth_method) async {
+  Future<void> setAuthMethod(authMethod) async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    await _sharedPrefs?.setString('auth_method', auth_method);
+    await _sharedPrefs?.setString('auth_method', authMethod);
   }
 
   Future<String> getAuthMethod() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final authMethod = await _sharedPrefs!.getString('auth_method') ?? '';
+    final authMethod = _sharedPrefs!.getString('auth_method') ?? '';
     return authMethod;
   }
 
@@ -61,14 +60,14 @@ class SharedPrefs {
   Future<void> init() async =>
       _sharedPrefs = await SharedPreferences.getInstance();
 
-  Future<void> setRollNo(String roll_no) async {
+  Future<void> setRollNo(String rollNo) async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    await _sharedPrefs!.setString('roll_no', roll_no);
+    await _sharedPrefs!.setString('roll_no', rollNo);
   }
 
   Future<String> getRollNo() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final rollno = await _sharedPrefs!.getString('roll_no') ?? '';
+    final rollno = _sharedPrefs!.getString('roll_no') ?? '';
     return rollno;
   }
 
@@ -79,7 +78,7 @@ class SharedPrefs {
 
   Future<String> getUsername() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final username = await _sharedPrefs!.getString('username') ?? '';
+    final username = _sharedPrefs!.getString('username') ?? '';
     return username;
   }
 
@@ -90,7 +89,7 @@ class SharedPrefs {
 
   Future<String> getProfilePic() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final pfp = await _sharedPrefs!.getString('pfp') ?? '';
+    final pfp = _sharedPrefs!.getString('pfp') ?? '';
     return pfp;
   }
 
@@ -112,15 +111,15 @@ class SharedPrefs {
     return posts;
   }
 
-  Future<void> storeSeenPosts(List<String> seen_posts) async {
+  Future<void> storeSeenPosts(List<String> seenPosts) async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final seenPostsJsonString = seenPosts().seenPostsToJson(seen_posts);
+    final seenPostsJsonString = SeenPosts().seenPostsToJson(seenPosts);
     await _sharedPrefs!.setString('seen_posts', seenPostsJsonString);
   }
 
   Future<List<String>> getSeenPosts() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final seenPostsList = seenPosts().seenPostsFromJson(_sharedPrefs!.getString('seen_posts') ?? '').toList();
+    final seenPostsList = SeenPosts().seenPostsFromJson(_sharedPrefs!.getString('seen_posts') ?? '').toList();
     return seenPostsList;
   }
 
@@ -134,7 +133,7 @@ class SharedPrefs {
   // get auth token
   Future<String> getAuthToken() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final token = await _sharedPrefs!.getString('auth_token') ?? '';
+    final token = _sharedPrefs!.getString('auth_token') ?? '';
     return token;
   }
 
@@ -147,8 +146,8 @@ class SharedPrefs {
 
   Future<PostDraft> getDraft() async {
     _sharedPrefs = await SharedPreferences.getInstance();
-    final subject = await _sharedPrefs!.getString('draft_subject') ?? '';
-    final body = await _sharedPrefs!.getString('draft_body') ?? '';
+    final subject = _sharedPrefs!.getString('draft_subject') ?? '';
+    final body = _sharedPrefs!.getString('draft_body') ?? '';
     PostDraft post = PostDraft(subject: subject, content: body);
     return post;
   }

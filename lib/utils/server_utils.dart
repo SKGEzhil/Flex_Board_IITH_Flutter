@@ -1,5 +1,4 @@
 
-import 'dart:ffi';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -12,12 +11,8 @@ import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
-import 'package:lost_flutter/pages/home.dart';
-import 'package:lost_flutter/pages/profile.dart';
-import 'package:lost_flutter/utils/shared_prefs.dart';
 
 import '../models.dart';
-import '../pages/get_started.dart';
 import 'package:get/get.dart';
 
 class ServerUtils {
@@ -26,7 +21,7 @@ class ServerUtils {
   // final endPoint = 'http://localhost:5000';
   // final endPoint = 'http://10.0.2.2:80';
 
-  Future<String> login(roll_no, password, fcm_token, context) async {
+  Future<String> login(rollNo, password, fcmToken, context) async {
 
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
@@ -43,8 +38,8 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
-      'fcm_token': fcm_token,
+      'roll_no': rollNo,
+      'fcm_token': fcmToken,
       'password': password,
     };
 
@@ -105,7 +100,7 @@ class ServerUtils {
     }
   }
 
-  Future<String> register(name, roll_no, email, password, fcmToken, context) async {
+  Future<String> register(name, rollNo, email, password, fcmToken, context) async {
 
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
@@ -125,7 +120,7 @@ class ServerUtils {
 
     Map<String, dynamic> body = {
       'name': name,
-      'roll_no': roll_no,
+      'roll_no': rollNo,
       'email': email,
       'password': password,
       'fcm_token': fcmToken,
@@ -339,7 +334,7 @@ class ServerUtils {
   // }
 
 
-  Future<bool> validateRollNo(roll_no, context) async {
+  Future<bool> validateRollNo(rollNo, context) async {
 
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
@@ -354,7 +349,7 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
+      'roll_no': rollNo,
     };
 
     try {
@@ -393,7 +388,7 @@ class ServerUtils {
   }
 
 
-  Future<bool> loginWithToken(token, roll_no, name) async {
+  Future<bool> loginWithToken(token, rollNo, name) async {
 
     final String url =
         '$endPoint/token_auth'; // replace with your API endpoint
@@ -444,7 +439,7 @@ class ServerUtils {
     }
   }
 
-  Future<void> logout(roll_no, fcm_token, context) async {
+  Future<void> logout(rollNo, fcmToken, context) async {
 
     final networkErrorSnackbar = ErrorSnackBar('Network error', context);
     final serverErrorSnackbar = ErrorSnackBar('Server error', context);
@@ -460,8 +455,8 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
-      'fcm_token': fcm_token,
+      'roll_no': rollNo,
+      'fcm_token': fcmToken,
     };
 
     try {
@@ -483,7 +478,7 @@ class ServerUtils {
     }
   }
 
-  Future<void> updateProfile(roll_no, pfp, name) async {
+  Future<void> updateProfile(rollNo, pfp, name) async {
     final String url =
         '$endPoint/update_profile'; // replace with your API endpoint
 
@@ -495,7 +490,7 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
+      'roll_no': rollNo,
       'name': name,
       'pfp': pfp,
     };
@@ -521,7 +516,7 @@ class ServerUtils {
   }
 
 
-  Future<void> createPost(roll_no, subject, content, image, List<String> tags, cab, context) async {
+  Future<void> createPost(rollNo, subject, content, image, List<String> tags, cab, context) async {
     final String url =
         '$endPoint/create_post'; // replace with your API endpoint
     final CabSharingController cabSharingController = Get.put(CabSharingController());
@@ -536,7 +531,7 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
+      'roll_no': rollNo,
       'subject': subject,
       'content': content,
       'image': image,
@@ -625,8 +620,8 @@ class ServerUtils {
     }
   }
 
-  Future<String> uploadImage(_image, isPfp) async {
-    if (_image == null) {
+  Future<String> uploadImage(image, isPfp) async {
+    if (image == null) {
       // Handle case when no image is selected
       return '';
     }
@@ -635,7 +630,7 @@ class ServerUtils {
 
 
     final request = http.MultipartRequest('POST', Uri.parse(url));
-    request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
+    request.files.add(await http.MultipartFile.fromPath('image', image!.path));
 
     try {
       final response = await request.send();
@@ -662,7 +657,7 @@ class ServerUtils {
     }
   }
 
-  Future<void> addReply(roll_no, reply, post_id, context) async {
+  Future<void> addReply(rollNo, reply, postId, context) async {
     final String url =
         '$endPoint/add_reply'; // replace with your API endpoint
 
@@ -676,8 +671,8 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
-      'post_id': post_id,
+      'roll_no': rollNo,
+      'post_id': postId,
       'reply': reply,
     };
 
@@ -705,7 +700,7 @@ class ServerUtils {
     }
   }
 
-  Future<List<Reply>> getReplies(post_id) async {
+  Future<List<Reply>> getReplies(postId) async {
     final String url =
         '$endPoint/get_replies'; // replace with your API endpoint
 
@@ -715,7 +710,7 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'post_id': post_id,
+      'post_id': postId,
     };
 
     try {
@@ -755,7 +750,7 @@ class ServerUtils {
     }
   }
 
-  Future<UserDetails> getUserDetails(roll_no) async {
+  Future<UserDetails> getUserDetails(rollNo) async {
     final String url =
         '$endPoint/get_user_details'; // replace with your API endpoint
 
@@ -765,7 +760,7 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
+      'roll_no': rollNo,
     };
 
     try {
@@ -809,7 +804,7 @@ class ServerUtils {
     }
   }
 
-  Future<List<String>> getSeenPosts(roll_no) async {
+  Future<List<String>> getSeenPosts(rollNo) async {
     final String url =
         '$endPoint/get_opened'; // replace with your API endpoint
 
@@ -819,7 +814,7 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
+      'roll_no': rollNo,
     };
 
     try {
@@ -834,11 +829,11 @@ class ServerUtils {
         print('Response: ${response.body}');
 
 
-        List<String> posts = seenPosts().seenPostsFromJson(response.body);
+        List<String> posts = SeenPosts().seenPostsFromJson(response.body);
 
-        posts.forEach((element) {
+        for (var element in posts) {
           print(element);
-        });
+        }
 
         return posts;
 
@@ -853,7 +848,7 @@ class ServerUtils {
     }
   }
 
-  Future<void> setSeenPosts(roll_no, post_id) async {
+  Future<void> setSeenPosts(rollNo, postId) async {
     final String url =
         '$endPoint/set_opened'; // replace with your API endpoint
 
@@ -863,8 +858,8 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no,
-      'post_id': post_id,
+      'roll_no': rollNo,
+      'post_id': postId,
     };
 
     try {
@@ -920,7 +915,7 @@ class ServerUtils {
     }
   }
 
-  Future<List<Reply>> getAllReplies(roll_no) async {
+  Future<List<Reply>> getAllReplies(rollNo) async {
     final String url =
         '$endPoint/get_all_replies'; // replace with your API endpoint
 
@@ -930,7 +925,7 @@ class ServerUtils {
     };
 
     Map<String, dynamic> body = {
-      'roll_no': roll_no
+      'roll_no': rollNo
     };
 
     try {
@@ -972,9 +967,9 @@ class ServerUtils {
 
 
 
-  SnackBar ErrorSnackBar(error_message, BuildContext context) {
+  SnackBar ErrorSnackBar(errorMessage, BuildContext context) {
     return SnackBar(
-      content: Text('$error_message'),
+      content: Text('$errorMessage'),
       elevation: 0,
       behavior: SnackBarBehavior.floating,
       // margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),

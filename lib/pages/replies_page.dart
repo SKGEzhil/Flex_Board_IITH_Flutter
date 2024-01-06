@@ -37,7 +37,7 @@ class _RepliesPageState extends State<RepliesPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: TitleText(pageTitle: 'Replies')
+          title: const TitleText(pageTitle: 'Replies')
         ),
         body:
       Stack(
@@ -76,8 +76,8 @@ class _RepliesPageState extends State<RepliesPage> {
               return InkWell(
                 onTap: () {
                   repliesController.isOpened.value = true;
-                  final post_items = postListController.items.where((element) => element.id == reply.post_id);
-                  Post post = post_items.first;
+                  final postItems = postListController.items.where((element) => element.id == reply.post_id);
+                  Post post = postItems.first;
                   Navigator.push(
                     context,
                     MaterialPageRoute(

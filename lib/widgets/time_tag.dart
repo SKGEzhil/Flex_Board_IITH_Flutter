@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 
 class TimeTag extends StatefulWidget {
-  TimeTag({
+  const TimeTag({
     super.key,
   });
 

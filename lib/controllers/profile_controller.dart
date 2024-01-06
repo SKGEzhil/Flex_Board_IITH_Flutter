@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/image_picker_controller.dart';
-import 'package:lost_flutter/globals.dart';
 
 import '../utils/server_utils.dart';
 import '../utils/shared_prefs.dart';

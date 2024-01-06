@@ -39,7 +39,7 @@ class _HomeState extends State<Home> {
           appBar: buildAppBar(context),
           body: Stack(
             children: [
-              PostList(),
+              const PostList(),
               NoInternet()
               // BottomNav()
             ],
@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
       ),
       elevation: 1,
       backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6784313725490196),
-      title: TitleText(pageTitle: 'Home'),
+      title: const TitleText(pageTitle: 'Home'),
       actions: <Widget>[
         IconButton(
           icon: const Icon(

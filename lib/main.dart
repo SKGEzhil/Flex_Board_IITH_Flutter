@@ -12,22 +12,19 @@ import 'package:lost_flutter/controllers/global_binding.dart';
 import 'package:lost_flutter/controllers/network_connectivity_controller.dart';
 import 'package:lost_flutter/controllers/notification_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
-import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/pages/create_post.dart';
 import 'package:lost_flutter/firebase_options.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
-import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'pages/get_started.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
-Future<void> onNotificationClick(message, notification_type) async {
+Future<void> onNotificationClick(message, notificationType) async {
   final NotificationController notificationController = Get.put(NotificationController());
   final RepliesController repliesController = Get.put(RepliesController());
   final PostListController postListController = Get.put(PostListController());
@@ -35,14 +32,14 @@ Future<void> onNotificationClick(message, notification_type) async {
   final postId = data?['post_id'];
   final type = data?['type'];
   final post = await postListController.notificationHandler(postId, type);
-  if(notification_type == 'get_init') {
+  if(notificationType == 'get_init') {
     print('GET INIT ${message?.data}');
-    print('TYPE: $notification_type');
+    print('TYPE: $notificationType');
     notificationController.isNotification.value = true;
     notificationController.post = post;
     repliesController.isOpened.value = true;
   } else {
-    print('TYPE: $notification_type');
+    print('TYPE: $notificationType');
     Get.to(PostViewer(post: post));
   }
 }
@@ -179,7 +176,7 @@ class MyApp extends StatelessWidget {
 
       routes: {
         '/create_post': (context) => const CreatePost(),
-        '/get_started': (context) => GetStarted(),
+        '/get_started': (context) => const GetStarted(),
       },
       home: authenticationController.initialPage()
     );

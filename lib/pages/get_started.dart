@@ -7,12 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:lost_flutter/controllers/authentication_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/google_auth_controller.dart';
-import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:rive/rive.dart';
 import 'package:get/get.dart';
 
 class GetStarted extends StatefulWidget {
+  const GetStarted({super.key});
+
   @override
   State<GetStarted> createState() => _GetStartedState();
 }
@@ -20,6 +21,7 @@ class GetStarted extends StatefulWidget {
 class _GetStartedState extends State<GetStarted> {
   Artboard? _riveArtboard;
 
+  @override
   void initState() {
     super.initState();
     rootBundle.load('assets/intro.riv').then(
@@ -73,7 +75,7 @@ class _GetStartedState extends State<GetStarted> {
                                 child: RegisterForm()),
                           ));
                 },
-                color: Color.fromRGBO(0, 0, 0, 1),
+                color: const Color.fromRGBO(0, 0, 0, 1),
                 borderRadius: BorderRadius.circular(20),
                 child: const Text("Get Started")),
           ),
@@ -240,7 +242,7 @@ class _SignInFormState extends State<SignInForm> {
                             style: TextStyle(color: Colors.white),
                           ));
                 }),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Text(
@@ -251,7 +253,7 @@ class _SignInFormState extends State<SignInForm> {
                   height: 0,
                   color: Colors.black.withOpacity(0.1),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 GestureDetector(
@@ -266,7 +268,7 @@ class _SignInFormState extends State<SignInForm> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Align(
+                                const Align(
                                   alignment: Alignment.topLeft,
                                   child: Text(
                                     'Enter Roll No to continue: ',
@@ -275,7 +277,7 @@ class _SignInFormState extends State<SignInForm> {
                                         fontWeight: FontWeight.w500),
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 7,
                                 ),
                                 CupertinoTextField(
@@ -323,10 +325,10 @@ class _SignInFormState extends State<SignInForm> {
                               width: 30,
                               height: 30,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
-                            Text(
+                            const Text(
                               'Continue with Google',
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w500),
@@ -337,7 +339,7 @@ class _SignInFormState extends State<SignInForm> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 25,
                 ),
                 GestureDetector(
@@ -489,7 +491,7 @@ class RegisterForm extends StatelessWidget {
                           "Sign Up",
                           style: TextStyle(color: Colors.white),
                         )),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Text(
@@ -500,11 +502,11 @@ class RegisterForm extends StatelessWidget {
                   height: 0,
                   color: Colors.black.withOpacity(0.1),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 loadingController.isLoading.value
-                    ? CupertinoActivityIndicator()
+                    ? const CupertinoActivityIndicator()
                     : GestureDetector(
                         onTap: () {
 
@@ -585,10 +587,10 @@ class RegisterForm extends StatelessWidget {
                                     width: 30,
                                     height: 30,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                  Text(
+                                  const Text(
                                     'Continue with Google',
                                     style: TextStyle(
                                         fontSize: 16,
@@ -722,7 +724,7 @@ class RegisterTextField extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               "$subText",
-              style: TextStyle(
+              style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontFamily: "Poppins",
                   fontSize: 16),
@@ -751,7 +753,7 @@ class RegisterTextField extends StatelessWidget {
                     color: Colors.white.withOpacity(0)), //<-- SEE HERE
               ),
               prefixIcon:
-                  Padding(padding: EdgeInsets.all(15), child: TextFieldIcon())),
+                  Padding(padding: const EdgeInsets.all(15), child: TextFieldIcon())),
         ),
       ],
     );

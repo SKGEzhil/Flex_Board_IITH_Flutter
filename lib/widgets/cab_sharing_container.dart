@@ -79,7 +79,7 @@ class CabSharingContainer extends StatelessWidget {
                 Expanded(
                   child: Align(
                     alignment: Alignment.topRight,
-                    child: isCreatePost ? TimeTag() :
+                    child: isCreatePost ? const TimeTag() :
 
                     Container(
                       decoration: BoxDecoration(

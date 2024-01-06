@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/google_auth_controller.dart';
@@ -30,20 +29,20 @@ class AuthenticationController extends GetxController {
 
   Future<void> initialization() async {
     if (await sharedPrefs.getRollNo() != '') {
-      final roll_no = await sharedPrefs.getRollNo();
+      final rollNo = await sharedPrefs.getRollNo();
       final username = await sharedPrefs.getUsername();
-      final auth_method = await sharedPrefs.getAuthMethod();
+      final authMethod = await sharedPrefs.getAuthMethod();
 
-      print('ROLL NO 1: $roll_no');
+      print('ROLL NO 1: $rollNo');
 
-      if (auth_method == 'google') {
-        roll_no_ = roll_no;
+      if (authMethod == 'google') {
+        roll_no_ = rollNo;
         username_ = username;
         isUserLoggedIn.value = true;
       }
 
       print('set to true ');
-      await tokenAuth(roll_no, username)
+      await tokenAuth(rollNo, username)
           ? isUserLoggedIn.value = true
           : isUserLoggedIn.value = false;
     } else {
@@ -52,7 +51,7 @@ class AuthenticationController extends GetxController {
     }
   }
 
-  Future<bool> tokenAuth(roll_no, username) async {
+  Future<bool> tokenAuth(rollNo, username) async {
     final token = await sharedPrefs.getAuthToken();
     print('token = $token');
 
@@ -67,10 +66,10 @@ class AuthenticationController extends GetxController {
     }
 
     bool isAuthSuccess =
-        await serverUtils.loginWithToken(token, roll_no, username);
+        await serverUtils.loginWithToken(token, rollNo, username);
 
     if (isAuthSuccess) {
-      roll_no_ = roll_no;
+      roll_no_ = rollNo;
 
       print('ROLL NO 2: $roll_no_');
 
@@ -94,9 +93,9 @@ class AuthenticationController extends GetxController {
     }
   }
 
-  void register(name, roll_no, email, password, BuildContext context) async {
+  void register(name, rollNo, email, password, BuildContext context) async {
 
-    if (name.isEmpty || roll_no.isEmpty || email.isEmpty || password.isEmpty) {
+    if (name.isEmpty || rollNo.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill all the fields'),
@@ -107,14 +106,14 @@ class AuthenticationController extends GetxController {
 
     loadingController.startLoading();
 
-    final auth_token = await serverUtils.register(
-        name, roll_no, email, password, fcmToken, context);
+    final authToken = await serverUtils.register(
+        name, rollNo, email, password, fcmToken, context);
 
-    await sharedPrefs.setAuthToken(auth_token);
-    bool isRegisterationSuccessful = await serverUtils.loginWithToken(auth_token, roll_no, name);
+    await sharedPrefs.setAuthToken(authToken);
+    bool isRegisterationSuccessful = await serverUtils.loginWithToken(authToken, rollNo, name);
     if (isRegisterationSuccessful) {
-      roll_no_ = roll_no;
-      sharedPrefs.setRollNo(roll_no);
+      roll_no_ = rollNo;
+      sharedPrefs.setRollNo(rollNo);
       username_ = name;
       sharedPrefs.setUsername(username_);
       sharedPrefs.setFirstLaunch();
@@ -137,9 +136,9 @@ class AuthenticationController extends GetxController {
 
   }
 
-  void login(roll_no, password, BuildContext context) async {
+  void login(rollNo, password, BuildContext context) async {
 
-    if (roll_no.isEmpty || password.isEmpty) {
+    if (rollNo.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill all the fields'),
@@ -150,9 +149,9 @@ class AuthenticationController extends GetxController {
 
     loadingController.startLoading();
 
-    final auth_token = await serverUtils.login(roll_no, password, fcmToken, context);
+    final authToken = await serverUtils.login(rollNo, password, fcmToken, context);
 
-    if(auth_token != ''){
+    if(authToken != ''){
       if(postListController.result.isEmpty){
         postListController.fetchData();
       }
@@ -162,18 +161,18 @@ class AuthenticationController extends GetxController {
           MaterialPageRoute(
             builder: (context) => const PageBuilder(),
           ));
-      sharedPrefs.setRollNo(roll_no);
-      roll_no_ = roll_no;
-      final UserDetails userDetails = await serverUtils.getUserDetails(roll_no);
+      sharedPrefs.setRollNo(rollNo);
+      roll_no_ = rollNo;
+      final UserDetails userDetails = await serverUtils.getUserDetails(rollNo);
       print('USER DETAILS: ${userDetails.name}');
       username_ = userDetails.name;
       profileController.current_profile_pic.value = userDetails.profilePic;
       profileController.current_username.value = username_;
-      profileController.current_roll_no.value = roll_no;
+      profileController.current_roll_no.value = rollNo;
       sharedPrefs.setUsername(username_);
       sharedPrefs.setProfilePic(userDetails.profilePic);
       sharedPrefs.setFirstLaunch();
-      sharedPrefs.setAuthToken(auth_token);
+      sharedPrefs.setAuthToken(authToken);
       profileController.getUserDetails();
       print("Login successful, TOKEN: ${await sharedPrefs.getAuthToken()}");
       loadingController.stopLoading();
@@ -199,12 +198,8 @@ class AuthenticationController extends GetxController {
       return const PageBuilder();
     } else {
       print('User is not logged in');
-      return GetStarted();
+      return const GetStarted();
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 }

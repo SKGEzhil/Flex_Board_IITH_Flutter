@@ -1,6 +1,4 @@
-import 'dart:typed_data';
 
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -30,9 +28,5 @@ class ImagePickerController extends GetxController {
     update();
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
 }

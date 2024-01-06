@@ -35,7 +35,7 @@ class PostListController extends GetxController {
       items = await sharedPrefs.getPosts();
     }
     result = items;
-    result.forEach((element) {print('Element');});
+    for (var element in result) {print('Element');}
     update();
 
   }
@@ -89,11 +89,11 @@ class PostListController extends GetxController {
     update();
   }
 
-  void userPosts(String roll_no) {
+  void userPosts(String rollNo) {
     result = items
         .where(
             (post) =>
-        post.rollNo == roll_no)
+        post.rollNo == rollNo)
         .toList();
     update();
   }

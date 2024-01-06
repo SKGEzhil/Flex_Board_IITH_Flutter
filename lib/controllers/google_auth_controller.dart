@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -41,14 +40,14 @@ class GoogleAuthController extends GetxController {
         context);
 
     if (isAuthorized) {
-      final roll_no = userLogin.user!.email!.split('@')[0];
-      currentUserDetails.rollNo = roll_no;
+      final rollNo = userLogin.user!.email!.split('@')[0];
+      currentUserDetails.rollNo = rollNo;
       username_ = currentUserDetails.name;
-      roll_no_ = roll_no;
+      roll_no_ = rollNo;
       SharedPrefs().setAuthMethod('google');
       print('AUTH METHOD //: ${await SharedPrefs().getAuthMethod()}');
       SharedPrefs().setUsername(currentUserDetails.name);
-      SharedPrefs().setRollNo(roll_no);
+      SharedPrefs().setRollNo(rollNo);
       SharedPrefs().setProfilePic(currentUserDetails.profilePic);
       SharedPrefs().setFirstLaunch();
 

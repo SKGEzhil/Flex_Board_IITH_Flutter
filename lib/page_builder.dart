@@ -47,7 +47,7 @@ class _PageBuilderState extends State<PageBuilder> {
 
   Widget currentPage() {
     return Obx(() => bottom_nav_controller.currentIndex.value == 0
-        ? Home()
+        ? const Home()
         : bottom_nav_controller.currentIndex.value == 1
             ? const SearchPage()
             : bottom_nav_controller.currentIndex.value == 2

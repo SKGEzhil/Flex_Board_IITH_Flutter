@@ -100,7 +100,7 @@ class _PostViewerState extends State<PostViewer> {
                 ),
               ),
             ),
-            title: TitleText(pageTitle: ''),
+            title: const TitleText(pageTitle: ''),
           ),
           body: Stack(
             children: [

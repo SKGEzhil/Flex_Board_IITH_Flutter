@@ -10,7 +10,6 @@ import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/controllers/image_picker_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:lost_flutter/widgets/no_internet.dart';
 import '../controllers/post_tag_controller.dart';
 import '../controllers/profile_controller.dart';
@@ -96,7 +95,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         Material(
                           color: Colors.transparent,
-                          child: Container(
+                          child: SizedBox(
                             height: 100,
                             width: 100,
                             child: Column(
@@ -137,10 +136,10 @@ class _ProfileState extends State<Profile> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Align(
+                  const Align(
                       alignment: Alignment.centerLeft,
                       child: Text('Change Username:',
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: Color.fromRGBO(0, 0, 0, 1),
                               fontSize: 14,
                               fontWeight: FontWeight.w500))),
@@ -200,7 +199,7 @@ class _ProfileState extends State<Profile> {
             ),
             elevation: 1,
             backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6),
-            title: TitleText(pageTitle: 'Profile'),
+            title: const TitleText(pageTitle: 'Profile'),
             actions: [
               IconButton(
                 icon: const Icon(Icons.logout),
@@ -272,7 +271,7 @@ class _ProfileState extends State<Profile> {
                                         padding:
                                             const EdgeInsets.only(left: 8.0),
                                         child: Text(
-                                          '${profileController.current_username.value}',
+                                          profileController.current_username.value,
                                           maxLines: 1,
                                           style: const TextStyle(
                                               overflow: TextOverflow.fade,
@@ -379,7 +378,7 @@ class _ProfileState extends State<Profile> {
                                     fontWeight: FontWeight.bold),
                               ),
                             )),
-                        body: PostList(
+                        body: const PostList(
                           page: 'profile',
                         )),
                   )

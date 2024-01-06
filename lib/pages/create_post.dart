@@ -31,7 +31,7 @@ class _CreatePostState extends State<CreatePost> {
   final serverUtils = ServerUtils();
   final subject = TextEditingController();
   final content = TextEditingController();
-  final dataKey = new GlobalKey();
+  final dataKey = GlobalKey();
   final PostTagController postTagController = Get.put(PostTagController());
   final cabSharingFrom = TextEditingController();
   final cabSharingTo = TextEditingController();
@@ -68,9 +68,9 @@ class _CreatePostState extends State<CreatePost> {
         if (subject.text.isNotEmpty || content.text.isNotEmpty) {
           Get.snackbar('Draft', 'Post saved as Draft',
               snackPosition: SnackPosition.TOP,
-              animationDuration: Duration(milliseconds: 150),
+              animationDuration: const Duration(milliseconds: 150),
               borderRadius: 8,
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               backgroundColor: Colors.deepOrangeAccent.withOpacity(0.7),
               colorText: Colors.black);
         }
@@ -192,7 +192,7 @@ class _CreatePostState extends State<CreatePost> {
                               children: [
                                 Row(
                                   children: [
-                                    Text('Add a tag'),
+                                    const Text('Add a tag'),
                                     Expanded(
                                       child: Align(
                                           alignment: Alignment.centerRight,
@@ -229,7 +229,7 @@ class _CreatePostState extends State<CreatePost> {
                                 cabFrom: '',
                                 cabTo: '',
                                 isCreatePost: true)
-                            : SizedBox(),
+                            : const SizedBox(),
                       ],
                     );
                   }),
@@ -319,7 +319,7 @@ class _CreatePostState extends State<CreatePost> {
 
                                             imagePickerController.image ==
                                                     null
-                                                ? SizedBox()
+                                                ? const SizedBox()
                                                 :
                                             Positioned(
                                               right: 0.0,
@@ -363,18 +363,18 @@ class _CreatePostState extends State<CreatePost> {
                     child:
                     loadingController.isLoading.value
                         ? Padding(
-                          padding: EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(20.0),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CupertinoActivityIndicator(
+                                const CupertinoActivityIndicator(
                                   radius: 15,
                                   color: Colors.deepOrange,
                                 ),
-                                SizedBox(width: 10,),
+                                const SizedBox(width: 10,),
                                 Text('Posting...',
                                   style: TextStyle(
                                     fontSize: 18,
@@ -407,9 +407,9 @@ class _CreatePostState extends State<CreatePost> {
                                 },
                               ),
                               snackPosition: SnackPosition.TOP,
-                              animationDuration: Duration(milliseconds: 150),
+                              animationDuration: const Duration(milliseconds: 150),
                               borderRadius: 8,
-                              margin: EdgeInsets.all(10),
+                              margin: const EdgeInsets.all(10),
                               backgroundColor: Colors.redAccent.withOpacity(0.7),
                               colorText: Colors.black
                           );

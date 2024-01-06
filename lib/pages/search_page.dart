@@ -144,7 +144,7 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                     child: PostList()
                 )
 
