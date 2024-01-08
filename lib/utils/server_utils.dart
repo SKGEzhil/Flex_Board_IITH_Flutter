@@ -6,7 +6,6 @@ import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/google_auth_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
-import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/strings.dart';
@@ -17,7 +16,7 @@ import 'package:get/get.dart';
 class ServerUtils {
 
   /// Endpoint of the server (For testing purpose only)
-  final endPoint = 'http://65.0.8.179';
+  final endPoint = 'https://65.0.8.179';
   // final endPoint = 'http://localhost:5000';
   // final endPoint = 'http://10.0.2.2:80';
 

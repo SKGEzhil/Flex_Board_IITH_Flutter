@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'dart:io' show Platform;
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -107,6 +107,8 @@ void main() async {
   // Initializing Flutter Native Splash
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
+  HttpOverrides.global = MyHttpOverrides();
+
   final NetworkController networkController = Get.put(NetworkController());
 
   // Checking for network connectivity and initializing the app
@@ -194,5 +196,13 @@ class MyApp extends StatelessWidget {
       },
       home: authenticationController.initialPage()
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }
