@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lost_flutter/controllers/cab_sharing_controller.dart';
+import 'package:lost_flutter/controllers/create_post_controller.dart';
 import 'package:lost_flutter/controllers/image_picker_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
@@ -43,7 +44,8 @@ class _CreatePostState extends State<CreatePost> {
       Get.put(ImagePickerController());
   final LoadingController loadingController = Get.put(LoadingController());
   final PostTagController postTagController = Get.put(PostTagController());
-
+  final CreatePostController createPostController =
+      Get.put(CreatePostController());
 
   /// Get Draft from Shared Preferences
   void getDraft() async {
@@ -392,57 +394,13 @@ class _CreatePostState extends State<CreatePost> {
                         : CupertinoButton(
                             color: Colors.black,
                             child: const Text('Post'),
-                            onPressed: () async {
-                              if (subject.text.isEmpty ||
-                                  content.text.isEmpty) {
-                                Get.snackbar(
-                                    'Error', 'Subject or Body cannot be empty',
-                                    isDismissible: true,
-                                    mainButton: TextButton(
-                                      child: Text(
-                                        'OK',
-                                        style: TextStyle(
-                                          color: Colors.white.withOpacity(0.5),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        Get.back();
-                                      },
-                                    ),
-                                    snackPosition: SnackPosition.TOP,
-                                    animationDuration:
-                                        const Duration(milliseconds: 150),
-                                    borderRadius: 8,
-                                    margin: const EdgeInsets.all(10),
-                                    backgroundColor:
-                                        Colors.redAccent.withOpacity(0.7),
-                                    colorText: Colors.black);
-                                return;
-                              }
+                            onPressed: () {
 
-                              loadingController.startLoading();
+                              print('Button clicked');
 
-                              // stores cab details in [cabDetails]
-                              var cabDetails = {
-                                'from': cabSharingController.fromLocation.value,
-                                'to': cabSharingController.toLocation.value,
-                                'time': cabSharingController.dateTime.value
-                              };
-                              final tags = postTagController.selectedTags;
-                              if (imagePickerController.image != null) {
-                                await serverUtils.uploadImage(
-                                    imagePickerController.image, false);
-                              }
+                              createPostController.createPost(
+                                  subject.text, content.text, context);
 
-                              // sends post to server
-                              serverUtils.createPost(
-                                  roll_no_,
-                                  subject.text,
-                                  content.text,
-                                  post_image_link,
-                                  tags,
-                                  cabDetails,
-                                  context);
                             },
                           ),
                   );

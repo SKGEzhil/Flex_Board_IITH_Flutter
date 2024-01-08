@@ -381,7 +381,7 @@ class ServerUtils {
   }
 
   /// Sends a POST request to the server to create a post
-  Future<void> createPost(
+  Future<bool> createPost(
       rollNo, subject, content, image, List<String> tags, cab, context) async {
 
     final LoadingController loadingController = Get.put(LoadingController());
@@ -417,27 +417,21 @@ class ServerUtils {
         print('POST request successful');
         print('Response: ${response.body}');
         if (response.body == 'success') {
-          post_image_link = "";
-          cabSharingController.fromLocation.value = "From";
-          cabSharingController.toLocation.value = "To";
-          postListController.fetchData();
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PageBuilder(),
-              ));
-          loadingController.stopLoading();
+          return true;
         }
       } else {
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
         loadingController.stopLoading();
         ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(serverError, context));
+        return false;
       }
+      return false;
     } catch (error) {
       print('Error sending POST request: $error');
       loadingController.stopLoading();
       ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(networkError, context));
+      return false;
     }
   }
 
