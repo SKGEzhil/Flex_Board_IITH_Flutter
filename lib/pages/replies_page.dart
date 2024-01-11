@@ -4,6 +4,7 @@ import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/controllers/replies_controller.dart';
+import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/widgets/no_internet.dart';
 
@@ -22,7 +23,6 @@ class RepliesPage extends StatefulWidget {
 }
 
 class _RepliesPageState extends State<RepliesPage> {
-
   /// Declarations
   final serverUtils = ServerUtils();
 
@@ -69,12 +69,17 @@ class _RepliesPageState extends State<RepliesPage> {
                       ),
                     )
                   : ListView.builder(
-                      itemCount: repliesController.items.length,
+                      itemCount: repliesController.items
+                          .where((element) => element.rollNo != roll_no_)
+                          .length,
                       itemBuilder: (context, index) {
-                        Reply reply = repliesController.items[index];
+                        Reply reply = repliesController.items
+                            .where((element) => element.rollNo != roll_no_)
+                            .toList()[index];
 
                         return InkWell(
                           onTap: () {
+                            // Searched for the specific post in the post list
                             repliesController.isOpened.value = true;
                             final postItems = postListController.items
                                 .where((element) => element.id == reply.postId);

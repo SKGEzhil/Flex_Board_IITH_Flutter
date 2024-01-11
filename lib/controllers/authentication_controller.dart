@@ -25,7 +25,6 @@ class AuthenticationController extends GetxController {
   /// GetX Controllers
   final GoogleAuthController googleAuthController =
   Get.put(GoogleAuthController());
-  final NetworkController networkController = Get.put(NetworkController());
   final LoadingController loadingController = Get.put(LoadingController());
   final ProfileController profileController = Get.put(ProfileController());
   final PostListController postListController = Get.put(PostListController());
@@ -64,6 +63,8 @@ class AuthenticationController extends GetxController {
 
   /// Authenticate user with token when already logged in
   Future<bool> tokenAuth(rollNo, username) async {
+
+    final NetworkController networkController = Get.put(NetworkController());
 
     // Fetches token from shared preferences
     final token = await sharedPrefs.getAuthToken();

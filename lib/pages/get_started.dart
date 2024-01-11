@@ -74,7 +74,7 @@ class _GetStartedState extends State<GetStarted> {
                       pageBuilder: (context, _, __) => Center(
                             child: BackdropFilter(
                                 filter:
-                                    ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                                    ImageFilter.blur(sigmaX: 75, sigmaY: 75),
                                 child: RegisterForm()),
                           ));
                 },
@@ -92,7 +92,7 @@ class _GetStartedState extends State<GetStarted> {
                       Column(
                         children: [
                           Text(
-                            "Forum",
+                            "Flex",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 60,
@@ -109,7 +109,7 @@ class _GetStartedState extends State<GetStarted> {
                             Align(
                               alignment: Alignment.bottomLeft,
                               child: Text(
-                                "Hub",
+                                "Board",
                                 style: TextStyle(fontSize: 50),
                               ),
                             ),
