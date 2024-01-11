@@ -74,7 +74,7 @@ Future<void> initializations() async {
   FirebaseMessaging.instance
         .getInitialMessage()
         .then((message) async {
-      await onNotificationClick(message, 'get_init');
+      // await onNotificationClick(message, 'get_init');
     });
 
     // Getting the FCM token
@@ -109,24 +109,11 @@ void main() async {
 
   HttpOverrides.global = MyHttpOverrides();
 
-  final NetworkController networkController = Get.put(NetworkController());
-
   // Checking for network connectivity and initializing the app
   if(await ServerUtils().isConnected()){
     isConnected = true;
     await initializations();
   }
-
-  // Enabling Firebase Crashlytics
-  FlutterError.onError = (errorDetails) {
-    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-  };
-
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
 
   // Initializing Firebase Messaging for iOS (Not functional)
   if (Platform.isIOS) {
@@ -162,6 +149,17 @@ void main() async {
 
   // Removing the splash screen
   FlutterNativeSplash.remove();
+
+  // // Enabling Firebase Crashlytics
+  // FlutterError.onError = (errorDetails) {
+  //   FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  // };
+  //
+  // // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  // PlatformDispatcher.instance.onError = (error, stack) {
+  //   FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+  //   return true;
+  // };
 
   GestureBinding.instance.resamplingEnabled = true;
   runApp(MyApp());

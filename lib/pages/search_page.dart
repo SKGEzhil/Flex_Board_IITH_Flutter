@@ -6,7 +6,7 @@ import 'package:lost_flutter/widgets/no_internet.dart';
 import 'package:lost_flutter/widgets/post_list.dart';
 import '../controllers/post_list_controller.dart';
 import '../controllers/post_tag_controller.dart';
-import '../models.dart';
+import '../models/post_model.dart';
 import '../widgets/post_tag.dart';
 import '../widgets/search_field.dart';
 
@@ -20,9 +20,6 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
 
   /// Declarations
-  List<Post> items = []; // Initialize the list
-  List<Post> initialItems = [];
-  List<Post> result = [];
   final serverUtils = ServerUtils();
   final tagSearch = TextEditingController();
 

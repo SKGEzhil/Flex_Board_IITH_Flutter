@@ -7,7 +7,8 @@ import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/widgets/no_internet.dart';
 
-import '../models.dart';
+import '../models/post_model.dart';
+import '../models/replies_model.dart';
 import '../utils/server_utils.dart';
 import 'package:get/get.dart';
 
@@ -111,14 +112,18 @@ class _RepliesPageState extends State<RepliesPage> {
                                     children: [
                                       Row(
                                         children: [
-                                          Text(
-                                            '${reply.name} has replied to your post: ',
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
+                                          Expanded(
+                                            flex: 5,
+                                            child: Text(
+                                              '${reply.name} has replied to your post: ',
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
-                                          Flexible(
+                                          Expanded(
+                                            flex: 3,
                                             // Added Flexible here
                                             child: Align(
                                               alignment: Alignment.centerRight,

@@ -8,7 +8,7 @@ import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 
 import '../globals.dart';
-import '../models.dart';
+import '../models/user_details_model.dart';
 import '../page_builder.dart';
 import '../pages/get_started.dart';
 import '../utils/server_utils.dart';
@@ -220,6 +220,8 @@ class AuthenticationController extends GetxController {
   /// Logout user
   Future<void> logout(BuildContext context) async {
 
+    Navigator.pushReplacementNamed(context, '/get_started');
+
     // Checks if user is logged in with [Google]
     print('AUTH METHOD: ${await sharedPrefs.getAuthMethod()}');
     if(await sharedPrefs.getAuthMethod() == 'google'){
@@ -231,7 +233,6 @@ class AuthenticationController extends GetxController {
     await serverUtils.logout(roll_no_, fcmToken, context);
     await sharedPrefs.clearAll();
     isUserLoggedIn.value = false;
-    Navigator.pushReplacementNamed(context, '/get_started');
   }
 
 

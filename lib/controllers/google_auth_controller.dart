@@ -5,13 +5,14 @@ import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/profile_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
+import 'package:lost_flutter/pages/get_started.dart';
+import 'package:lost_flutter/pages/loading_page.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models.dart';
+import '../models/user_details_model.dart';
 import '../utils/shared_prefs.dart';
 
 class GoogleAuthController extends GetxController {
-
   /// Declarations
   final currentUserDetails = UserDetails(rollNo: '', name: '', profilePic: '');
   final serverUtils = ServerUtils();
@@ -22,23 +23,31 @@ class GoogleAuthController extends GetxController {
 
   /// Starts the authentication process
   Future<void> login(context) async {
-
     loadingController.startLoading();
 
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const LoadingPage()));
+
     // Authenticates user with Google and fetches user credential
-    final UserCredential userCredential = await signInWithGoogle();
+    final UserCredential? userCredential = await signInWithGoogle();
 
     // Checks if user is authenticated successfully
-    if(userCredential.user == null){
+    if (userCredential == null) {
+      loadingController.stopLoading();
       await FirebaseAuth.instance.signOut();
+      Get.offAll(() => const GetStarted());
       return;
     }
 
     // Fetches user details from user credential
-    currentUserDetails.name = userCredential.user!.displayName!;
-    if(userCredential.user?.photoURL != null){
-      currentUserDetails.profilePic = userCredential.user!.photoURL!;
+    currentUserDetails.name = (userCredential.user!.displayName)!;
+    if (userCredential.user?.photoURL != null) {
+      currentUserDetails.profilePic = (userCredential.user!.photoURL)!;
     }
+
+    print('STARTING AUTHENTICATION');
+
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Starting authentication')));
 
     // Authorizes user with server
     bool isAuthorized = await serverUtils.googleRegister(
@@ -48,8 +57,12 @@ class GoogleAuthController extends GetxController {
         fcmToken,
         context);
 
+    print('AUTHORIZATION STATUS: $isAuthorized');
+
     // Checks if user is authorized successfully and initializes user details
     if (isAuthorized) {
+      print('LOGIN SUCCESSFUL');
+
       final rollNo = userCredential.user!.email!.split('@')[0];
       currentUserDetails.rollNo = rollNo;
       username_ = currentUserDetails.name;
@@ -65,14 +78,19 @@ class GoogleAuthController extends GetxController {
       profileController.currentRollNo.value = currentUserDetails.rollNo;
       profileController.currentProfilePic.value = currentUserDetails.profilePic;
 
-      Navigator.of(context).pop();
+      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login successful')));
 
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const PageBuilder()));
+      Get.offAll(() => const PageBuilder());
 
       loadingController.stopLoading();
+      return;
     }
 
+    print('Login Failed');
+
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Login failed')));
+
+    Get.offAll(() => const GetStarted());
     loadingController.stopLoading();
   }
 
@@ -86,8 +104,7 @@ class GoogleAuthController extends GetxController {
   }
 
   /// To sign in user with [Google] and get [UserCredential]
-  Future<UserCredential> signInWithGoogle() async {
-
+  Future<UserCredential?> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -102,6 +119,10 @@ class GoogleAuthController extends GetxController {
     );
 
     // Once signed in, return the UserCredential
+    if (googleUser == null) {
+      loadingController.stopLoading();
+      return null;
+    }
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

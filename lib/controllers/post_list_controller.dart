@@ -2,7 +2,8 @@ import 'package:get/get.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 
 import '../globals.dart';
-import '../models.dart';
+import '../models/post_model.dart';
+import '../models/user_details_model.dart';
 import '../utils/shared_prefs.dart';
 import 'network_connectivity_controller.dart';
 
@@ -34,8 +35,12 @@ class PostListController extends GetxController {
     if(isConnected){
       print('GETTING POSTS');
       items = await serverUtils.getPosts();
-
       sharedPrefs.storePosts(items);
+
+      for (var value in await sharedPrefs.getPosts()) {
+        print('STORED POST: ${value.id}');
+      }
+
     } else {
       print('GETTING POSTS FROM SHARED PREFS');
       items = await sharedPrefs.getPosts();
@@ -49,11 +54,13 @@ class PostListController extends GetxController {
   Future<Post> notificationHandler(postId, type) async {
     if(type == 'reply'){
       final posts = await sharedPrefs.getPosts();
+      posts.forEach((element) {
+        print('NOTIFICATION POST: ${element.id}');
+      });
       notificationPost = posts.where((element) => element.id == postId).first;
       return notificationPost;
     } else {
-      final posts = await serverUtils.getPosts();
-      notificationPost = posts.where((element) => element.id == postId).first;
+      // notificationPost = items.where((element) => element.id == postId).first;
       return notificationPost;
     }
   }
@@ -109,10 +116,10 @@ class PostListController extends GetxController {
   }
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     print('PostListController onInit');
-    fetchData();
+    await fetchData();
   }
 
 

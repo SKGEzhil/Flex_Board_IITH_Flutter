@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 import 'package:lost_flutter/controllers/bottom_nav_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../models.dart';
+import '../models/post_draft_model.dart';
+import '../models/post_model.dart';
+import '../models/seen_posts_model.dart';
 
 class SharedPrefs {
   /// Declarations

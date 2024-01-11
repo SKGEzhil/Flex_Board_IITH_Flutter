@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../models.dart';
+import '../models/post_model.dart';
 
 class NotificationController extends GetxController {
 

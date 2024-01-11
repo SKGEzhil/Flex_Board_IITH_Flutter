@@ -109,54 +109,7 @@ class SignInForm extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    showCupertinoDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (context) {
-                          return CupertinoAlertDialog(
-                            // title: Text('Enter roll to to continue'),
-                            content: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    'Enter Roll No to continue: ',
-                                    style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 7,
-                                ),
-                                CupertinoTextField(
-                                  controller: googleRollNo,
-                                  placeholder: 'Roll No',
-                                ),
-                              ],
-                            ),
-                            actions: [
-                              CupertinoDialogAction(
-                                child: const Text('Cancel',
-                                    style: TextStyle(color: Colors.black)),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              CupertinoDialogAction(
-                                child: const Text('Select',
-                                    style: TextStyle(
-                                        color: Colors.deepOrangeAccent)),
-                                onPressed: () {
-                                  authenticationController
-                                      .googleSignIn(context);
-                                },
-                              ),
-                            ],
-                          );
-                        });
+                    authenticationController.googleSignIn(context);
                   },
                   child: Container(
                     decoration: BoxDecoration(

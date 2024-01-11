@@ -7,7 +7,7 @@ import 'package:lost_flutter/controllers/post_seen_controller.dart';
 import 'package:lost_flutter/controllers/post_viewer_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/widgets/post_tag.dart';
-import '../models.dart';
+import '../models/post_model.dart';
 import '../pages/post_viewer.dart';
 import '../utils/server_utils.dart';
 import 'cab_sharing_container.dart';
@@ -27,9 +27,6 @@ class PostList extends StatefulWidget {
 class _PostListState extends State<PostList> {
 
   /// Declarations
-  List<Post> items = [];
-  List<String> seenPosts = [];
-  List<Post> filteredItems = [];
   final serverUtils = ServerUtils();
 
   /// GetX Controllers

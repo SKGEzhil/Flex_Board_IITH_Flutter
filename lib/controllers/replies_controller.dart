@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 import '../globals.dart';
-import '../models.dart';
+import '../models/replies_model.dart';
 import '../utils/server_utils.dart';
 import 'network_connectivity_controller.dart';
 

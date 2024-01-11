@@ -10,11 +10,11 @@ import 'package:lost_flutter/controllers/image_picker_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/models.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
 import 'package:lost_flutter/widgets/cab_sharing_container.dart';
+import '../models/post_draft_model.dart';
 import '../widgets/post_tag.dart';
 import '../widgets/title_text.dart';
 

@@ -15,7 +15,7 @@ class GlobalBindings extends Bindings{
   void dependencies() {
     // TODO: implement dependencies
     Get.put<AuthenticationController>(AuthenticationController());
-    Get.put<NetworkController>(NetworkController());
+    Get.lazyPut<NetworkController>(() => NetworkController());
     Get.lazyPut<PostListController>(() => PostListController());
     Get.lazyPut<PostSeenController>(() => PostSeenController());
     Get.lazyPut<RepliesController>(() => RepliesController());

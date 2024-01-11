@@ -6,7 +6,7 @@ import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/profile_controller.dart';
 
 import '../globals.dart';
-import '../models.dart';
+import '../models/replies_model.dart';
 import '../utils/server_utils.dart';
 import 'package:get/get.dart';
 

@@ -10,8 +10,12 @@ import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/strings.dart';
 
-import '../models.dart';
 import 'package:get/get.dart';
+
+import '../models/post_model.dart';
+import '../models/replies_model.dart';
+import '../models/seen_posts_model.dart';
+import '../models/user_details_model.dart';
 
 class ServerUtils {
 
@@ -49,8 +53,8 @@ class ServerUtils {
 
       if (response.statusCode == 200) {
         print('POST request successful');
-        print('Response: ${response.body}');
-        if(response.body == 'google_user') {
+        print('LOGIN Response: ${response.body}');
+        if(response.body == 'google_login') {
           loadingController.stopLoading();
           ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(useGoogleLogin, context));
           return '';

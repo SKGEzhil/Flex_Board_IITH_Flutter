@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:lost_flutter/models.dart';
 
+import '../models/user_details_model.dart';
 import '../utils/server_utils.dart';
 
 class PostViewerController extends GetxController{
