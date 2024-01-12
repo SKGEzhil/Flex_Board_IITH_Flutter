@@ -71,8 +71,16 @@ class AuthenticationController extends GetxController {
     print('token = $token');
 
     // Checking for network connectivity
-    if (networkController.connectionType == 0) {
+    if (!isConnected) {
       print('NO INTERNET TO AUTHENTICATE TOKEN');
+      roll_no_ = rollNo;
+
+      print('ROLL NO 2: $roll_no_');
+
+      sharedPrefs.setRollNo(roll_no_);
+      username_ = username;
+      sharedPrefs.setUsername(username_);
+      sharedPrefs.setFirstLaunch();
       return true;
     }
 

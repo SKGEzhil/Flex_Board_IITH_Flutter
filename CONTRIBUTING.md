@@ -1,6 +1,6 @@
-# Contributing to the Forum Hub IITH App
+# Contributing to the Flex Board IITH
 
-We welcome contributions to the Forum Hub IITH App! If you would like to contribute to the project, please follow these guidelines to help keep the process smooth and consistent.
+We welcome contributions to the Flex Board IITH! If you would like to contribute to the project, please follow these guidelines to help keep the process smooth and consistent.
 
 ## How to Contribute
 

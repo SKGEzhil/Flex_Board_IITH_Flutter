@@ -1,5 +1,5 @@
 
-# Forum Hub IITH App
+# Flex Board IITH
 
 ## Description
 This Flutter app is designed for the IIT Hyderabad student community to share personal updates, such as lost and found items, cab sharing requests, and more. It aims to declutter the college email system from non-academic content, providing a dedicated platform for students personal needs.
@@ -20,7 +20,7 @@ This Flutter app is designed for the IIT Hyderabad student community to share pe
 - GetX for state management
 
 ## Contributing
-Contributions to the Forum Hub IITH App are welcome. Please read the [CONTRIBUTING.md](/CONTRIBUTING.md) file for guidelines on how to contribute.
+Contributions to the Flex Board IITH are welcome. Please read the [CONTRIBUTING.md](/CONTRIBUTING.md) file for guidelines on how to contribute.
 
 ## License
 This project is licensed under the [MIT License](/LICENSE) - see the [LICENSE](/LICENSE) file for details.
