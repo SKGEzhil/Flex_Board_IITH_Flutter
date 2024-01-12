@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-// import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
@@ -19,11 +19,11 @@ import 'package:lost_flutter/firebase_options.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'pages/get_started.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 /// Getting Firebase Messaging Instance
-// FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
 /// Callback for Notification Click
 Future<void> onNotificationClick(message, notificationType) async {
@@ -50,53 +50,53 @@ Future<void> onNotificationClick(message, notificationType) async {
 Future<void> initializations() async {
 
   // Firebase initialization
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  // await FirebaseMessaging.instance.requestPermission();
+  await FirebaseMessaging.instance.requestPermission();
 
   print("HELLO WORLD");
 
   // onMessage: When the app is open and it receives a push notification
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-  //   // TODO: Handle foreground messages
-  // });
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    // TODO: Handle foreground messages
+  });
 
   // replacement for onResume: When the app is in the background and opened directly from the push notification.
-  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-  //   await onNotificationClick(message, 'omoa');
-  // });
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+    await onNotificationClick(message, 'omoa');
+  });
 
   // Firebase message handler
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // FirebaseMessaging.instance.subscribeToTopic("topic");
-  // FirebaseMessaging.instance
-  //       .getInitialMessage()
-  //       .then((message) async {
-  //     // await onNotificationClick(message, 'get_init');
-  //   });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.instance.subscribeToTopic("topic");
+  FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((message) async {
+      // await onNotificationClick(message, 'get_init');
+    });
 
     // Getting the FCM token
-    // final token = await FirebaseMessaging.instance.getToken();
-    // fcmToken = token!;
-    // print(token);
+    final token = await FirebaseMessaging.instance.getToken();
+    fcmToken = token!;
+    print(token);
 
 
 }
 
 /// Callback for handling background messages
 @pragma('vm:entry-point')
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   print("SKGEzhil Notification");
-//   final PostListController postListController = Get.put(PostListController());
-//   final Map<String, dynamic> data = message.data;
-//   final postId = data['post_id'];
-//   final type = data['type'];
-//   final post = await postListController.notificationHandler(postId, type);
-//   print('Name :${post.name}');
-//   print('FIREBASE BG HANDLER ${message.data}');
-// }
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("SKGEzhil Notification");
+  final PostListController postListController = Get.put(PostListController());
+  final Map<String, dynamic> data = message.data;
+  final postId = data['post_id'];
+  final type = data['type'];
+  final post = await postListController.notificationHandler(postId, type);
+  print('Name :${post.name}');
+  print('FIREBASE BG HANDLER ${message.data}');
+}
 
 
 void main() async {
@@ -116,33 +116,32 @@ void main() async {
   }
 
   // Initializing Firebase Messaging for iOS (Not functional)
-  // if (Platform.isIOS) {
-  //   String? apnsToken = await _firebaseMessaging.getAPNSToken();
-  //   if (apnsToken != null) {
-  //     try {
-  //       await _firebaseMessaging.subscribeToTopic('topic');
-  //     } on FirebaseException catch (e) {
-  //       debugPrint("George here is the error: $e");
-  //     }
-  //   } else {
-  //     await Future<void>.delayed(const Duration(seconds: 3));
-  //     apnsToken = await _firebaseMessaging.getAPNSToken();
-  //     if (apnsToken != null) {
-  //       try {
-  //         await _firebaseMessaging.subscribeToTopic('topic');
-  //       } on FirebaseException catch (e) {
-  //         debugPrint("George here is the error: $e");
-  //       }
-  //     }
-  //   }
-  // }
-  // else {
-  //   try {
-  //     await _firebaseMessaging.subscribeToTopic('topic');
-  //   } on FirebaseException catch (e) {
-  //     debugPrint("George here is the error: $e");
-  //   }
-  // }
+  if (Platform.isIOS) {
+    String? apnsToken = await _firebaseMessaging.getAPNSToken();
+    if (apnsToken != null) {
+      try {
+        await _firebaseMessaging.subscribeToTopic('topic');
+      } on FirebaseException catch (e) {
+        debugPrint("George here is the error: $e");
+      }
+    } else {
+      await Future<void>.delayed(const Duration(seconds: 3));
+      apnsToken = await _firebaseMessaging.getAPNSToken();
+      if (apnsToken != null) {
+        try {
+          await _firebaseMessaging.subscribeToTopic('topic');
+        } on FirebaseException catch (e) {
+          debugPrint("George here is the error: $e");
+        }
+      }
+    }
+  } else {
+    try {
+      await _firebaseMessaging.subscribeToTopic('topic');
+    } on FirebaseException catch (e) {
+      debugPrint("George here is the error: $e");
+    }
+  }
 
   // Initializing the Authentication Controller
   final AuthenticationController authenticationController = Get.put(AuthenticationController());
