@@ -68,19 +68,22 @@ class _HomeState extends State<Home> {
       elevation: 1,
       backgroundColor: const Color.fromRGBO(255, 255, 255, 0.6784313725490196),
       title: const TitleText(pageTitle: 'Home'),
-      actions: <Widget>[
-        IconButton(
-          icon: const Icon(
-            CupertinoIcons.add,
-            color: Color.fromRGBO(0, 0, 0, 1.0),
-          ),
-          tooltip: 'Create Post',
-          onPressed: () {
-            throw Exception();
-            // Navigator.pushNamed(context, '/create_post');
-          },
-        )
-      ],
+
+      // For debugging purpose
+
+      // actions: <Widget>[
+      //   IconButton(
+      //     icon: const Icon(
+      //       CupertinoIcons.add,
+      //       color: Color.fromRGBO(0, 0, 0, 1.0),
+      //     ),
+      //     tooltip: 'Create Post',
+      //     onPressed: () {
+      //       throw Exception();
+      //       // Navigator.pushNamed(context, '/create_post');
+      //     },
+      //   )
+      // ],
     );
   }
 }

@@ -92,6 +92,7 @@ class CreatePostController extends GetxController {
       cabSharingController.toLocation.value = "To";
       sharedPrefs.saveDraft('', '');
       postTagController.resetTags();
+      imagePickerController.resetImage();
       postListController.fetchData();
       Navigator.pushReplacement(
           context,

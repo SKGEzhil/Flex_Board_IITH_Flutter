@@ -1,15 +1,9 @@
 import 'dart:ui';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:lost_flutter/controllers/authentication_controller.dart';
-import 'package:lost_flutter/controllers/loading_controller.dart';
-import 'package:lost_flutter/controllers/google_auth_controller.dart';
-import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:rive/rive.dart';
-import 'package:get/get.dart';
 
 import '../widgets/register_form.dart';
 

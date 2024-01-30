@@ -7,7 +7,6 @@ import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/google_auth_controller.dart';
 import 'package:lost_flutter/controllers/post_list_controller.dart';
 import 'package:lost_flutter/globals.dart';
-import 'package:lost_flutter/page_builder.dart';
 import 'package:lost_flutter/strings.dart';
 
 import 'package:get/get.dart';
@@ -18,7 +17,6 @@ import '../models/seen_posts_model.dart';
 import '../models/user_details_model.dart';
 
 class ServerUtils {
-
   /// Endpoint of the server (For testing purpose only)
   final endPoint = 'https://65.0.8.179';
   // final endPoint = 'http://localhost:5000';
@@ -28,7 +26,6 @@ class ServerUtils {
 
   /// Sends a POST request to the server to login the user
   Future<String> login(rollNo, password, fcmToken, context) async {
-
     final LoadingController loadingController = Get.put(LoadingController());
 
     final String url = '$endPoint/login'; // replace with your API endpoint
@@ -54,9 +51,10 @@ class ServerUtils {
       if (response.statusCode == 200) {
         print('POST request successful');
         print('LOGIN Response: ${response.body}');
-        if(response.body == 'google_login') {
+        if (response.body == 'google_login') {
           loadingController.stopLoading();
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(useGoogleLogin, context));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(errorSnackBar(useGoogleLogin, context));
           return '';
         }
         if (response.body != 'failed') {
@@ -88,7 +86,6 @@ class ServerUtils {
   /// Sends a POST request to the server to register the user
   Future<String> register(
       name, rollNo, email, password, fcmToken, context) async {
-
     final LoadingController loadingController = Get.put(LoadingController());
 
     final String url = '$endPoint/register'; // replace with your API endpoint
@@ -119,11 +116,13 @@ class ServerUtils {
 
         if (response.body == 'invalid_roll_no') {
           loadingController.stopLoading();
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(invalidRollNo, context));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(errorSnackBar(invalidRollNo, context));
           return '';
         } else if (response.body == 'invalid_email') {
           loadingController.stopLoading();
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(invalidEmail, context));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(errorSnackBar(invalidEmail, context));
           return '';
         }
 
@@ -131,24 +130,26 @@ class ServerUtils {
             response.body != 'invalid_roll_no' &&
             response.body != 'invalid_email') {
           return response.body;
-
         } else if (response.body == 'failed') {
           loadingController.stopLoading();
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(alreadyRegistered, context));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(errorSnackBar(alreadyRegistered, context));
           return '';
         }
 
         return '';
       } else {
         print('POST request failed with status: ${response.statusCode}');
-        ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(serverError, context));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(errorSnackBar(serverError, context));
         print('Response: ${response.body}');
         loadingController.stopLoading();
         return '';
       }
     } catch (error) {
       print('Error sending POST request: $error');
-      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(networkError, context));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(errorSnackBar(networkError, context));
       loadingController.stopLoading();
       return '';
     }
@@ -156,10 +157,9 @@ class ServerUtils {
 
   /// Sends a POST request to the server to register the user using Google
   Future<bool> googleRegister(name, email, pfp, fcmToken, context) async {
-
     final LoadingController loadingController = Get.put(LoadingController());
     final GoogleAuthController googleAuthController =
-    Get.put(GoogleAuthController());
+        Get.put(GoogleAuthController());
 
     final String url =
         '$endPoint/google_auth'; // replace with your API endpoint
@@ -189,17 +189,24 @@ class ServerUtils {
 
         if (response.body == 'invalid_roll_no') {
           loadingController.stopLoading();
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(invalidRollNo, context));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(errorSnackBar(invalidRollNo, context));
           return false;
         } else if (response.body == 'invalid_email') {
           await googleAuthController.signOut();
           loadingController.stopLoading();
-          ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(invalidEmail, context));
+          Get.snackbar(
+              'Invalid Email', 'Please login using a valid IITH email id',
+              backgroundColor: Colors.redAccent);
+          // ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(invalidEmail, context));
           return false;
         } else if (response.body == 'native_login') {
           loadingController.stopLoading();
-          ScaffoldMessenger.of(context)
-              .showSnackBar(errorSnackBar(useNativeLogin, context));
+          Get.snackbar(
+              '', 'Please login using your Email id instead',
+              backgroundColor: Colors.redAccent);
+          // ScaffoldMessenger.of(context)
+          //     .showSnackBar(errorSnackBar(useNativeLogin, context));
           await googleAuthController.signOut();
           return false;
         }
@@ -212,22 +219,29 @@ class ServerUtils {
         // await registrationController.googleSignIn.signOut();
         await googleAuthController.signOut();
         print('POST request failed with status: ${response.statusCode}');
-        ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(serverError, context));
+        Get.snackbar(
+            'Server Error', 'Please retry after some time',
+            backgroundColor: Colors.redAccent);
+        // ScaffoldMessenger.of(context)
+        //     .showSnackBar(errorSnackBar(serverError, context));
         print('Response: ${response.body}');
         loadingController.stopLoading();
         return false;
       }
     } catch (error) {
-      print('Error sending POST request: $error');
-      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(networkError, context));
+      print('Error sending POST request: ');
       loadingController.stopLoading();
+      Get.snackbar(
+          'Network Error', 'Please check your internet connection',
+          backgroundColor: Colors.redAccent);
+      // ScaffoldMessenger.of(context)
+      //     .showSnackBar(errorSnackBar(networkError, context));
       return false;
     }
   }
 
   /// Sends a POST request to the server to validate the roll no
   Future<bool> validateRollNo(rollNo, context) async {
-
     final LoadingController loadingController = Get.put(LoadingController());
 
     final String url =
@@ -263,7 +277,8 @@ class ServerUtils {
         }
       } else {
         loadingController.stopLoading();
-        ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(serverError, context));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(errorSnackBar(serverError, context));
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
         return false;
@@ -271,7 +286,8 @@ class ServerUtils {
     } catch (error) {
       Navigator.pop(context);
       loadingController.stopLoading();
-      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(networkError, context));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(errorSnackBar(networkError, context));
       print('Error sending POST request: $error');
       return false;
     }
@@ -279,7 +295,6 @@ class ServerUtils {
 
   /// Sends a POST request to Authenticate user using token
   Future<bool> loginWithToken(token, rollNo, name) async {
-
     final String url = '$endPoint/token_auth'; // replace with your API endpoint
 
     Map<String, String> headers = {
@@ -318,7 +333,6 @@ class ServerUtils {
 
   /// Sends a POST request to the server to logout the user
   Future<void> logout(rollNo, fcmToken, context) async {
-
     final String url = '$endPoint/logout'; // replace with your API endpoint
 
     Map<String, String> headers = {
@@ -350,7 +364,6 @@ class ServerUtils {
 
   /// Sends a POST request to the server to update the user profile
   Future<void> updateProfile(rollNo, pfp, name) async {
-
     final String url =
         '$endPoint/update_profile'; // replace with your API endpoint
 
@@ -387,11 +400,10 @@ class ServerUtils {
   /// Sends a POST request to the server to create a post
   Future<bool> createPost(
       rollNo, subject, content, image, List<String> tags, cab, context) async {
-
     final LoadingController loadingController = Get.put(LoadingController());
     final PostListController postListController = Get.put(PostListController());
     final CabSharingController cabSharingController =
-    Get.put(CabSharingController());
+        Get.put(CabSharingController());
 
     final String url =
         '$endPoint/create_post'; // replace with your API endpoint
@@ -427,21 +439,22 @@ class ServerUtils {
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
         loadingController.stopLoading();
-        ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(serverError, context));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(errorSnackBar(serverError, context));
         return false;
       }
       return false;
     } catch (error) {
       print('Error sending POST request: $error');
       loadingController.stopLoading();
-      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(networkError, context));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(errorSnackBar(networkError, context));
       return false;
     }
   }
 
   /// Sends a GET request to the server to get all the posts
   Future<List<Post>> getPosts() async {
-
     var url = Uri.parse('$endPoint/get_posts');
 
     // Make the GET request
@@ -476,7 +489,6 @@ class ServerUtils {
 
     final url = '$endPoint/upload'; // Replace with your Flask server endpoint
 
-
     final request = http.MultipartRequest('POST', Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('image', image!.path));
 
@@ -507,14 +519,12 @@ class ServerUtils {
 
   /// Sends a POST request to the server to add a reply
   Future<void> addReply(rollNo, reply, postId, context) async {
-
     final LoadingController loadingController = Get.put(LoadingController());
 
     final String url = '$endPoint/add_reply';
 
     Map<String, String> headers = {
-      'Content-Type':
-          'application/json',
+      'Content-Type': 'application/json',
     };
 
     Map<String, dynamic> body = {
@@ -538,24 +548,23 @@ class ServerUtils {
         print('POST request failed with status: ${response.statusCode}');
         print('Response: ${response.body}');
         loadingController.stopLoading();
-        ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(serverError, context));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(errorSnackBar(serverError, context));
       }
     } catch (error) {
       print('Error sending POST request: $error');
       loadingController.stopLoading();
-      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar(networkError, context));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(errorSnackBar(networkError, context));
     }
   }
 
   /// Sends a POST request to the server to get replies
   Future<List<Reply>> getReplies(postId) async {
-
-    final String url =
-        '$endPoint/get_replies';
+    final String url = '$endPoint/get_replies';
 
     Map<String, String> headers = {
-      'Content-Type':
-          'application/json',
+      'Content-Type': 'application/json',
     };
 
     Map<String, dynamic> body = {
@@ -601,13 +610,10 @@ class ServerUtils {
 
   /// Sends a POST request to the server to get user details
   Future<UserDetails> getUserDetails(rollNo) async {
-
-    final String url =
-        '$endPoint/get_user_details';
+    final String url = '$endPoint/get_user_details';
 
     Map<String, String> headers = {
-      'Content-Type':
-          'application/json',
+      'Content-Type': 'application/json',
     };
 
     Map<String, dynamic> body = {
@@ -654,12 +660,10 @@ class ServerUtils {
 
   /// Sends a POST request to the server to get seen post details
   Future<List<String>> getSeenPosts(rollNo) async {
-
     final String url = '$endPoint/get_opened';
 
     Map<String, String> headers = {
-      'Content-Type':
-          'application/json',
+      'Content-Type': 'application/json',
     };
 
     Map<String, dynamic> body = {
@@ -700,8 +704,7 @@ class ServerUtils {
     final String url = '$endPoint/set_opened';
 
     Map<String, String> headers = {
-      'Content-Type':
-          'application/json',
+      'Content-Type': 'application/json',
     };
 
     Map<String, dynamic> body = {
@@ -764,13 +767,10 @@ class ServerUtils {
 
   /// Sends a POST request to the server to get all the replies the user got
   Future<List<Reply>> getAllReplies(rollNo) async {
-
-    final String url =
-        '$endPoint/get_all_replies';
+    final String url = '$endPoint/get_all_replies';
 
     Map<String, String> headers = {
-      'Content-Type':
-          'application/json',
+      'Content-Type': 'application/json',
     };
 
     Map<String, dynamic> body = {'roll_no': rollNo};

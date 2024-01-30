@@ -63,6 +63,7 @@ dependencies:
   firebase_crashlytics: ^3.4.8
   firebase_performance: ^0.9.3+8
   google_sign_in: ^6.2.1
+  modal_bottom_sheet: ^3.0.0-pre
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,7 @@ flutter:
     - assets/intro.riv
     - assets/cab2.png
     - assets/google_icon.png
+    - assets/uploads_img.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

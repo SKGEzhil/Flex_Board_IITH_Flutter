@@ -9,9 +9,11 @@ import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/pages/image_viewer.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import '../models/post_model.dart';
+import '../utils/server_utils.dart';
 import '../widgets/cab_sharing_container.dart';
 import '../widgets/comment_list.dart';
 import '../widgets/title_text.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class PostViewer extends StatefulWidget {
   const PostViewer({super.key, required this.post});
@@ -23,11 +25,13 @@ class PostViewer extends StatefulWidget {
 }
 
 class _PostViewerState extends State<PostViewer> {
-
   /// GetX Controllers
   final RepliesController repliesController = RepliesController();
   final PostViewerController postViewerController =
       Get.put(PostViewerController());
+
+  /// Declarations
+  final serverUtils = ServerUtils();
 
   @override
   void initState() {
@@ -47,36 +51,45 @@ class _PostViewerState extends State<PostViewer> {
 
   void showReplies() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await showModalBottomSheet<void>(
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0.5),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25.0),
-                    topRight: Radius.circular(25.0),
-                  ),
+    showMaterialModalBottomSheet<void>(
+      expand: false,
+      backgroundColor: Colors.transparent,
+      // isScrollControlled: true,
+      context: context,
+      // backgroundColor: Colors.white,
+      barrierColor: Colors.black.withOpacity(0.4),
+      builder: (BuildContext context) {
+
+        // return CommentList(postId: widget.post.id);
+
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(255, 255, 255, 0.5),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25.0),
+                  topRight: Radius.circular(25.0),
                 ),
-                height: MediaQuery.of(context).size.height * 0.75,
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 30, 8, 25),
-                      child: CommentList(
-                        postId: widget.post.id,
-                        username: widget.post.name,
-                      ),
+              ),
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 30, 8, 25),
+                    child: CommentList(
+                      postId: widget.post.id,
+                      username: widget.post.name,
                     ),
-                  ],
-                )),
-          );
-        },
-      );
+                  ),
+                ],
+              )),
+        );
+      },
+    );
+
+    // repliesController.fetchPostReplies(widget.post.id);
+
     });
   }
 
@@ -274,7 +287,7 @@ class _PostViewerState extends State<PostViewer> {
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  Text('Add a reply'),
+                                  Text('Replies'),
                                   SizedBox(
                                     width: 5,
                                   ),

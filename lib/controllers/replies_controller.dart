@@ -10,6 +10,7 @@ class RepliesController extends GetxController {
   /// Observables
   var isOpened = false.obs;
   List<Reply> items = <Reply>[].obs;
+  List<Reply> postReplies = <Reply>[].obs;
 
   /// Declarations
   final serverUtils = ServerUtils();
@@ -25,6 +26,14 @@ class RepliesController extends GetxController {
       items = replies;
     }
     update();
+  }
+
+  Future<void> fetchPostReplies(postId) async {
+    print('Started fetching post replies');
+    postReplies = await serverUtils
+        .getReplies(postId); // Wait for the future to complete
+    print('Finished fetching post replies');
+
   }
 
   @override

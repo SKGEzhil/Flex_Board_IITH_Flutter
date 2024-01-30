@@ -4,7 +4,7 @@ class PostTagController extends GetxController {
 
   /// Observables
   var selectedTags = <String>[].obs;
-  var allTags = <String>['Lost and Found', 'Cab Sharing', 'Tag 3', 'Tag 4'].obs;
+  var allTags = <String>['Lost and Found', 'Cab Sharing', 'Sales'].obs;
   var isCabSharing = false.obs;
   var resultTags = <String>[].obs;
 

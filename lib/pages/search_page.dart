@@ -6,7 +6,6 @@ import 'package:lost_flutter/widgets/no_internet.dart';
 import 'package:lost_flutter/widgets/post_list.dart';
 import '../controllers/post_list_controller.dart';
 import '../controllers/post_tag_controller.dart';
-import '../models/post_model.dart';
 import '../widgets/post_tag.dart';
 import '../widgets/search_field.dart';
 

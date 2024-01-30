@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +8,6 @@ import 'package:lost_flutter/controllers/create_post_controller.dart';
 import 'package:lost_flutter/controllers/image_picker_controller.dart';
 import 'package:lost_flutter/controllers/loading_controller.dart';
 import 'package:lost_flutter/controllers/post_tag_controller.dart';
-import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'package:get/get.dart';
 import 'package:lost_flutter/utils/shared_prefs.dart';
@@ -102,311 +100,322 @@ class _CreatePostState extends State<CreatePost> {
             pageTitle: 'Create new post',
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Expanded(
-                flex: 5,
-                child: SingleChildScrollView(
-                  child: Obx(() {
-                    return Column(
-                      children: [
-                        const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Subject:",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(68, 68, 68, 1.0)),
-                            )),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        TextFormField(
-                          controller: subject,
-                          maxLines: 1,
-                          cursorColor: Colors.black,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: Colors.deepOrangeAccent,
-                                width: 1.5,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: Colors.black,
-                                width: 1,
-                              ),
-                            ),
-                            focusColor: Colors.black,
+        body: GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: SingleChildScrollView(
+                    child: Obx(() {
+                      return Column(
+                        children: [
+                          const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Subject:",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(68, 68, 68, 1.0)),
+                              )),
+                          const SizedBox(
+                            height: 5,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Align(
-                            key: dataKey,
-                            alignment: Alignment.centerLeft,
-                            child: const Text(
-                              "Body:",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(68, 68, 68, 1.0)),
-                            )),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        TextFormField(
-                          onTap: () {
-                            Scrollable.ensureVisible(dataKey.currentContext!);
-                          },
-                          cursorColor: Colors.black,
-                          controller: content,
-                          maxLines: 4,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: Colors.deepOrangeAccent,
-                                width: 1.5,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: Colors.black,
-                                width: 1,
-                              ),
-                            ),
-                            focusColor: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.black.withOpacity(0.1),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Text('Add a tag'),
-                                    Expanded(
-                                      child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: PostTag(
-                                              tagName: 'Create new tag')),
-                                    )
-                                  ],
+                          TextFormField(
+                            controller: subject,
+                            maxLines: 1,
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                  color: Colors.deepOrangeAccent,
+                                  width: 1.5,
                                 ),
-                                const Divider(
-                                  height: 10,
-                                  thickness: 1,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                  color: Colors.black,
+                                  width: 1,
                                 ),
-                                Obx(() {
-                                  return SingleChildScrollView(
-                                    child: Wrap(
-                                      spacing: 5,
-                                      runSpacing: 5,
-                                      children: postTagController.allTags
-                                          .map((tag) => PostTag(tagName: tag))
-                                          .toList(),
-                                    ),
-                                  );
-                                })
-                              ],
+                              ),
+                              focusColor: Colors.black,
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        postTagController.isCabSharing.value
-                            ? CabSharingContainer(
-                                cabDate: '',
-                                cabFrom: '',
-                                cabTo: '',
-                                isCreatePost: true)
-                            : const SizedBox(),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: GestureDetector(
-                    onTap: () {
-                      imagePickerController.getImage(ImageSource.gallery);
-                      // getImage(ImageSource.gallery);
-                    },
-                    child: Container(
-                      height: 110,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color.fromRGBO(255, 114, 33, 0.5),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            const Align(
-                              alignment: Alignment.centerRight,
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Align(
+                              key: dataKey,
+                              alignment: Alignment.centerLeft,
+                              child: const Text(
+                                "Body:",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(68, 68, 68, 1.0)),
+                              )),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          TextFormField(
+                            onTap: () {
+                              Scrollable.ensureVisible(dataKey.currentContext!);
+                            },
+                            cursorColor: Colors.black,
+                            controller: content,
+                            maxLines: 4,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                  color: Colors.deepOrangeAccent,
+                                  width: 1.5,
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(
+                                  color: Colors.black,
+                                  width: 1,
+                                ),
+                              ),
+                              focusColor: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.black.withOpacity(0.1),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Attachment:",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 20,
-                                        color: Color.fromRGBO(68, 68, 68, 1.0)),
+                                  Row(
+                                    children: [
+                                      const Text('Add a tag'),
+                                      Expanded(
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: PostTag(
+                                                tagName: 'Create new tag')),
+                                      )
+                                    ],
                                   ),
-                                  Text(
-                                    "Click here to attach image",
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Color.fromRGBO(68, 68, 68, 1.0)),
+                                  const Divider(
+                                    height: 10,
+                                    thickness: 1,
                                   ),
+                                  Obx(() {
+                                    return SingleChildScrollView(
+                                      child: Wrap(
+                                        spacing: 5,
+                                        runSpacing: 5,
+                                        children: postTagController.allTags
+                                            .map((tag) => PostTag(tagName: tag))
+                                            .toList(),
+                                      ),
+                                    );
+                                  })
                                 ],
                               ),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Align(
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          postTagController.isCabSharing.value
+                              ? CabSharingContainer(
+                                  cabDate: '',
+                                  cabFrom: '',
+                                  cabTo: '',
+                                  isCreatePost: true)
+                              : const SizedBox(),
+                        ],
+                      );
+                    }),
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: GestureDetector(
+                      onTap: () {
+                        imagePickerController.getImage(ImageSource.gallery);
+                        // getImage(ImageSource.gallery);
+                      },
+                      child: Container(
+                        height: 110,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color.fromRGBO(255, 114, 33, 0.5),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              const Align(
                                 alignment: Alignment.centerRight,
-                                child: Stack(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    GetBuilder<ImagePickerController>(
-                                      builder: (_) => imagePickerController
-                                                  .image ==
-                                              null
-                                          ? ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    'https://via.placeholder.com/500', // Placeholder image URL
-                                                fit: BoxFit
-                                                    .contain, // Ensure the image fits within the space
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding:
-                                                  const EdgeInsets.all(3.0),
-                                              child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  child: Image.file(
-                                                    File(imagePickerController
-                                                        .image!
-                                                        .path), // Placeholder image URL
-                                                    fit: BoxFit
-                                                        .contain, // Ensure the image fits within the space
-                                                  )),
-                                            ),
+                                    Text(
+                                      "Attachment:",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 20,
+                                          color: Color.fromRGBO(68, 68, 68, 1.0)),
                                     ),
-                                    GetBuilder<ImagePickerController>(
-                                        builder: (_) =>
-                                            imagePickerController.image == null
-                                                ? const SizedBox()
-                                                : Positioned(
-                                                    right: 0.0,
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        imagePickerController
-                                                            .resetImage();
-                                                      },
-                                                      child: const Align(
-                                                        alignment:
-                                                            Alignment.topRight,
-                                                        child: CircleAvatar(
-                                                          radius: 10.0,
-                                                          backgroundColor:
-                                                              Colors.black,
-                                                          child: Icon(
-                                                            Icons.close,
-                                                            color: Colors.white,
-                                                            size: 15.0,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ))
+                                    Text(
+                                      "Click here to attach image",
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Color.fromRGBO(68, 68, 68, 1.0)),
+                                    ),
                                   ],
                                 ),
                               ),
-                            )
-                          ],
+                              Expanded(
+                                flex: 1,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Stack(
+                                    children: [
+                                      GetBuilder<ImagePickerController>(
+                                        builder: (_) => imagePickerController
+                                                    .image ==
+                                                null
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(15.0),
+                                                  child: Image.asset('assets/uploads_img.png'),
+                                                ),
+
+                                                // child: CachedNetworkImage(
+                                                //   imageUrl:
+                                                //       'https://via.placeholder.com/500', // Placeholder image URL
+                                                //   fit: BoxFit
+                                                //       .contain, // Ensure the image fits within the space
+                                                // ),
+                                              )
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.all(3.0),
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(10),
+                                                    child: Image.file(
+                                                      File(imagePickerController
+                                                          .image!
+                                                          .path), // Placeholder image URL
+                                                      fit: BoxFit
+                                                          .contain, // Ensure the image fits within the space
+                                                    )),
+                                              ),
+                                      ),
+                                      GetBuilder<ImagePickerController>(
+                                          builder: (_) =>
+                                              imagePickerController.image == null
+                                                  ? const SizedBox()
+                                                  : Positioned(
+                                                      right: 0.0,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          imagePickerController
+                                                              .resetImage();
+                                                        },
+                                                        child: const Align(
+                                                          alignment:
+                                                              Alignment.topRight,
+                                                          child: CircleAvatar(
+                                                            radius: 10.0,
+                                                            backgroundColor:
+                                                                Colors.black,
+                                                            child: Icon(
+                                                              Icons.close,
+                                                              color: Colors.white,
+                                                              size: 15.0,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ))
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Obx(() {
-                  return Align(
-                    alignment: Alignment.bottomCenter,
-                    child: loadingController.isLoading.value
-                        ? Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const CupertinoActivityIndicator(
-                                    radius: 15,
-                                    color: Colors.deepOrange,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    'Posting...',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black.withOpacity(0.7),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Obx(() {
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: loadingController.isLoading.value
+                          ? Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const CupertinoActivityIndicator(
+                                      radius: 15,
+                                      color: Colors.deepOrange,
                                     ),
-                                  )
-                                ],
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      'Posting...',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black.withOpacity(0.7),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
+                            )
+                          : CupertinoButton(
+                              color: Colors.black,
+                              child: const Text('Post'),
+                              onPressed: () {
+
+                                print('Button clicked');
+
+                                createPostController.createPost(
+                                    subject.text, content.text, context);
+
+                              },
                             ),
-                          )
-                        : CupertinoButton(
-                            color: Colors.black,
-                            child: const Text('Post'),
-                            onPressed: () {
-
-                              print('Button clicked');
-
-                              createPostController.createPost(
-                                  subject.text, content.text, context);
-
-                            },
-                          ),
-                  );
-                }),
-              ),
-            ],
+                    );
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
       ),
