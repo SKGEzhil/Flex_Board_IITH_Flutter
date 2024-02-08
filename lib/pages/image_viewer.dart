@@ -4,9 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageViewer extends StatelessWidget {
-  const ImageViewer({super.key, required this.image});
+  const ImageViewer({super.key, required this.image, this.isPfp});
 
   final String image;
+  final bool? isPfp;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +76,11 @@ class ImageViewer extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 0, vertical: 40.0),
               child: Center(
-                  child: CachedNetworkImage(
+                  child:
+                  isPfp == true
+                      ? Image.asset('assets/pfp.JPG')
+                      :
+                  CachedNetworkImage(
                 imageUrl: image,
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               )),

@@ -175,7 +175,7 @@ class _PostListState extends State<PostList> {
                                                         .seenPosts
                                                         .contains(post.id)
                                                         ? const Color.fromRGBO(
-                                                        0, 0, 0, 0.4)
+                                                        0, 0, 0, 0.65)
                                                         : const Color.fromRGBO(
                                                         0, 0, 0, 1),
 
@@ -228,7 +228,7 @@ class _PostListState extends State<PostList> {
                                                             .contains(post.id)
                                                             ? const Color
                                                             .fromRGBO(
-                                                            0, 0, 0, 0.3)
+                                                            0, 0, 0, 0.5)
                                                             : const Color
                                                             .fromRGBO(
                                                             0, 0, 0, 0.7),),

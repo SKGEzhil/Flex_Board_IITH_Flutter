@@ -13,6 +13,7 @@ import 'package:lost_flutter/controllers/replies_controller.dart';
 import 'package:lost_flutter/globals.dart';
 import 'package:lost_flutter/pages/create_post.dart';
 import 'package:lost_flutter/firebase_options.dart';
+import 'package:lost_flutter/pages/info.dart';
 import 'package:lost_flutter/pages/post_viewer.dart';
 import 'package:lost_flutter/utils/server_utils.dart';
 import 'pages/get_started.dart';
@@ -188,6 +189,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/create_post': (context) => const CreatePost(),
         '/get_started': (context) => const GetStarted(),
+        '/info': (context) => const Info(),
       },
       home: authenticationController.initialPage()
     );

@@ -203,6 +203,12 @@ class _ProfileState extends State<Profile> {
             title: const TitleText(pageTitle: 'Profile'),
             actions: [
               IconButton(
+                icon: const Icon(Icons.info_outline_rounded),
+                onPressed: () {
+                  Get.toNamed('/info');
+                },
+              ),
+              IconButton(
                 icon: const Icon(Icons.logout),
                 onPressed: () {
                   authenticationController.logout(context);

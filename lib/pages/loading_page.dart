@@ -9,7 +9,7 @@ class LoadingPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         color: Colors.white,
-        child: Center(
+        child: const Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
